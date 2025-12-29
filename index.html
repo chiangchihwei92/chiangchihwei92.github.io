@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DONGULI | 咚咕哩</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     
@@ -12,13 +12,14 @@
             --bg-color: #F9F7F2; 
             --text-color: #3D3A38;
             --accent-color: #9E8B7B;
-            --nav-bg: rgba(249, 247, 242, 0.95); /* 稍微增加不透明度 */
+            --nav-bg: rgba(249, 247, 242, 0.98);
             
             /* 字體設定 */
             --font-main: "Helvetica Neue", Helvetica, "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
             --font-serif: "Times New Roman", Times, "Songti TC", serif;
         }
 
+        /* 全域設定 */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
@@ -27,22 +28,22 @@
             color: var(--text-color);
             line-height: 1.8;
             letter-spacing: 0.06em;
-            padding-top: 80px; /* 預留給 Navbar 的空間 */
-            overflow-x: hidden;
+            padding-top: 70px; /* 預留給 Navbar 的空間 */
+            overflow-x: hidden; /* 防止橫向卷軸 */
+            width: 100%;
         }
 
         /* 當手機選單打開時，禁止背景滑動 */
         body.menu-open { overflow: hidden; }
 
-        /* --- Navbar 核心修復 --- */
+        /* --- Navbar 修復 --- */
         nav {
             position: fixed; top: 0; left: 0; width: 100%;
-            /* 移除固定 height，改用 min-height 與 padding 讓內容自適應 */
             min-height: 70px; 
-            padding: 10px 5%; /* 上下保留空間，防止裁切 */
+            padding: 0 5%; /* 上下不給 padding，由 flex align 處理，左右 5% */
             background-color: var(--nav-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             z-index: 1000;
             display: flex; align-items: center; justify-content: space-between;
             border-bottom: 1px solid rgba(0,0,0,0.03);
@@ -53,14 +54,13 @@
             font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; 
             cursor: pointer; color: #2c2a29; letter-spacing: 0.15em; 
             text-transform: uppercase;
-            z-index: 1100; /* 確保 Logo 在手機版也可能被點到 */
-            line-height: 1.2; /* 防止 Logo 垂直空間過大 */
+            z-index: 1100;
+            line-height: 70px; /* 垂直置中 */
         }
 
         /* 桌面版選單容器 */
         .nav-menu { 
-            display: flex; gap: 40px; align-items: center; 
-            height: auto; /* 讓高度自適應 */
+            display: flex; gap: 40px; align-items: center; height: 100%;
         }
 
         .nav-btn {
@@ -69,7 +69,6 @@
             position: relative; padding: 5px 0; letter-spacing: 0.1em;
             transition: color 0.3s ease;
             text-transform: uppercase;
-            white-space: nowrap; /* 防止按鈕文字換行 */
         }
         .nav-btn:hover, .nav-btn.active { color: var(--text-color); }
         .nav-btn::after {
@@ -79,71 +78,71 @@
         .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
 
         /* Dropdown (Desktop) */
-        .dropdown { position: relative; display: flex; align-items: center; height: 100%; }
+        .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
         .dropdown-content {
             position: absolute; top: 100%; left: 50%;
-            transform: translateX(-50%) translateY(15px); /* 稍微往下推一點，避免剛好切齊 */
-            background-color: #fff; min-width: 220px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            padding: 15px 0; z-index: 1002; border-radius: 4px;
-            opacity: 0; pointer-events: none; transition: all 0.25s ease;
+            transform: translateX(-50%) translateY(10px);
+            background-color: #fff; min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 10px 0; z-index: 1002; border-radius: 2px;
+            opacity: 0; pointer-events: none; transition: all 0.2s ease;
             visibility: hidden;
             border: 1px solid rgba(0,0,0,0.02);
         }
         
+        /* 桌面版 Hover 顯示 */
         @media (min-width: 769px) {
             .dropdown:hover .dropdown-content { 
                 opacity: 1; pointer-events: auto; visibility: visible; 
-                transform: translateX(-50%) translateY(5px); 
+                transform: translateX(-50%) translateY(0); 
             }
         }
 
         .dropdown-item { 
-            padding: 12px 30px; font-size: 0.85rem; cursor: pointer; 
+            padding: 10px 25px; font-size: 0.85rem; cursor: pointer; 
             transition: 0.2s; text-align: center; color: #888; display: block;
+            white-space: nowrap;
         }
         .dropdown-item:hover { color: var(--accent-color); background-color: #fbfbfb; }
-        .shop-all-item { color: var(--accent-color); font-weight: 600; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; padding-bottom: 15px; }
+        .shop-all-item { color: var(--accent-color); font-weight: 600; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; }
 
         /* Hamburger Icon */
-        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1200; position: relative; }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1200; }
         .hamburger span {
             display: block; width: 24px; height: 2px; background-color: #333;
             margin: 6px 0; transition: 0.3s;
         }
-        /* 漢堡變換成 X 的動畫 */
         .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
         .hamburger.active span:nth-child(2) { opacity: 0; }
         .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
         /* --- Mobile Layout Fixes --- */
         @media (max-width: 768px) {
-            nav { padding: 10px 20px; min-height: 60px; }
+            nav { padding: 0 20px; min-height: 60px; }
+            .logo { line-height: 60px; font-size: 1.4rem; }
             
             .hamburger { display: block; }
             
             .nav-menu {
                 position: fixed; top: 0; right: 0; 
-                width: 85%; max-width: 320px; height: 100vh;
+                width: 80%; max-width: 320px; height: 100vh;
                 background-color: #fff; 
-                flex-direction: column; justify-content: flex-start; align-items: stretch; /* 修正對齊 */
-                padding: 90px 30px 40px; /* 頂部留空間給漢堡按鈕 */
+                flex-direction: column; align-items: flex-start;
+                padding: 80px 30px 40px; 
                 gap: 0; 
                 transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
                 box-shadow: -10px 0 30px rgba(0,0,0,0.05);
-                z-index: 1100; /* 比 header 高，但在 hamburger 之下 */
-                
-                /* 重點修復：允許選單內部滾動 */
-                overflow-y: auto; 
-                -webkit-overflow-scrolling: touch;
+                z-index: 1100;
+                overflow-y: auto; /* 允許選單內容過長時滾動 */
             }
             .nav-menu.open { transform: translateX(0); }
 
+            /* 遮罩 */
             .menu-overlay {
                 position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
                 background: rgba(0,0,0,0.4); z-index: 1050;
                 opacity: 0; pointer-events: none; transition: 0.3s;
-                backdrop-filter: blur(3px);
+                backdrop-filter: blur(2px);
             }
             .menu-overlay.active { opacity: 1; pointer-events: auto; }
 
@@ -154,22 +153,24 @@
             }
             .nav-btn::after { display: none; }
 
+            /* Mobile Dropdown Logic */
             .dropdown { display: block; width: 100%; height: auto; }
             .dropdown-content {
                 position: static; transform: none; box-shadow: none; 
                 background: #fafafa; width: 100%; border: none; opacity: 1; 
                 visibility: visible; pointer-events: auto;
                 max-height: 0; overflow: hidden; transition: max-height 0.5s ease;
-                padding: 0; margin-top: 0;
+                padding: 0;
             }
-            /* 只要有 show class 就展開，設定一個足夠大的高度 */
-            .dropdown-content.show { max-height: 800px; border-bottom: 1px solid #f5f5f5; }
+            .dropdown-content.show { max-height: 800px; border-bottom: 1px solid #f5f5f5; margin-bottom: 10px; }
             
-            .dropdown-item { text-align: left; padding: 18px 15px; border-bottom: 1px solid #fff; font-size: 0.95rem; color: #666; }
+            .dropdown-item { text-align: left; padding: 15px 15px; border-bottom: 1px solid #fff; font-size: 0.95rem; color: #666; }
             
+            /* 手機版 SHOP 右側加號 */
             #btn-shop::after { 
-                content: '+'; position: static; width: 20px; height: 20px; 
-                background: none; transform: none; font-size: 1.4rem; font-weight: 300; line-height: 1; text-align: center;
+                content: '+'; position: static; width: auto; height: auto; 
+                background: none; transform: none; font-size: 1.4rem; font-weight: 300; 
+                line-height: 1; margin-left: 10px;
             }
             #btn-shop.open::after { content: '-'; }
         }
@@ -182,10 +183,11 @@
         .page-section.active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .hero-section { text-align: center; margin-top: 20px; }
+        .hero-section { text-align: center; margin-top: 10px; }
         .hero-img-container { 
             width: 100%; aspect-ratio: 16/9; max-height: 600px; 
             background: #eee; margin: 30px auto; overflow: hidden; border-radius: 2px;
+            cursor: pointer;
         }
         .hero-img-container img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -201,7 +203,7 @@
         .category-text p { font-size: 1rem; opacity: 0.9; letter-spacing: 0.1em; margin-top: 5px; }
 
         .product-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 50px 30px; padding: 0 20px; max-width: 1200px; margin: 0 auto;
         }
 
@@ -229,16 +231,16 @@
         .toggle-btn:hover, .toggle-btn.active { background: var(--accent-color); color: white; }
 
         .about-container { max-width: 800px; margin: 0 auto; text-align: center; }
-        .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #666; }
-        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 40px; }
-        .gallery-item { aspect-ratio: 1/1; background: #ddd; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #666; padding: 0 20px; }
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 40px; padding: 0 20px; }
+        .gallery-item { aspect-ratio: 1/1; background: #ddd; cursor: zoom-in; overflow: hidden; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .gallery-item:hover img { transform: scale(1.05); }
 
         footer { text-align: center; padding: 60px 20px; color: #ccc; font-size: 0.8rem; margin-top: 80px; border-top: 1px solid #f0f0f0; }
-
         .loading-text { color: #ccc; font-size: 0.9rem; padding: 40px; text-align: center; }
 
-        /* Lightbox */
+        /* --- Lightbox (新增燈箱功能) --- */
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(45, 42, 40, 0.95); z-index: 2000;
@@ -248,14 +250,16 @@
         .lightbox-modal.active { display: flex; opacity: 1; }
         .lightbox-content {
             max-width: 90vw; max-height: 85vh; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            border-radius: 2px; animation: zoomIn 0.3s ease;
+            border-radius: 2px; animation: zoomIn 0.3s ease; object-fit: contain;
         }
         .close-lightbox {
             position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; 
             cursor: pointer; font-family: var(--font-main); font-weight: 300; transition: 0.3s;
+            z-index: 2001; line-height: 1;
         }
         .close-lightbox:hover { color: var(--accent-color); transform: rotate(90deg); }
         @keyframes zoomIn { from { transform: scale(0.9); } to { transform: scale(1); } }
+
     </style>
 </head>
 <body>
@@ -287,8 +291,8 @@
         <div class="hero-section">
             <h1 style="font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 10px; color: #2c2a29;">Wabi-Sabi Life</h1>
             <p style="color: #999; letter-spacing: 0.2em; font-size: 0.9rem;">自然・陶・生活</p>
-            <div class="hero-img-container" id="home-hero-root"></div>
-            <div style="max-width: 600px; margin: 40px auto;">
+            <div class="hero-img-container" id="home-hero-root" onclick="if(this.querySelector('img')) openLightbox(this.querySelector('img').src)"></div>
+            <div style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
                 <p style="font-family: var(--font-serif); font-style: italic; color: #888; margin-bottom: 30px;">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
                 <button class="toggle-btn" onclick="switchPage('available')">View Available Items</button>
             </div>
@@ -413,6 +417,8 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             configs.filter(c => c.type === 'About').forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'gallery-item';
+                // 點擊 About 圖片開啟燈箱
+                div.onclick = () => openLightbox(p.image);
                 div.innerHTML = `<img src="${p.image}" onerror="this.style.display='none'">`;
                 aboutRoot.appendChild(div);
             });
@@ -465,16 +471,21 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             renderAvailablePage();
         }
 
-        // --- Lightbox Functions ---
+        // --- Lightbox Functions (新功能) ---
         function openLightbox(imgSrc) {
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
             lightboxImg.src = imgSrc;
             lightbox.style.display = 'flex';
+            // 小延遲讓 display:flex 生效後再加 opacity 動畫
             setTimeout(() => { lightbox.classList.add('active'); }, 10);
+            
+            // 鎖定背景滾動
+            document.body.style.overflow = 'hidden';
         }
 
         function closeLightbox(e) {
+            // 如果點到圖片本身，不關閉；點到背景或 X 才關閉
             if (e.target !== document.getElementById('lightbox-img')) {
                 const lightbox = document.getElementById('lightbox');
                 lightbox.classList.remove('active');
@@ -482,6 +493,11 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                     lightbox.style.display = 'none'; 
                     document.getElementById('lightbox-img').src = '';
                 }, 300);
+                
+                // 恢復背景滾動 (需檢查是否 Menu 也是開著的)
+                if(!document.body.classList.contains('menu-open')) {
+                    document.body.style.overflow = '';
+                }
             }
         }
 
@@ -570,20 +586,23 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             document.body.classList.remove('menu-open');
             
             // 重置子選單
-            document.getElementById('shop-dropdown-content').classList.remove('show');
-            document.getElementById('btn-shop').classList.remove('open');
+            setTimeout(() => {
+                document.getElementById('shop-dropdown-content').classList.remove('show');
+                document.getElementById('btn-shop').classList.remove('open');
+            }, 300); // 等選單收回去再收合子項目
         }
 
         function toggleMobileShop(e) {
-            // 只有在手機版模式下 (漢堡選單可見時) 才阻止預設跳轉行為並展開選單
-            if (window.getComputedStyle(document.querySelector('.hamburger')).display !== 'none') {
-                // 如果需要，可以加 e.preventDefault(); 但這裡是 button 標籤所以不用
+            // 檢查漢堡按鈕是否顯示，來判斷是否為手機版
+            const hamburger = document.getElementById('hamburger-btn');
+            if (window.getComputedStyle(hamburger).display !== 'none') {
+                // 手機版：展開/收合子選單
                 const content = document.getElementById('shop-dropdown-content');
                 const btn = document.getElementById('btn-shop');
                 content.classList.toggle('show');
                 btn.classList.toggle('open');
             } else {
-                // 電腦版點擊直接去商品頁 (或你可以改成無動作，因為電腦版是 hover)
+                // 電腦版：直接跳轉到現貨頁面
                 switchPage('available');
             }
         }
