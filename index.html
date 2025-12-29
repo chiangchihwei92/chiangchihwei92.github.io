@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DONGULI | 咚咕哩</title>
-    <link rel="icon" type="image/ico" href="favicon.ico">
+    
+    <link rel="icon" href="favicon.ico">
+
     <style>
         :root {
             /* 基礎色調 */
@@ -112,55 +114,49 @@
         .hero-subtitle { font-size: 1rem; color: #888; letter-spacing: 0.1em; margin-bottom: 30px; }
 
 
-        /* --- 修正 1：Banner 樣式 (滿版 + 文字右下) --- */
-        /* 移除 max-width 限制，讓 banner 滿版 */
+        /* --- Banner 樣式 (滿版 + 文字右下) --- */
         #dynamic-pages-root .page-section { max-width: 100%; padding: 0 0 60px 0; }
-        /* 其他頁面維持限制 */
         #page-home, #page-about, #page-available { max-width: 1200px; padding: 0 20px 60px; }
 
         .category-banner {
             width: 100%;
-            height: 350px; /* 稍微加高一點 */
+            height: 350px;
             position: relative;
             margin-bottom: 50px;
             overflow: hidden;
             background-color: #E0E0E0;
-            /* 移除圓角和邊框，回歸滿版 */
             border-radius: 0;
             border: none;
         }
         .category-banner img { width: 100%; height: 100%; object-fit: cover; }
         .banner-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)); /* 漸層改為只在下方加深 */
+            background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4));
         }
 
         /* 文字移到右下角 */
         .banner-text-content {
             position: absolute; 
             bottom: 40px; 
-            right: 40px; /* 改為靠右 */
+            right: 40px;
             color: #fff; z-index: 2;
             text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            text-align: right; /* 文字靠右對齊 */
+            text-align: right;
         }
         .banner-text-content h2 { font-size: 2.2rem; font-family: var(--font-serif); margin: 0; }
         .banner-text-content p { margin: 5px 0 0; font-size: 1.1rem; opacity: 0.9; letter-spacing: 0.1em; }
         
-        /* Banner 下方的控制按鈕容器 */
         .banner-controls-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
 
-        /* --- 修正 2：Product Card (無框風格 + 正方形照片) --- */
+        /* --- Product Card (無框風格 + 正方形照片) --- */
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 60px 30px; /* 無框時垂直間距加大 */
-            /* 如果是在動態頁面，需要限制 grid 寬度 */
+            gap: 60px 30px;
             max-width: 1200px; margin: 0 auto; padding: 0 20px;
         }
 
         .product-card {
-            /* 移除外框、背景和陰影 */
             background: transparent;
             padding: 0;
             border-radius: 0;
@@ -168,8 +164,6 @@
             text-align: center;
             position: relative;
         }
-
-        /* 移除整張卡片的懸浮移動 */
         .product-card:hover { transform: none; box-shadow: none; }
 
         .image-placeholder {
@@ -178,9 +172,8 @@
             background: #F2F0EB;
             margin-bottom: 18px;
             overflow: hidden;
-            border-radius: 4px; /* 照片本身保留一點點圓角 */
+            border-radius: 4px;
         }
-        /* 僅保留照片的懸浮放大效果 */
         .image-placeholder img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
         .product-card:hover .image-placeholder img { transform: scale(1.05); }
         
@@ -266,28 +259,208 @@
     <footer><p>© 2024 DONGULI. All Rights Reserved.</p></footer>
 
     <script>
-        const siteConfigCSV = `type,key,image\nHomeHero, Main, assets/home_hero.jpg\nBanner, Hand-Carved (手雕系列), assets/banner_hc.jpg\nBanner, Tableware (食器系列), assets/banner_ht.jpg\nBanner, Round-Cap (圓帽系列), assets/banner_rc.jpg\nBanner, Special (限定系列), assets/banner_sp.jpg\nBanner, Lifestyle (生活選物), assets/banner_ls.jpg\nBanner, Konishii Hayata (小西氏系列), assets/banner_kh.jpg\nAbout, Photo 1, assets/about_1.jpg\nAbout, Photo 2, assets/about_2.jpg\nAbout, Photo 3, assets/about_3.jpg\nAbout, Photo 4, assets/about_4.jpg`;
-        const productDataCSV = `category,code,name,price,status,image\nHand-Carved (手雕系列), HC-1, 手雕咚咕哩, 1380, SOLD OUT, assets/hc1.jpg\nHand-Carved (手雕系列), HC-2, 手雕咚咕哩, 1380, SOLD OUT, assets/hc2.jpg\nHand-Carved (手雕系列), HC-3, 手雕咚咕哩, 1380, SOLD OUT, assets/hc3.jpg\nTableware (食器系列), HT-1, 蓋碗/食器, 1480, SOLD OUT, assets/ht1.jpg\nRound-Cap (圓帽系列), RC-1, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc1.jpg\nSpecial (限定系列), SUN-1, 夏日薄荷, 1280, SOLD OUT, assets/sun1.jpg\nLifestyle (生活選物), FW-1, 一起去摘花吧, 1480, SOLD OUT, assets/fw1.jpg`;
+        // ==========================================
+        //  CSV 1: 網站圖片設定區
+        // ==========================================
+        const siteConfigCSV = `
+type,key,image
+HomeHero, Main, assets/home_hero.jpg
+Banner, Hand-Carved (手雕系列), assets/banner_hc.jpg
+Banner, Tableware (食器系列), assets/banner_ht.jpg
+Banner, Round-Cap (圓帽系列), assets/banner_rc.jpg
+Banner, Special (限定系列), assets/banner_sp.jpg
+Banner, Lifestyle (生活選物), assets/banner_ls.jpg
+Banner, Konishii Hayata (小西氏系列), assets/banner_kh.jpg
+About, Photo 1, assets/about_1.jpg
+About, Photo 2, assets/about_2.jpg
+About, Photo 3, assets/about_3.jpg
+About, Photo 4, assets/about_4.jpg
+`;
 
-        function parseCSV(t){const n=t.trim().split("\n"),e=n[0].split(",").map(t=>t.trim()),r=[];for(let t=1;t<n.length;t++){const a=n[t].split(",");if(a.length===e.length){const t={};e.forEach((n,e)=>t[n]=a[e].trim()),r.push(t)}}return r}
-        const products=parseCSV(productDataCSV),configs=parseCSV(siteConfigCSV);let isHideSoldOut=!1;
-        function getBannerImage(t){const n=configs.find(n=>"Banner"===n.type&&n.key===t);return n?n.image:""}
-        function initWebsite(){
-            const t=document.getElementById("dynamic-pages-root"),n=document.getElementById("about-gallery-root"),e=document.getElementById("shop-dropdown-content"),r=document.getElementById("home-hero-root"),a=configs.find(t=>"HomeHero"===t.type),i=a?a.image:"",o=document.createElement("img");
-            o.className="home-hero-img",o.src=i,o.onerror=()=>{r.innerHTML='<div style="height:300px; display:flex; align-items:center; justify-content:center; color:#aaa;">(Home Image Not Found)</div>'},i&&r.appendChild(o);
-            configs.filter(t=>"About"===t.type).forEach(t=>{const e=document.createElement("div");e.className="about-photo",e.innerHTML=`<img src="${t.image}" onerror="this.style.display='none'">`,n.appendChild(e)});
-            const s=document.createElement("div");s.className="dropdown-item shop-all-item",s.innerText="Shop All (現貨)",s.onclick=()=>switchPage("available"),e.appendChild(s);
-            const c=[...new Set(products.map(t=>t.category))];
-            c.forEach((n,r)=>{const a="cat-"+r,i=document.createElement("div");i.className="dropdown-item",i.innerText=n.split("(")[0],i.onclick=()=>switchPage(a),e.appendChild(i);const o=getBannerImage(n),s=o?`<img src="${o}" onerror="this.style.display='none'">`:"",c=document.createElement("div");c.id="page-"+a,c.className="page-section",c.innerHTML=`
-                <div class="category-banner">${s}<div class="banner-overlay"></div><div class="banner-text-content"><h2>${n.split("(")[0]}</h2><p>${n.includes("(")?n.split("(")[1].replace(")",""):""}</p></div></div>
-                <div class="banner-controls-container"><div class="controls"><button class="toggle-btn" onclick="toggleStock(this)">隱藏售完 (Hide Sold Out)</button></div><div class="product-grid" id="grid-${a}"></div></div>
-            `,t.appendChild(c),renderCategoryProducts(a,n)}),renderAvailablePage()}
-        function renderCategoryProducts(t,n){const e=document.getElementById("grid-"+t);e.innerHTML="";products.filter(t=>t.category===n).forEach(t=>{if(isHideSoldOut&&"SOLD OUT"===t.status)return;e.appendChild(createProductCard(t))})}
-        function renderAvailablePage(){const t=document.getElementById("grid-available");t.innerHTML="";const n=products.filter(t=>"SOLD OUT"!==t.status);if(0===n.length){t.innerHTML='<p style="grid-column:1/-1; text-align:center; color:#999; margin-top:30px;">目前沒有現貨 / Out of Stock</p>';return}n.forEach(n=>t.appendChild(createProductCard(n,!0)))}
-        function createProductCard(t,n=!1){const e=document.createElement("article");e.className="product-card";const r="SOLD OUT"===t.status,a=r?"status":"status available",i=t.image.includes(".")?`<img src="${t.image}" onerror="this.parentNode.innerText='${t.code}'">`:t.code;return e.innerHTML=`<div class="image-placeholder">${i}</div><div class="product-name">${t.name}</div><div class="product-code">${t.code}</div><div class="price">NT$ ${t.price}</div><div class="${a}">${t.status}</div>`,e}
-        function switchPage(t){document.querySelectorAll(".page-section").forEach(t=>t.classList.remove("active-page"));const n=document.getElementById("page-"+t);n&&n.classList.add("active-page"),document.querySelectorAll(".nav-btn").forEach(t=>t.classList.remove("active")),"home"===t?document.getElementById("btn-home").classList.add("active"):"about"===t?document.getElementById("btn-about").classList.add("active"):document.getElementById("btn-shop").classList.add("active"),document.getElementById("nav-menu").classList.remove("open"),window.scrollTo(0,0)}
-        function toggleMenu(){document.getElementById("nav-menu").classList.toggle("open")}
-        function toggleStock(t){isHideSoldOut=!isHideSoldOut,t.classList.toggle("active");const n=[...new Set(products.map(t=>t.category))];n.forEach((t,e)=>renderCategoryProducts("cat-"+e,t))}
+        // ==========================================
+        //  CSV 2: 商品資料區
+        // ==========================================
+        const productDataCSV = `
+category,code,name,price,status,image
+Hand-Carved (手雕系列), HC-1, 手雕咚咕哩, 1380, SOLD OUT, assets/hc1.jpg
+Hand-Carved (手雕系列), HC-2, 手雕咚咕哩, 1380, SOLD OUT, assets/hc2.jpg
+Hand-Carved (手雕系列), HC-3, 手雕咚咕哩, 1380, SOLD OUT, assets/hc3.jpg
+Hand-Carved (手雕系列), HC-4, 手雕咚咕哩, 1380, SOLD OUT, assets/hc4.jpg
+Tableware (食器系列), HT-1, 蓋碗/食器, 1480, SOLD OUT, assets/ht1.jpg
+Tableware (食器系列), HT-2, 蓋碗/食器, 980, SOLD OUT, assets/ht2.jpg
+Tableware (食器系列), HT-3, 蓋碗/食器, 1580, SOLD OUT, assets/ht3.jpg
+Round-Cap (圓帽系列), RC-1, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc1.jpg
+Round-Cap (圓帽系列), RC-2, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc2.jpg
+Konishii Hayata (小西氏系列), KH-1, 小西氏咚咕哩, 1280, SOLD OUT, assets/kh1.jpg
+Special (限定系列), SUN-1, 夏日薄荷, 1280, SOLD OUT, assets/sun1.jpg
+Lifestyle (生活選物), FW-1, 一起去摘花吧, 1480, SOLD OUT, assets/fw1.jpg
+`;
+
+        // 通用 CSV 解析器
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const items = [];
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if (row.length === headers.length) {
+                    const obj = {};
+                    headers.forEach((h, idx) => obj[h] = row[idx].trim());
+                    items.push(obj);
+                }
+            }
+            return items;
+        }
+
+        const products = parseCSV(productDataCSV);
+        const configs = parseCSV(siteConfigCSV); 
+        let isHideSoldOut = false; 
+
+        function getBannerImage(categoryName) {
+            const config = configs.find(c => c.type === 'Banner' && c.key === categoryName);
+            return config ? config.image : '';
+        }
+
+        function initWebsite() {
+            const pagesRoot = document.getElementById('dynamic-pages-root');
+            const aboutGalleryRoot = document.getElementById('about-gallery-root');
+            const shopDropdownContent = document.getElementById('shop-dropdown-content');
+            const homeHeroRoot = document.getElementById('home-hero-root');
+
+            // 1. HomeHero
+            const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
+            const heroImgSrc = homeHeroConfig ? homeHeroConfig.image : '';
+            const img = document.createElement('img');
+            img.className = 'home-hero-img';
+            img.src = heroImgSrc;
+            img.onerror = () => { 
+                homeHeroRoot.innerHTML = '<div style="height:300px; display:flex; align-items:center; justify-content:center; color:#aaa;">(Home Image Not Found)<br>Check CSV: HomeHero</div>'; 
+            };
+            if(heroImgSrc) homeHeroRoot.appendChild(img);
+
+            // 2. About
+            configs.filter(c => c.type === 'About').forEach(p => {
+                const photoDiv = document.createElement('div');
+                photoDiv.className = 'about-photo';
+                photoDiv.innerHTML = `<img src="${p.image}" onerror="this.style.display='none'">`;
+                aboutGalleryRoot.appendChild(photoDiv);
+            });
+
+            // 3. Dropdown & Pages
+            const itemShopAll = document.createElement('div');
+            itemShopAll.className = 'dropdown-item shop-all-item';
+            itemShopAll.innerText = 'Shop All (現貨)';
+            itemShopAll.onclick = () => switchPage('available');
+            shopDropdownContent.appendChild(itemShopAll);
+
+            const categories = [...new Set(products.map(p => p.category))];
+            categories.forEach((cat, index) => {
+                const safeId = 'cat-' + index;
+                
+                // Dropdown Item
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.innerText = cat.split('(')[0];
+                item.onclick = () => switchPage(safeId);
+                shopDropdownContent.appendChild(item);
+
+                // Page
+                const bannerImg = getBannerImage(cat);
+                const bannerHTML = bannerImg 
+                    ? `<img src="${bannerImg}" onerror="this.style.display='none'">` 
+                    : ``;
+
+                const pageDiv = document.createElement('div');
+                pageDiv.id = 'page-' + safeId;
+                pageDiv.className = 'page-section';
+                pageDiv.innerHTML = `
+                    <div class="category-banner">
+                        ${bannerHTML}
+                        <div class="banner-overlay"></div>
+                        <div class="banner-text-content">
+                            <h2>${cat.split('(')[0]}</h2>
+                            <p>${cat.includes('(') ? cat.split('(')[1].replace(')', '') : ''}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="banner-controls-container">
+                        <div class="controls">
+                            <button class="toggle-btn" onclick="toggleStock(this)">隱藏售完 (Hide Sold Out)</button>
+                        </div>
+                        <div class="product-grid" id="grid-${safeId}"></div>
+                    </div>
+                `;
+                pagesRoot.appendChild(pageDiv);
+                renderCategoryProducts(safeId, cat);
+            });
+
+            renderAvailablePage();
+        }
+
+        function renderCategoryProducts(safeId, categoryName) {
+            const grid = document.getElementById('grid-' + safeId);
+            grid.innerHTML = '';
+            const items = products.filter(p => p.category === categoryName);
+            items.forEach(item => {
+                if (isHideSoldOut && item.status === 'SOLD OUT') return;
+                grid.appendChild(createProductCard(item));
+            });
+        }
+
+        function renderAvailablePage() {
+            const grid = document.getElementById('grid-available');
+            grid.innerHTML = '';
+            const items = products.filter(p => p.status !== 'SOLD OUT');
+            if(items.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999; margin-top:30px;">目前沒有現貨 / Out of Stock</p>';
+                return;
+            }
+            items.forEach(item => grid.appendChild(createProductCard(item, true)));
+        }
+
+        function createProductCard(item, showCategoryTag = false) {
+            const card = document.createElement('article');
+            card.className = 'product-card';
+            const isSoldOut = item.status === 'SOLD OUT';
+            const statusClass = isSoldOut ? 'status' : 'status available';
+            const imgContent = item.image.includes('.') ? 
+                `<img src="${item.image}" onerror="this.parentNode.innerText='${item.code}'">` : item.code;
+            
+            card.innerHTML = `
+                <div class="image-placeholder">${imgContent}</div>
+                <div class="product-name">${item.name}</div>
+                <div class="product-code">${item.code}</div>
+                <div class="price">NT$ ${item.price}</div>
+                <div class="${statusClass}">${item.status}</div>
+            `;
+            return card;
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) targetPage.classList.add('active-page');
+
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
+            else if(pageId === 'about') document.getElementById('btn-about').classList.add('active');
+            else document.getElementById('btn-shop').classList.add('active');
+
+            document.getElementById('nav-menu').classList.remove('open');
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMenu() {
+            document.getElementById('nav-menu').classList.toggle('open');
+        }
+
+        function toggleStock(btn) {
+            isHideSoldOut = !isHideSoldOut;
+            btn.classList.toggle('active');
+            const categories = [...new Set(products.map(p => p.category))];
+            categories.forEach((cat, index) => renderCategoryProducts('cat-' + index, cat));
+        }
+
         initWebsite();
     </script>
 </body>
