@@ -1,291 +1,426 @@
 <!DOCTYPE html>
-<html  >
+<html lang="zh-TW">
 <head>
-  <!-- Site made with Mobirise Website Builder v6.0.6, https://mobirise.com -->
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Mobirise v6.0.6, mobirise.com">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/logo.png" type="image/x-icon">
-  <meta name="description" content="">
-  
-  
-  <title>Home</title>
-  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
-  <link rel="stylesheet" href="assets/dropdown/css/style.css">
-  <link rel="stylesheet" href="assets/socicon/css/styles.css">
-  <link rel="stylesheet" href="assets/theme/css/style.css">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;700&display=swap&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;700&display=swap&display=swap"></noscript>
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&display=swap"></noscript>
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i&display=swap"></noscript>
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Comfortaa:300,400,500,600,700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Comfortaa:300,400,500,600,700&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=FOSTCD"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=FOSTCD" type="text/css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DONGULI | 咚咕哩</title>
+    <style>
+        :root {
+            --bg-color: #F7F5F0;
+            --text-color: #5A544B;
+            --accent-color: #8C7B6C;
+            --card-bg: #FFFFFF;
+            --font-main: "Helvetica Neue", Helvetica, Arial, "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
+            --nav-height: 70px;
+        }
 
-  
-  
-  
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            padding-top: calc(var(--nav-height) + 40px);
+        }
+
+        /* --- 導覽列 --- */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background-color: rgba(247, 245, 240, 0.98);
+            border-bottom: 1px solid #E0DDD5;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            height: var(--nav-height);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; cursor: pointer; color: #3e3a36; letter-spacing: 0.1em; z-index: 1001; }
+        .hamburger { display: none; background: none; border: none; font-size: 1.8rem; color: var(--text-color); cursor: pointer; z-index: 1001; padding: 5px; }
+        .nav-menu { display: flex; gap: 10px; }
+        .nav-btn {
+            background: none; border: none; font-size: 0.95rem; padding: 8px 15px;
+            cursor: pointer; color: #888; transition: 0.3s; border-radius: 20px; white-space: nowrap;
+        }
+        .nav-btn:hover, .nav-btn.active { color: var(--text-color); background-color: #EFECE6; font-weight: 500; }
+        #btn-available { color: #2E7D32; border: 1px solid #E8F5E9; }
+        #btn-available.active { background-color: #2E7D32; color: #fff; }
+
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+            .nav-menu {
+                position: absolute; top: var(--nav-height); left: 0; width: 100%;
+                background-color: #F7F5F0; flex-direction: column; align-items: center;
+                padding: 20px 0; border-bottom: 1px solid #E0DDD5; box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+                max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.4s ease; display: block;
+            }
+            .nav-menu.open { max-height: 80vh; opacity: 1; overflow-y: auto; }
+            .nav-btn { display: block; width: 100%; text-align: center; padding: 15px 0; border-radius: 0; border-bottom: 1px dashed #eee; }
+        }
+
+        /* --- 頁面與 Banner --- */
+        .page-section { display: none; max-width: 1000px; margin: 0 auto; padding: 20px; animation: fadeIn 0.4s ease; }
+        .page-section.active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 新增：Banner 樣式 */
+        .category-banner {
+            width: 100%;
+            height: 250px; /* Banner 高度 */
+            background-color: #E0E0E0; /* 預設灰底 */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        .category-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .banner-text-overlay {
+            position: absolute; bottom: 20px; left: 20px;
+            background: rgba(255,255,255,0.85); padding: 10px 20px;
+            border-radius: 4px; backdrop-filter: blur(5px);
+        }
+        .banner-text-overlay h2 { margin: 0; font-size: 1.5rem; color: #333; }
+        .banner-text-overlay p { margin: 0; font-size: 0.9rem; color: #666; }
+
+        /* --- 關於頁相簿 --- */
+        .about-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2x2 排列 */
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .about-photo {
+            width: 100%;
+            aspect-ratio: 1 / 1; /* 正方形 */
+            background-color: #EFECE6;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            color: #ccc;
+        }
+        .about-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .about-photo:hover img { transform: scale(1.05); }
+
+        /* --- 元件樣式 --- */
+        .hero-section { text-align: center; padding: 20px 0 60px; }
+        .hero-title { font-size: 2.5rem; margin-bottom: 10px; color: var(--accent-color); }
+        .poetic-text { font-size: 1.1rem; font-style: italic; color: #6d665e; margin-bottom: 40px; }
+        .featured-preview { display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
+        .preview-img { width: 150px; height: 150px; background: #ddd; object-fit: cover; border-radius: 4px; }
+        .about-content { max-width: 800px; margin: 0 auto; text-align: center; padding: 40px 0; }
+        
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 40px 30px; }
+        .product-card { background: #fff; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-radius: 8px; transition: transform 0.2s; position: relative;}
+        .product-card:hover { transform: translateY(-5px); }
+        .image-placeholder { width: 100%; height: 240px; background: #EFECE6; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; }
+        .image-placeholder img { width: 100%; height: 100%; object-fit: cover; }
+        .product-name { font-weight: bold; margin: 10px 0 5px; font-size: 1.1rem; }
+        .product-code { color: #999; font-size: 0.85rem; font-family: monospace; margin-bottom: 10px; }
+        .price { color: var(--accent-color); font-weight: 500; font-size: 1rem; }
+        .status { font-size: 0.75rem; padding: 3px 10px; background: #f0f0f0; border-radius: 20px; display: inline-block; margin-top: 8px; color: #999; }
+        .status.available { background: #E8F5E9; color: #2E7D32; }
+        .category-tag { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.05); padding: 2px 8px; font-size: 0.7rem; border-radius: 4px; color: #666; }
+        .controls { display: flex; justify-content: flex-end; margin-bottom: 20px; padding-bottom: 10px; }
+        .toggle-btn { border: 1px solid var(--accent-color); background: none; color: var(--accent-color); border-radius: 20px; padding: 5px 15px; cursor: pointer; }
+        .toggle-btn.active { background: var(--accent-color); color: #fff; }
+        
+        footer { text-align: center; margin-top: 80px; padding: 40px 0; border-top: 1px solid #ddd; font-size: 0.8rem; color: #999; }
+    </style>
 </head>
 <body>
-  
-  <section data-bs-version="5.1" class="menu menu1 cid-uQOzV7v9lK" once="menu" id="menu1-3">
-    
 
-    <nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
-        <div class="container">
-            <div class="navbar-brand">
-                
-                <span class="navbar-caption-wrap"><a class="navbar-caption text-black display-7" href="https://mobiri.se">Chiang Portfolio</a></span>
+    <nav>
+        <div class="logo" onclick="switchPage('home')">DONGULI</div>
+        <button class="hamburger" onclick="toggleMenu()">&#9776;</button>
+        <div class="nav-menu" id="dynamic-nav">
+            <button class="nav-btn active" onclick="switchPage('home')" id="btn-home">Home</button>
+            <button class="nav-btn" onclick="switchPage('about')" id="btn-about">About</button>
             </div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <div class="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item"><a class="nav-link link text-success display-4" href="https://mobiri.se">首頁<br></a></li>
-                    <li class="nav-item"><a class="nav-link link text-success display-4" href="https://mobiri.se">簡歷</a></li><li class="nav-item dropdown"><a class="nav-link link dropdown-toggle text-success display-4" href="https://mobiri.se" data-toggle="dropdown-submenu" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">作品集</a><div class="dropdown-menu" aria-labelledby="dropdown-301"><a class="dropdown-item text-success display-4" href="https://mobiri.se">策展與計劃執行</a><a class="show dropdown-item text-success display-4" href="https://mobiri.se">工藝設計</a><a class="show dropdown-item text-success display-4" href="https://mobiri.se">花藝空間</a></div></li>
-                    <li class="nav-item"><a class="nav-link link text-success display-4" href="https://mobiri.se">聯絡資訊</a>
-                    </li></ul>
-                
-                
-            </div>
-        </div>
     </nav>
-</section>
 
-<section data-bs-version="5.1" class="header11 cid-uQOA1N6pR6" id="header11-4">
-
-    
-
-    
-    
-
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 image-wrapper">
-                <img class="w-100" src="assets/images/sq4.jpg" alt="Mobirise Website Builder">
-            </div>
-            <div class="col-12 col-md">
-                <div class="text-wrapper text-center">
-                    <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1">
-                        <strong>Make Fun Creating</strong></h1>
-                    <p class="mbr-text mbr-fonts-style display-7">
-                        Make awesome landing pages without coding!</p>
-                    <div class="mbr-section-btn mt-3"><a class="btn btn-success-outline display-7" href="https://mobiri.se">查看簡歷</a></div>
-                </div>
-            </div>
+    <div id="page-home" class="page-section active-page">
+        <div class="hero-section">
+            <h1 class="hero-title">Wabi-Sabi Life</h1>
+            <p>一顆橡實，靜靜落地，等待著屬於自己的季節。</p>
+            <br>
+            <div class="featured-preview" id="home-featured"></div>
+            <br><br>
+            <button class="toggle-btn" style="padding:10px 30px; font-size:1rem;" onclick="switchPage('available')">
+                查看現貨作品 (Shop Available)
+            </button>
         </div>
     </div>
-</section>
 
-<section data-bs-version="5.1" class="features13 cid-uQOBFW0Ky9" id="features13-8">
-
-    
-
-    
-    
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-6">
-                <div class="card-wrapper">
-                    <div class="card-box align-left">
-                        <h4 class="card-title mbr-fonts-style mb-4 display-2">
-                            <strong>What is Mobirise?</strong>
-                        </h4>
-                        <p class="mbr-text mbr-fonts-style mb-4 display-7">
-                            Use Mobirise website building software to create multiple sites for commercial and non-profit projects.</p>
-                        <div class="mbr-section-btn">
-                            <a class="btn btn-primary display-4" href="https://mobiri.se">Create your own site</a>
-                        </div>
-                    </div>
-                </div>
+    <div id="page-about" class="page-section">
+        <div class="about-content">
+            <div style="text-align:center; margin-bottom:40px;">
+                <h2>關於 DONGULI</h2>
+                <p style="color:var(--accent-color)">About The Brand</p>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="item features-without-image">
-                    <div class="item-wrapper mbr-flex">
-                        <div class="icon-box">
-                            <span class="mbr-iconfont mobi-mbri-globe-2 mobi-mbri"></span>
-                        </div>
-                        <div class="text-box">
-                            <h4 class="icon-title mbr-black mbr-fonts-style display-7">
-                                <strong>No Coding</strong>
-                            </h4>
-                            <h5 class="icon-text mbr-black mbr-fonts-style display-4">You don't have to code to create your own site. Select one of available themes in the Mobirise sitebuilder.</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="item features-without-image">
-                    <div class="item-wrapper mbr-flex">
-                        <div class="icon-box">
-                            <span class="mbr-iconfont mobi-mbri-update mobi-mbri"></span>
-                        </div>
-                        <div class="text-box">
-                            <h4 class="icon-title mbr-black mbr-fonts-style display-7">
-                                <strong>Mobile Friendly</strong>
-                            </h4>
-                            <h5 class="icon-text mbr-black mbr-fonts-style display-4">All sites you create with the Mobirise web builder are mobile-friendly natively. No special actions required.</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="item features-without-image">
-                    <div class="item-wrapper mbr-flex">
-                        <div class="icon-box">
-                            <span class="mbr-iconfont mobi-mbri-user-2 mobi-mbri"></span>
-                        </div>
-                        <div class="text-box">
-                            <h4 class="icon-title mbr-black mbr-fonts-style display-7">
-                                <strong>Unique Styles</strong>
-                            </h4>
-                            <h5 class="icon-text mbr-black mbr-fonts-style display-4">Select the theme that suits you. Each theme in the Mobirise site builder contains a set of unique blocks.</h5>
-                        </div>
-                    </div>
-                </div>
+            
+            <div class="poetic-text" style="text-align: left; line-height: 2;">
+                <p>DONGULI 來自於對自然的觀察與熱愛。</p>
+                <p>我們相信器皿不只是盛裝的工具，更是生活情感的延伸。</p>
+                <p>在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡。</p>
             </div>
+
+            <div class="about-gallery" id="about-gallery-root">
+                </div>
         </div>
     </div>
-</section>
 
-<section data-bs-version="5.1" class="clients2 cid-uQODIpP9nz" id="clients2-a">
+    <div id="page-available" class="page-section">
+        <div style="text-align:center; margin-bottom:40px;">
+            <h2 style="color:#2E7D32;">Available Items</h2>
+            <p>現貨作品一覽</p>
+        </div>
+        <div class="product-grid" id="grid-available"></div>
+    </div>
 
-    
+    <div id="dynamic-pages-root"></div>
 
-    
-    
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="item features-without-image mb-5 col-12 col-md-4">
-                <div class="item-wrapper">
-                    <div class="img-wrapper">
-                        <img src="assets/images/1.png" alt="Mobirise Website Builder">
-                    </div>
-                    <div class="card-box align-center">
-                        
-                        <h5 class="card-title mbr-fonts-style mb-3 display-5">
-                            <strong>策展與計劃執行</strong></h5>
-                        <p class="mbr-text mbr-fonts-style mb-4 display-4">
-                            No special actions required, all sites you make with Mobirise are mobile-friendly.</p>
-                        <div class="mbr-section-btn mt-3"><a class="btn btn-primary-outline display-4" href="https://mobiri.se">Learn More</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="item features-without-image mb-5 col-12 col-md-4">
-                <div class="item-wrapper">
-                    <div class="img-wrapper">
-                        <img src="assets/images/1.png" alt="Mobirise Website Builder">
-                    </div>
-                    <div class="card-box align-center">
-                        
-                        <h5 class="card-title mbr-fonts-style mb-3 display-5">
-                            <strong>工藝設計</strong></h5>
-                        <p class="mbr-text mbr-fonts-style mb-4 display-4">
-                            Use Mobirise website building software to create multiple sites for your clients.</p>
-                        <div class="mbr-section-btn mt-3">
-                            <a class="btn btn-primary-outline display-4" href="https://mobiri.se">Learn More</a>
+    <footer>
+        <p>© 2024 DONGULI 咚咕哩. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // ==========================================
+        //  CSV 1: 網站圖片設定區 (Banner & About)
+        //  格式: Type, Key, Image
+        //  Type: "Banner" (對應 Key 為分類名稱) 或 "About" (Key 隨意，會依序顯示)
+        // ==========================================
+        const siteConfigCSV = `
+type,key,image
+Banner, Hand-Carved (手雕系列), banner_hc.jpg
+Banner, Tableware (食器系列), banner_ht.jpg
+Banner, Round-Cap (圓帽系列), banner_rc.jpg
+Banner, Special (限定系列), banner_sp.jpg
+Banner, Lifestyle (生活選物), banner_ls.jpg
+About, Photo 1, about_1.jpg
+About, Photo 2, about_2.jpg
+About, Photo 3, about_3.jpg
+About, Photo 4, about_4.jpg
+`;
+
+        // ==========================================
+        //  CSV 2: 商品資料區
+        // ==========================================
+        const productDataCSV = `
+category,code,name,price,status,image
+Hand-Carved (手雕系列), HC-1, 手雕咚咕哩, 1380, SOLD OUT, hc1.jpg
+Hand-Carved (手雕系列), HC-2, 手雕咚咕哩, 1380, SOLD OUT, hc2.jpg
+Hand-Carved (手雕系列), HC-3, 手雕咚咕哩, 1380, Available, hc3.jpg
+Hand-Carved (手雕系列), HC-4, 手雕咚咕哩, 1380, SOLD OUT, hc4.jpg
+Tableware (食器系列), HT-1, 蓋碗/食器, 1280, Available, ht1.jpg
+Tableware (食器系列), HT-2, 蓋碗/食器, 1480, SOLD OUT, ht2.jpg
+Tableware (食器系列), HT-3, 蓋碗/食器, 1580, Available, ht3.jpg
+Round-Cap (圓帽系列), RC-1, 圓帽咚咕哩, 1480, SOLD OUT, rc1.jpg
+Round-Cap (圓帽系列), RC-2, 圓帽咚咕哩, 1480, Available, rc2.jpg
+Round-Cap (圓帽系列), RC-3, 圓帽咚咕哩, 1480, SOLD OUT, rc3.jpg
+Round-Cap (圓帽系列), RC-4, 圓帽咚咕哩, 1480, SOLD OUT, rc4.jpg
+Special (限定系列), KH-1, 小西氏咚咕哩, 1280, SOLD OUT, kh1.jpg
+Special (限定系列), KH-2, 小西氏咚咕哩, 1280, Available, kh2.jpg
+Special (限定系列), KH-3, 小西氏咚咕哩, 1080, SOLD OUT, kh3.jpg
+Special (限定系列), RO-1, 紅櫟咚咕哩, 1280, SOLD OUT, ro1.jpg
+Special (限定系列), RO-2, 紅櫟咚咕哩, 1280, Available, ro2.jpg
+Special (限定系列), SUN-1, 夏日薄荷, 1280, SOLD OUT, sun1.jpg
+Lifestyle (生活選物), FW-1, 一起去摘花吧, 1480, Available, fw1.jpg
+Lifestyle (生活選物), SW-1, 雪花象嵌食器, 1280, SOLD OUT, sw1.jpg
+Lifestyle (生活選物), SW-2, 雪日造物, 1280, Available, sw2.jpg
+`;
+
+        // 通用 CSV 解析器
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const items = [];
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if (row.length === headers.length) {
+                    const obj = {};
+                    headers.forEach((h, idx) => obj[h] = row[idx].trim());
+                    items.push(obj);
+                }
+            }
+            return items;
+        }
+
+        const products = parseCSV(productDataCSV);
+        const configs = parseCSV(siteConfigCSV); // 解析設定檔
+        let isHideSoldOut = false; 
+
+        // 輔助函式：取得 Banner 圖片
+        function getBannerImage(categoryName) {
+            const config = configs.find(c => c.type === 'Banner' && c.key === categoryName);
+            return config ? config.image : '';
+        }
+
+        function initWebsite() {
+            const dynamicNav = document.getElementById('dynamic-nav');
+            const pagesRoot = document.getElementById('dynamic-pages-root');
+            const homeFeatured = document.getElementById('home-featured');
+            const aboutGalleryRoot = document.getElementById('about-gallery-root');
+
+            // 1. 初始化 About 頁面照片 (讀取 Config CSV)
+            const aboutPhotos = configs.filter(c => c.type === 'About');
+            if (aboutPhotos.length === 0) {
+                // 如果沒有設定，給 4 個預設佔位符
+                for(let i=0; i<4; i++) aboutPhotos.push({image: ''});
+            }
+            aboutPhotos.forEach(p => {
+                const photoDiv = document.createElement('div');
+                photoDiv.className = 'about-photo';
+                if(p.image.includes('.')) {
+                    photoDiv.innerHTML = `<img src="${p.image}" onerror="this.style.display='none'">`;
+                } else {
+                    photoDiv.innerHTML = 'Photo';
+                }
+                aboutGalleryRoot.appendChild(photoDiv);
+            });
+
+            // 2. 首頁隨機圖
+            const availableOnly = products.filter(p => p.status !== 'SOLD OUT');
+            const picks = (availableOnly.length > 0 ? availableOnly : products)
+                          .sort(() => 0.5 - Math.random()).slice(0, 3);
+            picks.forEach(p => {
+                const img = document.createElement('div');
+                img.className = 'image-placeholder preview-img';
+                if(p.image.includes('.')) img.innerHTML = `<img src="${p.image}" onerror="this.style.display='none'">`;
+                homeFeatured.appendChild(img);
+            });
+
+            // 3. 導覽列按鈕 (Available)
+            const btnAvailable = document.createElement('button');
+            btnAvailable.className = 'nav-btn';
+            btnAvailable.id = 'btn-available';
+            btnAvailable.innerText = 'Shop All (現貨)';
+            btnAvailable.onclick = () => switchPage('available');
+            dynamicNav.appendChild(btnAvailable);
+
+            // 4. 動態分類頁面 (含 Banner)
+            const categories = [...new Set(products.map(p => p.category))];
+            categories.forEach((cat, index) => {
+                const safeId = 'cat-' + index;
+                
+                // 按鈕
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.innerText = cat.split('(')[0];
+                btn.onclick = () => switchPage(safeId);
+                btn.id = 'btn-' + safeId;
+                dynamicNav.appendChild(btn);
+
+                // 取得 Banner 圖片
+                const bannerImg = getBannerImage(cat);
+                const bannerHTML = bannerImg 
+                    ? `<img src="${bannerImg}" onerror="this.style.display='none'">` 
+                    : `<span>${cat} Banner</span>`;
+
+                // 頁面 HTML 結構
+                const pageDiv = document.createElement('div');
+                pageDiv.id = 'page-' + safeId;
+                pageDiv.className = 'page-section';
+                pageDiv.innerHTML = `
+                    <div class="category-banner">
+                        ${bannerHTML}
+                        <div class="banner-text-overlay">
+                            <h2>${cat.split('(')[0]}</h2>
+                            <p>${cat.includes('(') ? cat.split('(')[1].replace(')', '') : ''}</p>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="item features-without-image mb-5 col-12 col-md-4">
-                <div class="item-wrapper">
-                    <div class="img-wrapper">
-                        <img src="assets/images/1.png" alt="Mobirise Website Builder">
+                    
+                    <div class="controls">
+                        <button class="toggle-btn" onclick="toggleStock(this)">隱藏已售完 (Hide Sold Out)</button>
                     </div>
-                    <div class="card-box align-center">
-                        
-                        <h5 class="card-title mbr-fonts-style mb-3 display-5">
-                            <strong>花藝空間</strong></h5>
-                        <p class="mbr-text mbr-fonts-style mb-4 display-4">
-                            Create multiple pages. Don't forget to set links to your pages after creating them.</p>
-                        <div class="mbr-section-btn mt-3">
-                            <a class="btn btn-primary-outline display-4" href="https://mobiri.se">Learn More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+                    <div class="product-grid" id="grid-${safeId}"></div>
+                `;
+                pagesRoot.appendChild(pageDiv);
+                
+                renderCategoryProducts(safeId, cat);
+            });
 
-<section data-bs-version="5.1" class="footer3 cid-uQOERkxlbO" once="footers" id="footer3-d">
+            renderAvailablePage();
+        }
 
-    
+        function renderCategoryProducts(safeId, categoryName) {
+            const grid = document.getElementById('grid-' + safeId);
+            grid.innerHTML = '';
+            
+            const items = products.filter(p => p.category === categoryName);
+            items.forEach(item => {
+                if (isHideSoldOut && item.status === 'SOLD OUT') return;
+                grid.appendChild(createProductCard(item));
+            });
+        }
 
-    
+        function renderAvailablePage() {
+            const grid = document.getElementById('grid-available');
+            grid.innerHTML = '';
+            
+            const items = products.filter(p => p.status !== 'SOLD OUT');
+            
+            if(items.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999;">目前沒有現貨 (Currently Out of Stock)</p>';
+                return;
+            }
+            items.forEach(item => grid.appendChild(createProductCard(item, true)));
+        }
 
-    <div class="container">
-        <div class="media-container-row align-center mbr-white">
-            <div class="row row-links">
-                <ul class="foot-menu">
-                    
-                    
-                    
-                    
-                    
-                <li class="foot-menu-item mbr-fonts-style display-7">
-                        <a class="text-white" href="#" target="_blank">About us</a>
-                    </li><li class="foot-menu-item mbr-fonts-style display-7">
-                        <a class="text-white" href="#" target="_blank">Services</a>
-                    </li><li class="foot-menu-item mbr-fonts-style display-7">
-                        <a class="text-white" href="#" target="_blank">Contact Us</a>
-                    </li><li class="foot-menu-item mbr-fonts-style display-7">
-                        <a class="text-white" href="#" target="_blank">Careers</a>
-                    </li><li class="foot-menu-item mbr-fonts-style display-7">
-                        <a class="text-white" href="#" target="_blank">Work</a>
-                    </li></ul>
-            </div>
-            <div class="row social-row">
-                <div class="social-list align-right pb-2">
-                    
-                    
-                    
-                    
-                    
-                    
-                <div class="soc-item">
-                        <a href="https://twitter.com/mobirise" target="_blank">
-                            <span class="socicon-twitter socicon mbr-iconfont mbr-iconfont-social"></span>
-                        </a>
-                    </div><div class="soc-item">
-                        <a href="https://www.facebook.com/pages/Mobirise/1616226671953247" target="_blank">
-                            <span class="socicon-facebook socicon mbr-iconfont mbr-iconfont-social"></span>
-                        </a>
-                    </div><div class="soc-item">
-                        <a href="https://www.youtube.com/c/mobirise" target="_blank">
-                            <span class="socicon-youtube socicon mbr-iconfont mbr-iconfont-social"></span>
-                        </a>
-                    </div><div class="soc-item">
-                        <a href="https://instagram.com/mobirise" target="_blank">
-                            <span class="socicon-instagram socicon mbr-iconfont mbr-iconfont-social"></span>
-                        </a>
-                    </div><div class="soc-item">
-                        <a href="https://plus.google.com/u/0/+Mobirise" target="_blank">
-                            <span class="socicon-googleplus socicon mbr-iconfont mbr-iconfont-social"></span>
-                        </a>
-                    </div><div class="soc-item">
-                        <a href="https://www.behance.net/Mobirise" target="_blank">
-                            <span class="socicon-behance socicon mbr-iconfont mbr-iconfont-social"></span>
-                        </a>
-                    </div></div>
-            </div>
-            <div class="row row-copirayt">
-                <p class="mbr-text mb-0 mbr-fonts-style mbr-white align-center display-7">
-                    © Copyright 2025 Mobirise. All Rights Reserved.
-                </p>
-            </div>
-        </div>
-    </div>
-</section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: flex;position: relative;height: 4rem;"><a href="https://mobiri.se/4083677" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com/drag-drop-website-builder.html">Drag and Drop Website Builder</a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
-  
-  
+        function createProductCard(item, showCategoryTag = false) {
+            const card = document.createElement('article');
+            card.className = 'product-card';
+            
+            const isSoldOut = item.status === 'SOLD OUT';
+            const statusClass = isSoldOut ? 'status' : 'status available';
+            const imgContent = item.image.includes('.') ? 
+                `<img src="${item.image}" onerror="this.parentNode.innerText='${item.code}'">` : item.code;
+            
+            const tagHtml = showCategoryTag ? `<div class="category-tag">${item.category.split('(')[0]}</div>` : '';
+
+            card.innerHTML = `
+                ${tagHtml}
+                <div class="image-placeholder">${imgContent}</div>
+                <div class="product-name">${item.name}</div>
+                <div class="product-code">${item.code}</div>
+                <div class="price">NT$ ${item.price}</div>
+                <div class="${statusClass}">${item.status}</div>
+            `;
+            return card;
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('page-' + pageId).classList.add('active-page');
+
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById('btn-' + pageId);
+            if(btn) btn.classList.add('active');
+
+            document.getElementById('dynamic-nav').classList.remove('open');
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMenu() {
+            document.getElementById('dynamic-nav').classList.toggle('open');
+        }
+
+        function toggleStock(btn) {
+            isHideSoldOut = !isHideSoldOut;
+            document.querySelectorAll('.toggle-btn').forEach(b => {
+                if(isHideSoldOut) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            const categories = [...new Set(products.map(p => p.category))];
+            categories.forEach((cat, index) => renderCategoryProducts('cat-' + index, cat));
+        }
+
+        initWebsite();
+    </script>
 </body>
 </html>
