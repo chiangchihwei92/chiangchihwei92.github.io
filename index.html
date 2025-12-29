@@ -5,335 +5,290 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DONGULI | 咚咕哩</title>
     
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%238C7B6C%22/><text x=%2250%22 y=%2250%22 font-family=%22serif%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.35em%22>D</text></svg>">
 
     <style>
         :root {
-            /* 視覺系統：溫潤、自然 */
-            --bg-color: #F9F8F4;       /* 淺米色背景 */
-            --nav-bg: #FFFFFF;         /* 導覽列純白 */
-            --text-main: #333333;      /* 主要文字 */
-            --text-sub: #777777;       /* 次要文字 */
-            --accent-color: #948068;   /* 品牌主色 (棕色系) */
+            /* 基礎色調 - 更加柔和 */
+            --bg-color: #F9F7F2; 
+            --text-color: #3D3A38;
+            --accent-color: #9E8B7B; /* 稍微深一點的陶土色 */
+            --nav-bg: rgba(249, 247, 242, 0.92);
+            --nav-height: 70px;
             
-            --font-serif: "Times New Roman", "Songti TC", serif;
-            --font-sans: "Helvetica Neue", Arial, sans-serif;
-            
-            --nav-height: 80px;
+            /* 字體設定 */
+            --font-main: "Helvetica Neue", Helvetica, "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
+            --font-serif: "Times New Roman", Times, "Songti TC", serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: var(--font-sans);
+            font-family: var(--font-main);
             background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            letter-spacing: 0.05em;
-            padding-top: var(--nav-height); /* 預留導覽列高度 */
+            color: var(--text-color);
+            line-height: 1.8;
+            letter-spacing: 0.06em;
+            padding-top: var(--nav-height);
+            overflow-x: hidden; /* 防止橫向捲軸 */
         }
 
-        /* =========================================
-           NAVBAR (重新設計)
-           風格：穩重、置中、清晰
-           ========================================= */
+        /* --- 3. Navbar 設計大改版 --- */
         nav {
             position: fixed; top: 0; left: 0; width: 100%;
             height: var(--nav-height);
             background-color: var(--nav-bg);
-            border-bottom: 1px solid #EBEBEB;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 40px;
+            padding: 0 5%;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
         }
 
-        /* 左側 Logo */
         .logo { 
-            font-family: var(--font-serif); 
-            font-size: 1.6rem; 
-            font-weight: bold; 
-            color: #000; 
-            letter-spacing: 0.1em; 
-            cursor: pointer;
-            z-index: 1002; /* 確保比手機選單高 */
+            font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; 
+            cursor: pointer; color: #2c2a29; letter-spacing: 0.15em; 
+            text-transform: uppercase;
         }
 
-        /* 中間選單 (電腦版) */
-        .nav-menu { 
-            display: flex; 
-            align-items: center; 
-            gap: 40px; 
-            height: 100%;
-        }
+        .nav-menu { display: flex; gap: 40px; align-items: center; height: 100%; }
 
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-sub);
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: color 0.3s;
-            cursor: pointer;
-            position: relative;
-            padding: 5px 0;
+        /* 桌面版按鈕樣式 */
+        .nav-btn {
+            background: none; border: none; font-size: 0.9rem; 
+            font-family: var(--font-main); cursor: pointer; color: #777; 
+            position: relative; padding: 5px 0; letter-spacing: 0.1em;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
         }
-        
-        .nav-link:hover, .nav-link.active { color: #000; }
-        
+        .nav-btn:hover, .nav-btn.active { color: var(--text-color); }
         /* 底部線條動畫 */
-        .nav-link::after {
-            content: ''; position: absolute; left: 0; bottom: 0; width: 0%; height: 1px;
-            background-color: #000; transition: width 0.3s ease;
+        .nav-btn::after {
+            content: ''; position: absolute; bottom: -2px; left: 50%; width: 0; height: 1px;
+            background-color: var(--text-color); transition: all 0.3s ease; transform: translateX(-50%);
         }
-        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
 
-        /* Dropdown 容器 */
+        /* Dropdown (Desktop) */
         .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
-        
-        /* Dropdown 內容 (電腦版懸浮選單) */
-        .dropdown-menu {
-            position: absolute;
-            top: 100%; left: 50%;
-            transform: translateX(-50%);
-            background: #FFF;
-            min-width: 200px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            border: 1px solid #eee;
-            padding: 10px 0;
-            opacity: 0;
+        .dropdown-content {
+            position: absolute; top: 100%; left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background-color: #fff; min-width: 200px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            padding: 15px 0; z-index: 1002; border-radius: 4px;
+            opacity: 0; pointer-events: none; transition: all 0.25s ease;
             visibility: hidden;
-            transition: all 0.2s ease;
-            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.02);
         }
-        
-        .dropdown:hover .dropdown-menu {
-            opacity: 1; visibility: visible; top: 80%; /* 微微上移產生動畫感 */
-        }
-
-        .dropdown-item {
-            display: block;
-            padding: 12px 20px;
-            color: var(--text-sub);
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.2s;
-            text-align: center;
-        }
-        .dropdown-item:hover { background-color: #F9F9F9; color: var(--accent-color); }
-        .shop-all-btn { color: var(--accent-color); font-weight: bold; border-bottom: 1px solid #f0f0f0; }
-
-        /* 手機版漢堡按鈕 */
-        .hamburger { 
-            display: none; 
-            cursor: pointer; 
-            z-index: 1002;
-            padding: 10px;
-        }
-        .hamburger div {
-            width: 25px; height: 2px; background-color: #333; margin: 6px 0;
-            transition: 0.4s;
+        /* Desktop Hover Logic */
+        @media (min-width: 769px) {
+            .dropdown:hover .dropdown-content { 
+                opacity: 1; pointer-events: auto; visibility: visible; 
+                transform: translateX(-50%) translateY(0); 
+            }
         }
 
-        /* =========================================
-           RWD 手機版選單 (全螢幕遮罩)
-           ========================================= */
+        .dropdown-item { 
+            padding: 10px 30px; font-size: 0.85rem; cursor: pointer; 
+            transition: 0.2s; text-align: center; color: #888; display: block;
+        }
+        .dropdown-item:hover { color: var(--accent-color); background-color: #fbfbfb; }
+        .shop-all-item { color: var(--accent-color); font-weight: 600; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; padding-bottom: 15px; }
+
+        /* Hamburger Icon */
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1100; }
+        .hamburger span {
+            display: block; width: 22px; height: 1.5px; background-color: #333;
+            margin: 5px 0; transition: 0.3s;
+        }
+
+        /* --- Mobile Navbar 修正 (重點) --- */
         @media (max-width: 768px) {
-            nav { padding: 0 20px; }
-            .nav-menu { display: none; } /* 隱藏原本的選單 */
+            nav { padding: 0 20px; height: 60px; } /* 手機版導覽列變矮一點 */
+            
             .hamburger { display: block; }
+            
+            /* 手機版選單容器 */
+            .nav-menu {
+                position: fixed; top: 0; right: 0; width: 80%; max-width: 300px; height: 100vh;
+                background-color: #fff; flex-direction: column; justify-content: flex-start;
+                padding: 80px 40px; gap: 0; 
+                transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+                box-shadow: -5px 0 20px rgba(0,0,0,0.05);
+                z-index: 1050; /* 確保在最上層 */
+            }
+            .nav-menu.open { transform: translateX(0); }
 
-            /* 手機版全螢幕選單容器 */
-            .mobile-menu-overlay {
+            /* 手機版遮罩 (點擊旁邊關閉) */
+            .menu-overlay {
                 position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-                background-color: #FFF;
-                z-index: 1001;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                gap: 30px;
-                transform: translateY(-100%); /* 預設收在上面 */
-                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                display: flex;
+                background: rgba(0,0,0,0.3); z-index: 1040;
+                opacity: 0; pointer-events: none; transition: 0.3s;
+                backdrop-filter: blur(2px);
             }
-            
-            .mobile-menu-overlay.open { transform: translateY(0); }
+            .menu-overlay.active { opacity: 1; pointer-events: auto; }
 
-            .mobile-link {
-                font-size: 1.5rem;
-                font-family: var(--font-serif);
+            /* 手機版按鈕重設 */
+            .nav-btn { 
+                font-size: 1.2rem; width: 100%; text-align: left; 
+                padding: 20px 0; border-bottom: 1px solid #eee;
                 color: #333;
-                cursor: pointer;
             }
+            .nav-btn::after { display: none; } /* 手機版不需要底部滑動線條 */
 
-            /* 手機版 Dropdown 改為直接列出 */
-            .mobile-dropdown-container {
-                display: flex; flex-direction: column; align-items: center; gap: 15px;
-                margin-top: 10px; padding-top: 20px; border-top: 1px dashed #ddd;
-                max-height: 40vh; overflow-y: auto; width: 80%;
+            /* 手機版 Dropdown 變為手風琴模式 */
+            .dropdown { display: block; width: 100%; height: auto; }
+            .dropdown-content {
+                position: static; transform: none; box-shadow: none; 
+                background: #f9f9f9; width: 100%; border: none; opacity: 1; 
+                visibility: visible; pointer-events: auto;
+                max-height: 0; overflow: hidden; transition: max-height 0.4s ease; /* 滑動動畫 */
+                padding: 0;
             }
-            .mobile-sub-item {
-                font-size: 1rem; color: #666; cursor: pointer;
-            }
+            .dropdown-content.show { max-height: 500px; /* 足夠大的高度讓內容展開 */ }
             
-            /* 漢堡變換成 X */
-            .hamburger.active div:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
-            .hamburger.active div:nth-child(2) { opacity: 0; }
-            .hamburger.active div:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
+            .dropdown-item { text-align: left; padding: 15px 20px; border-bottom: 1px solid #fff; font-size: 0.95rem; }
+            
+            /* 手機版 Shop 按鈕的箭頭指示 */
+            #btn-shop { display: flex; justify-content: space-between; align-items: center; }
+            #btn-shop::after { 
+                content: '+'; position: static; width: auto; height: auto; background: none; transform: none; font-size: 1.2rem; font-weight: 300;
+            }
+            #btn-shop.open::after { content: '-'; }
         }
 
-        /* =========================================
-           頁面內容與排版
-           ========================================= */
-        .page-section { display: none; width: 100%; animation: fadeIn 0.5s ease; padding-bottom: 60px; }
+        /* --- 頁面內容 --- */
+        .page-section { 
+            display: none; width: 100%; max-width: 1200px; margin: 0 auto; 
+            padding: 40px 20px 80px; animation: fadeIn 0.6s ease; 
+        }
         .page-section.active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 修正：Banner 樣式 (滿版 + 文字右下) --- */
-        #dynamic-pages-root .page-section { max-width: 100%; }
-        /* 一般頁面限制寬度，但商品頁面(dynamic)滿版 */
-        #page-home, #page-about, #page-available { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
-
-        .category-banner {
-            width: 100%;
-            height: 400px; /* 增加高度更有氣勢 */
-            position: relative;
-            margin-bottom: 50px;
-            background-color: #E0E0E0;
-        }
-        .category-banner img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .banner-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); /* 漸層由下往上 */
-        }
-
-        .banner-text-content {
-            position: absolute; 
-            bottom: 30px; 
-            right: 30px; /* 靠右下角 */
-            color: #fff; z-index: 2;
-            text-align: right;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .banner-text-content h2 { font-size: 2.5rem; font-family: var(--font-serif); margin: 0; font-weight: normal; }
-        .banner-text-content p { font-size: 1rem; opacity: 0.9; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 5px; }
-
-        /* --- 首頁 --- */
+        /* Hero */
         .hero-section { text-align: center; margin-top: 20px; }
-        .home-hero-container {
-            width: 100%; max-width: 900px; margin: 30px auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            line-height: 0; /* 消除圖片底部空隙 */
+        .hero-img-container { 
+            width: 100%; aspect-ratio: 16/9; max-height: 600px; 
+            background: #eee; margin: 30px auto; overflow: hidden; border-radius: 2px;
         }
-        .home-hero-img { width: 100%; height: auto; display: block; }
-
-        /* --- 商品列表 (無框 + 正方形) --- */
-        .banner-controls-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .hero-img-container img { width: 100%; height: 100%; object-fit: cover; }
         
+        /* Banner Pages */
+        #dynamic-pages-root .page-section { max-width: 100%; padding: 0 0 60px 0; }
+        .category-header {
+            width: 100%; height: 35vh; min-height: 250px; position: relative;
+            background: #e0e0e0; margin-bottom: 50px; display: flex; align-items: flex-end; justify-content: flex-end;
+        }
+        .category-header img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .category-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); }
+        .category-text { position: relative; z-index: 2; color: #fff; text-align: right; padding: 40px 5%; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .category-text h2 { font-size: 2.5rem; font-family: var(--font-serif); margin: 0; }
+        .category-text p { font-size: 1rem; opacity: 0.9; letter-spacing: 0.1em; margin-top: 5px; }
+
+        /* Grid System */
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 60px 40px;
+            gap: 50px 30px; padding: 0 20px; max-width: 1200px; margin: 0 auto;
         }
 
-        .product-card { text-align: center; cursor: pointer; }
+        /* Product Card */
+        .product-card { text-align: center; cursor: default; }
+        .img-box {
+            width: 100%; aspect-ratio: 1/1; background: #f0f0f0; margin-bottom: 15px; 
+            position: relative; overflow: hidden;
+        }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+        .product-card:hover .img-box img { transform: scale(1.03); }
         
-        .image-placeholder {
-            width: 100%;
-            aspect-ratio: 1 / 1; /* 正方形 */
-            background-color: #F0F0F0;
-            margin-bottom: 15px;
-            overflow: hidden;
-            position: relative;
+        .p-name { font-size: 1rem; color: #333; margin-bottom: 5px; }
+        .p-price { font-family: var(--font-serif); color: var(--accent-color); font-size: 1.1rem; }
+        .p-status { 
+            font-size: 0.7rem; padding: 3px 8px; border: 1px solid #ccc; color: #999; 
+            display: inline-block; margin-top: 10px; border-radius: 50px;
         }
-        .image-placeholder img {
-            width: 100%; height: 100%; object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-        /* 只有照片放大，沒有外框浮起 */
-        .product-card:hover .image-placeholder img { transform: scale(1.05); }
+        .p-status.available { border-color: #5d6d5a; color: #5d6d5a; }
 
-        .product-name { font-size: 1rem; color: #333; margin-bottom: 5px; letter-spacing: 0.05em; }
-        .product-code { font-size: 0.8rem; color: #999; font-family: monospace; margin-bottom: 8px; }
-        .price { color: var(--accent-color); font-weight: 500; }
-        .status {
-            font-size: 0.75rem; padding: 3px 12px; border: 1px solid #ddd;
-            border-radius: 20px; display: inline-block; margin-top: 10px; color: #aaa;
-        }
-        .status.available { border-color: #4CAF50; color: #4CAF50; }
-
-        /* About & Footer */
-        .about-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
-        .about-photo { width: 100%; aspect-ratio: 1/1; background: #eee; }
-        .about-photo img { width: 100%; height: 100%; object-fit: cover; }
-        
-        footer { margin-top: 100px; padding: 40px 0; border-top: 1px solid #eee; text-align: center; color: #999; font-size: 0.8rem; }
-        
-        .controls { display: flex; justify-content: flex-end; margin-bottom: 30px; }
+        /* Controls */
+        .controls-area { max-width: 1200px; margin: 0 auto 30px; padding: 0 20px; text-align: right; }
         .toggle-btn {
-            background: none; border: 1px solid #ccc; padding: 8px 20px; border-radius: 50px;
-            color: #666; cursor: pointer; transition: 0.3s;
+            background: transparent; border: 1px solid var(--accent-color); color: var(--accent-color);
+            padding: 8px 18px; border-radius: 30px; font-size: 0.85rem; cursor: pointer; transition: 0.3s;
         }
-        .toggle-btn.active { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
+        .toggle-btn:hover, .toggle-btn.active { background: var(--accent-color); color: white; }
 
+        /* About */
+        .about-container { max-width: 800px; margin: 0 auto; text-align: center; }
+        .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #666; }
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 40px; }
+        .gallery-item { aspect-ratio: 1/1; background: #ddd; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        footer { text-align: center; padding: 60px 20px; color: #ccc; font-size: 0.8rem; margin-top: 80px; border-top: 1px solid #f0f0f0; }
+
+        /* Utility */
+        .loading-text { color: #ccc; font-size: 0.9rem; padding: 40px; text-align: center; }
     </style>
 </head>
 <body>
 
+    <div class="menu-overlay" onclick="closeMenu()"></div>
+
     <nav>
-        <div class="logo" onclick="switchPage('home')">DONGULI</div>
+        <div class="logo" onclick="switchPage('home'); closeMenu()">DONGULI</div>
         
-        <div class="nav-menu">
-            <div class="nav-link" onclick="switchPage('home')">Home</div>
-            <div class="nav-link" onclick="switchPage('about')">About</div>
+        <button class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-menu" id="nav-menu">
+            <button class="nav-btn active" onclick="switchPage('home'); closeMenu()" id="btn-home">HOME</button>
+            <button class="nav-btn" onclick="switchPage('about'); closeMenu()" id="btn-about">ABOUT</button>
             
             <div class="dropdown">
-                <div class="nav-link">Shop</div>
-                <div class="dropdown-menu" id="desktop-shop-menu">
+                <button class="nav-btn" id="btn-shop" onclick="toggleMobileShop()">SHOP</button>
+                <div class="dropdown-content" id="shop-dropdown-content">
                     </div>
             </div>
         </div>
-
-        <div class="hamburger" onclick="toggleMobileMenu()">
-            <div></div><div></div><div></div>
-        </div>
     </nav>
-
-    <div class="mobile-menu-overlay" id="mobile-menu">
-        <div class="mobile-link" onclick="switchPage('home')">Home</div>
-        <div class="mobile-link" onclick="switchPage('about')">About</div>
-        <div class="mobile-link" style="color: var(--accent-color); border-bottom: 2px solid var(--accent-color);">Shop Categories</div>
-        
-        <div class="mobile-dropdown-container" id="mobile-shop-list">
-            </div>
-    </div>
 
     <div id="page-home" class="page-section active-page">
         <div class="hero-section">
-            <h1 style="font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 10px;">Wabi-Sabi Life</h1>
-            <p style="color:#888;">生活裡的溫柔細節</p>
+            <h1 style="font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 10px; color: #2c2a29;">Wabi-Sabi Life</h1>
+            <p style="color: #999; letter-spacing: 0.2em; font-size: 0.9rem;">自然・陶・生活</p>
             
-            <div class="home-hero-container" id="home-hero-root"></div>
+            <div class="hero-img-container" id="home-hero-root"></div>
             
-            <p style="font-style: italic; color:#666; margin-bottom: 30px;">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
-            <button class="toggle-btn" onclick="switchPage('available')">前往現貨區 (Shop Available)</button>
+            <div style="max-width: 600px; margin: 40px auto;">
+                <p style="font-family: var(--font-serif); font-style: italic; color: #888; margin-bottom: 30px;">
+                    "一顆橡實，靜靜落地，等待著屬於自己的季節。"
+                </p>
+                <button class="toggle-btn" onclick="switchPage('available')">View Available Items</button>
+            </div>
         </div>
     </div>
 
     <div id="page-about" class="page-section">
-        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-            <h2 style="font-family: var(--font-serif); margin-bottom: 10px;">Brand Story</h2>
-            <p style="color:#999; margin-bottom: 40px;">關於咚咕哩</p>
-            <div style="line-height: 2.2; color: #555;">
+        <div class="about-container">
+            <h2 style="font-family: var(--font-serif); font-size: 2rem;">About Us</h2>
+            <div class="about-text">
                 <p>DONGULI 來自於對自然的觀察與熱愛。</p>
                 <p>我們相信器皿不只是盛裝的工具，更是生活情感的延伸。</p>
+                <p>在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡。</p>
             </div>
-            <div class="about-gallery" id="about-gallery-root"></div>
+            <div class="gallery-grid" id="about-gallery-root"></div>
         </div>
     </div>
 
     <div id="page-available" class="page-section">
-        <div style="text-align:center; margin-bottom: 60px;">
-            <h2 style="font-family: var(--font-serif); color: #4CAF50;">Available Items</h2>
-            <p style="color:#999;">現貨選購</p>
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-family: var(--font-serif); color: #5d6d5a;">Available Stock</h2>
+            <p style="color: #bbb;">現貨選購</p>
         </div>
         <div class="product-grid" id="grid-available"></div>
     </div>
@@ -341,12 +296,12 @@
     <div id="dynamic-pages-root"></div>
 
     <footer>
-        <p>© 2024 DONGULI. All Rights Reserved.</p>
+        <p>© 2024 DONGULI CERAMICS. All Rights Reserved.</p>
     </footer>
 
     <script>
         // ==========================================
-        //  CSV 設定區 (請確保格式整齊，不要有額外縮排)
+        //  CSV DATA (請保持格式，注意不要留多餘空行)
         // ==========================================
         const siteConfigCSV = `
 type,key,image
@@ -367,145 +322,151 @@ About, Photo 4, assets/about_4.jpg
 category,code,name,price,status,image
 Hand-Carved (手雕系列), HC-1, 手雕咚咕哩, 1380, SOLD OUT, assets/hc1.jpg
 Hand-Carved (手雕系列), HC-2, 手雕咚咕哩, 1380, SOLD OUT, assets/hc2.jpg
-Hand-Carved (手雕系列), HC-3, 手雕咚咕哩, 1380, SOLD OUT, assets/hc3.jpg
 Tableware (食器系列), HT-1, 蓋碗/食器, 1480, SOLD OUT, assets/ht1.jpg
 Round-Cap (圓帽系列), RC-1, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc1.jpg
+Konishii Hayata (小西氏系列), KH-1, 小西氏咚咕哩, 1280, SOLD OUT, assets/kh1.jpg
 Special (限定系列), SUN-1, 夏日薄荷, 1280, SOLD OUT, assets/sun1.jpg
-Lifestyle (生活選物), FW-1, 一起去摘花吧, 1480, SOLD OUT, assets/fw1.jpg
+Lifestyle (生活選物), FW-1, 一起去摘花吧, 1480, AVAILABLE, assets/fw1.jpg
 `;
 
         // ==========================================
-        //  修復後的 CSV 解析器
-        //  能處理 \r\n, \n 以及空行問題
+        //  1. 修正後的 CSV 解析器 (解決解析失敗問題)
         // ==========================================
         function parseCSV(csvText) {
-            // 1. 統一換行符號，並移除前後空白
-            const cleanText = csvText.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-            const lines = cleanText.split('\n');
+            // 使用正則表達式分割換行，兼容 \r\n (Windows) 和 \n (Mac/Linux)
+            const lines = csvText.trim().split(/\r?\n/);
             
-            // 2. 取得標頭 (Header)
+            if (lines.length < 2) return []; // 防止空資料
+
             const headers = lines[0].split(',').map(h => h.trim());
             const items = [];
 
-            // 3. 逐行解析
             for (let i = 1; i < lines.length; i++) {
-                const currentLine = lines[i].trim();
-                if (!currentLine) continue; // 跳過空行
+                const line = lines[i].trim();
+                if (!line) continue; // 跳過空行
 
-                const row = currentLine.split(',');
-                // 只有當欄位數量相符時才解析，避免壞掉的資料
-                if (row.length === headers.length) {
+                // 簡單分割 (若欄位內有逗號會出錯，但這對簡單資料足夠)
+                const row = line.split(',');
+
+                if (row.length >= headers.length) { // 寬鬆檢查
                     const obj = {};
-                    headers.forEach((h, idx) => obj[h] = row[idx].trim());
+                    headers.forEach((h, idx) => {
+                        obj[h] = row[idx] ? row[idx].trim() : '';
+                    });
                     items.push(obj);
                 }
             }
             return items;
         }
 
-        // 初始化資料
         const products = parseCSV(productDataCSV);
-        const configs = parseCSV(siteConfigCSV); 
-        let isHideSoldOut = false; 
+        const configs = parseCSV(siteConfigCSV);
+        let isHideSoldOut = false;
 
-        function getBannerImage(categoryName) {
-            const config = configs.find(c => c.type === 'Banner' && c.key === categoryName);
-            return config ? config.image : '';
-        }
+        // ==========================================
+        //  UI 邏輯
+        // ==========================================
 
         function initWebsite() {
-            const pagesRoot = document.getElementById('dynamic-pages-root');
-            const aboutGalleryRoot = document.getElementById('about-gallery-root');
-            const homeHeroRoot = document.getElementById('home-hero-root');
-            const desktopMenu = document.getElementById('desktop-shop-menu');
-            const mobileMenu = document.getElementById('mobile-shop-list');
-
-            // 1. HomeHero
+            // Render Home Hero
             const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
-            const heroImgSrc = homeHeroConfig ? homeHeroConfig.image : '';
-            if(heroImgSrc) {
-                homeHeroRoot.innerHTML = `<img src="${heroImgSrc}" class="home-hero-img" onerror="this.style.display='none'">`;
+            const heroRoot = document.getElementById('home-hero-root');
+            if (homeHeroConfig && homeHeroConfig.image) {
+                heroRoot.innerHTML = `<img src="${homeHeroConfig.image}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\\'loading-text\\'>Image not found</div>'">`;
             } else {
-                homeHeroRoot.innerHTML = '<div style="padding:100px; background:#eee; color:#999;">Home Hero Image Not Set</div>';
+                heroRoot.innerHTML = `<div class="loading-text">請在 CSV 設定 HomeHero 圖片</div>`;
             }
 
-            // 2. About Photos
+            // Render About Gallery
+            const aboutRoot = document.getElementById('about-gallery-root');
             configs.filter(c => c.type === 'About').forEach(p => {
                 const div = document.createElement('div');
-                div.className = 'about-photo';
+                div.className = 'gallery-item';
                 div.innerHTML = `<img src="${p.image}" onerror="this.style.display='none'">`;
-                aboutGalleryRoot.appendChild(div);
+                aboutRoot.appendChild(div);
             });
 
-            // 3. 建立 Shop 選單 (包含 Desktop & Mobile)
+            // Setup Navigation & Categories
             const categories = [...new Set(products.map(p => p.category))];
+            const shopDropdown = document.getElementById('shop-dropdown-content');
+            const pagesRoot = document.getElementById('dynamic-pages-root');
 
-            // 加入 "Shop All" 按鈕
-            const addMenuItem = (name, action, isSpecial = false) => {
-                // Desktop
-                const dItem = document.createElement('div');
-                dItem.className = isSpecial ? 'dropdown-item shop-all-btn' : 'dropdown-item';
-                dItem.innerText = name;
-                dItem.onclick = action;
-                desktopMenu.appendChild(dItem);
-
-                // Mobile
-                const mItem = document.createElement('div');
-                mItem.className = 'mobile-sub-item';
-                mItem.innerText = isSpecial ? '★ ' + name : name;
-                if(isSpecial) mItem.style.color = 'var(--accent-color)';
-                mItem.onclick = () => { action(); toggleMobileMenu(); }; // 手機點擊後要關閉選單
-                mobileMenu.appendChild(mItem);
-            };
-
-            addMenuItem('Shop All (現貨)', () => switchPage('available'), true);
+            // Add "Shop All"
+            const shopAllLink = document.createElement('div');
+            shopAllLink.className = 'dropdown-item shop-all-item';
+            shopAllLink.innerText = 'Shop All / 全部現貨';
+            shopAllLink.onclick = () => { switchPage('available'); closeMenu(); };
+            shopDropdown.appendChild(shopAllLink);
 
             categories.forEach((cat, index) => {
                 const safeId = 'cat-' + index;
-                const displayName = cat.split('(')[0];
-                const subName = cat.includes('(') ? cat.split('(')[1].replace(')', '') : '';
+                
+                // 1. Dropdown Item
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.innerText = cat;
+                item.onclick = () => { switchPage(safeId); closeMenu(); };
+                shopDropdown.appendChild(item);
 
-                // 加入選單
-                addMenuItem(displayName, () => switchPage(safeId));
-
-                // 建立分類頁面
-                const bannerImg = getBannerImage(cat);
-                const bannerHTML = bannerImg ? `<img src="${bannerImg}" onerror="this.style.display='none'">` : '';
+                // 2. Create Page
+                const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === cat);
+                const bannerImg = bannerConfig ? bannerConfig.image : '';
+                const catName = cat.split('(')[0];
+                const catSub = cat.includes('(') ? cat.split('(')[1].replace(')', '') : '';
 
                 const pageDiv = document.createElement('div');
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
                 pageDiv.innerHTML = `
-                    <div class="category-banner">
-                        ${bannerHTML}
-                        <div class="banner-overlay"></div>
-                        <div class="banner-text-content">
-                            <h2>${displayName}</h2>
-                            <p>${subName}</p>
+                    <div class="category-header">
+                        ${bannerImg ? `<img src="${bannerImg}" onerror="this.style.display='none'">` : ''}
+                        <div class="category-overlay"></div>
+                        <div class="category-text">
+                            <h2>${catName}</h2>
+                            <p>${catSub}</p>
                         </div>
                     </div>
-                    
-                    <div class="banner-controls-container">
-                        <div class="controls">
-                            <button class="toggle-btn" onclick="toggleStock(this)">隱藏售完 (Hide Sold Out)</button>
-                        </div>
-                        <div class="product-grid" id="grid-${safeId}"></div>
+                    <div class="controls-area">
+                         <button class="toggle-btn" onclick="toggleStock(this, '${safeId}', '${cat}')">隱藏售完 Hide Sold Out</button>
                     </div>
+                    <div class="product-grid" id="grid-${safeId}"></div>
                 `;
                 pagesRoot.appendChild(pageDiv);
-                renderCategoryProducts(safeId, cat);
+                renderProductGrid('grid-' + safeId, cat);
             });
 
             renderAvailablePage();
         }
 
-        function renderCategoryProducts(safeId, categoryName) {
-            const grid = document.getElementById('grid-' + safeId);
+        function renderProductGrid(gridId, categoryFilter) {
+            const grid = document.getElementById(gridId);
             grid.innerHTML = '';
-            const items = products.filter(p => p.category === categoryName);
+            
+            const items = products.filter(p => {
+                if (categoryFilter && p.category !== categoryFilter) return false;
+                if (isHideSoldOut && p.status === 'SOLD OUT') return false;
+                return true;
+            });
+
+            if(items.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ccc; padding:50px;">暫無商品 / No Items Found</div>';
+                return;
+            }
+
             items.forEach(item => {
-                if (isHideSoldOut && item.status === 'SOLD OUT') return;
-                grid.appendChild(createProductCard(item));
+                const card = document.createElement('article');
+                card.className = 'product-card';
+                const isSold = item.status === 'SOLD OUT';
+                
+                card.innerHTML = `
+                    <div class="img-box">
+                        <img src="${item.image}" onerror="this.style.display='none'; this.parentNode.style.backgroundColor='#eee';">
+                    </div>
+                    <div class="p-name">${item.name}</div>
+                    <div class="p-price">NT$ ${item.price}</div>
+                    <div class="p-status ${!isSold ? 'available' : ''}">${item.status}</div>
+                `;
+                grid.appendChild(card);
             });
         }
 
@@ -513,59 +474,83 @@ Lifestyle (生活選物), FW-1, 一起去摘花吧, 1480, SOLD OUT, assets/fw1.j
             const grid = document.getElementById('grid-available');
             grid.innerHTML = '';
             const items = products.filter(p => p.status !== 'SOLD OUT');
+            
             if(items.length === 0) {
-                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999; margin-top:30px;">目前沒有現貨 / Out of Stock</p>';
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ccc; padding:50px;">目前沒有現貨 / Out of Stock</div>';
                 return;
             }
-            items.forEach(item => grid.appendChild(createProductCard(item, true)));
+
+            items.forEach(item => {
+                // Same card logic, simplified for brevity
+                const card = document.createElement('article');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="img-box"><img src="${item.image}" onerror="this.style.display='none'"></div>
+                    <div class="p-name">${item.name}</div>
+                    <div class="p-price">NT$ ${item.price}</div>
+                    <div class="p-status available">AVAILABLE</div>
+                `;
+                grid.appendChild(card);
+            });
         }
 
-        function createProductCard(item) {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            
-            const isSoldOut = item.status === 'SOLD OUT';
-            const statusClass = isSoldOut ? 'status' : 'status available';
-            const imgContent = item.image.includes('.') ? 
-                `<img src="${item.image}" onerror="this.parentNode.innerText='${item.code}'">` : item.code;
-            
-            card.innerHTML = `
-                <div class="image-placeholder">${imgContent}</div>
-                <div class="product-name">${item.name}</div>
-                <div class="product-code">${item.code}</div>
-                <div class="price">NT$ ${item.price}</div>
-                <div class="${statusClass}">${item.status}</div>
-            `;
-            return card;
-        }
+        // ==========================================
+        //  導覽與互動 (Mobile & Desktop)
+        // ==========================================
 
         function switchPage(pageId) {
-            // 切換頁面
+            // 隱藏所有頁面
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+            
+            // 顯示目標頁面
             const target = document.getElementById('page-' + pageId);
             if(target) target.classList.add('active-page');
+
+            // 處理 Navbar 按鈕狀態
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             
-            // 關閉手機選單 (如果有開)
-            document.getElementById('mobile-menu').classList.remove('open');
-            document.querySelector('.hamburger').classList.remove('active');
-            
+            if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
+            else if(pageId === 'about') document.getElementById('btn-about').classList.add('active');
+            else document.getElementById('btn-shop').classList.add('active'); // 任何分類都點亮 Shop
+
             window.scrollTo(0, 0);
         }
 
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('open');
-            document.querySelector('.hamburger').classList.toggle('active');
+        function toggleMenu() {
+            const menu = document.getElementById('nav-menu');
+            const overlay = document.querySelector('.menu-overlay');
+            menu.classList.toggle('open');
+            overlay.classList.toggle('active');
         }
 
-        function toggleStock(btn) {
+        function closeMenu() {
+            document.getElementById('nav-menu').classList.remove('open');
+            document.querySelector('.menu-overlay').classList.remove('active');
+            // 關閉手機版 shop 子選單
+            document.getElementById('shop-dropdown-content').classList.remove('show');
+            document.getElementById('btn-shop').classList.remove('open');
+        }
+
+        // 手機版 Shop 點擊展開邏輯
+        function toggleMobileShop() {
+            // 檢查是否為手機版 (透過 CSS display 判斷或寬度判斷)
+            if (window.innerWidth <= 768) {
+                const content = document.getElementById('shop-dropdown-content');
+                const btn = document.getElementById('btn-shop');
+                content.classList.toggle('show');
+                btn.classList.toggle('open');
+            }
+        }
+
+        function toggleStock(btn, safeId, cat) {
             isHideSoldOut = !isHideSoldOut;
             btn.classList.toggle('active');
-            const categories = [...new Set(products.map(p => p.category))];
-            categories.forEach((cat, index) => renderCategoryProducts('cat-' + index, cat));
+            renderProductGrid('grid-' + safeId, cat);
         }
 
-        // 啟動
-        initWebsite();
+        // 初始化
+        window.addEventListener('DOMContentLoaded', initWebsite);
+
     </script>
 </body>
 </html>
