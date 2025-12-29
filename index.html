@@ -33,7 +33,6 @@
             width: 100%;
         }
 
-        /* 當手機選單打開時，禁止背景滑動 */
         body.menu-open { overflow: hidden; }
 
         /* --- Navbar 設定 --- */
@@ -56,9 +55,18 @@
             text-transform: uppercase;
             z-index: 1100;
             line-height: 70px;
+            display: flex;
+            align-items: center; /* 讓圖片與文字垂直置中 */
+        }
+        
+        /* 新增：Logo 圖片樣式 */
+        .logo-icon {
+            height: 24px;
+            width: auto;
+            margin-right: 12px;
+            opacity: 0.8;
         }
 
-        /* 桌面版選單容器 */
         .nav-menu { 
             display: flex; gap: 40px; align-items: center; height: 100%;
         }
@@ -77,44 +85,35 @@
         }
         .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
 
-        /* --- Dropdown (桌面版修正區：改為靠右對齊) --- */
+        /* Dropdown */
         .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
-        
         .dropdown-content {
-            position: absolute; 
-            top: 100%; 
-            /* 修正開始：改為靠右對齊，防止超出螢幕 */
-            left: auto; 
-            right: 0; 
-            transform: translateY(10px); /* 移除 translateX */
-            /* 修正結束 */
-            background-color: #fff; min-width: 220px; /* 稍微加寬一點以免文字折行 */
+            position: absolute; top: 100%; left: auto; right: 0; 
+            transform: translateY(10px);
+            background-color: #fff; min-width: 220px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             padding: 10px 0; z-index: 1002; border-radius: 2px;
             opacity: 0; pointer-events: none; transition: all 0.2s ease;
             visibility: hidden;
             border: 1px solid rgba(0,0,0,0.02);
-            text-align: right; /* 讓選單文字也靠右，視覺較整齊（可選） */
+            text-align: right; 
         }
-        
-        .dropdown-content div { text-align: left; } /* 重置內部文字為靠左，比較易讀 */
+        .dropdown-content div { text-align: left; }
 
         @media (min-width: 769px) {
             .dropdown:hover .dropdown-content { 
                 opacity: 1; pointer-events: auto; visibility: visible; 
-                transform: translateY(0); /* 這裡也移除 translateX */
+                transform: translateY(0); 
             }
         }
 
         .dropdown-item { 
             padding: 12px 25px; font-size: 0.85rem; cursor: pointer; 
-            transition: 0.2s; color: #888; display: block;
-            white-space: nowrap;
+            transition: 0.2s; color: #888; display: block; white-space: nowrap;
         }
         .dropdown-item:hover { color: var(--accent-color); background-color: #fbfbfb; }
         .shop-all-item { color: var(--accent-color); font-weight: 600; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; }
 
-        /* Hamburger Icon */
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1200; position: relative; }
         .hamburger span {
             display: block; width: 24px; height: 2px; background-color: #333;
@@ -124,10 +123,10 @@
         .hamburger.active span:nth-child(2) { opacity: 0; }
         .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-        /* --- Mobile Layout Fixes --- */
         @media (max-width: 768px) {
             nav { padding: 0 20px; min-height: 60px; }
             .logo { line-height: 60px; font-size: 1.4rem; }
+            .logo-icon { height: 20px; margin-right: 8px; }
             
             .hamburger { display: block; }
             
@@ -146,7 +145,6 @@
             }
             .nav-menu.open { transform: translateX(0); }
 
-            /* 遮罩設定：修正 Z-Index */
             .menu-overlay {
                 position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
                 background: rgba(0,0,0,0.4); 
@@ -170,9 +168,7 @@
                 visibility: visible; pointer-events: auto;
                 max-height: 0; overflow: hidden; transition: max-height 0.5s ease;
                 padding: 0;
-                /* 手機版重置樣式 */
-                min-width: auto;
-                text-align: left;
+                min-width: auto; text-align: left;
             }
             .dropdown-content.show { max-height: 800px; border-bottom: 1px solid #f5f5f5; margin-bottom: 10px; }
             
@@ -186,7 +182,6 @@
             #btn-shop.open::after { content: '-'; }
         }
 
-        /* --- Page Content --- */
         .page-section { 
             display: none; width: 100%; max-width: 1200px; margin: 0 auto; 
             padding: 40px 20px 80px; animation: fadeIn 0.6s ease; 
@@ -198,7 +193,8 @@
         .hero-img-container { 
             width: 100%; aspect-ratio: 16/9; max-height: 600px; 
             background: #eee; margin: 30px auto; overflow: hidden; border-radius: 2px;
-            cursor: pointer;
+            /* 修改：移除 pointer，因為首頁圖不再有燈箱 */
+            cursor: default; 
         }
         .hero-img-container img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -221,7 +217,9 @@
         .product-card { text-align: center; }
         .img-box {
             width: 100%; aspect-ratio: 1/1; background: #f0f0f0; margin-bottom: 15px; 
-            position: relative; overflow: hidden; cursor: zoom-in;
+            position: relative; overflow: hidden; 
+            /* 只有 Shop 裡的商品圖有放大游標 */
+            cursor: zoom-in; 
         }
         .img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
         .product-card:hover .img-box img { transform: scale(1.03); }
@@ -244,14 +242,15 @@
         .about-container { max-width: 800px; margin: 0 auto; text-align: center; }
         .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #666; padding: 0 20px; }
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 40px; padding: 0 20px; }
-        .gallery-item { aspect-ratio: 1/1; background: #ddd; cursor: zoom-in; overflow: hidden; }
+        
+        /* 修改：About 圖片不再放大，游標改回預設 */
+        .gallery-item { aspect-ratio: 1/1; background: #ddd; cursor: default; overflow: hidden; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
         .gallery-item:hover img { transform: scale(1.05); }
 
         footer { text-align: center; padding: 60px 20px; color: #ccc; font-size: 0.8rem; margin-top: 80px; border-top: 1px solid #f0f0f0; }
         .loading-text { color: #ccc; font-size: 0.9rem; padding: 40px; text-align: center; }
 
-        /* Lightbox */
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(45, 42, 40, 0.95); z-index: 2000;
@@ -278,7 +277,10 @@
     <div class="menu-overlay" onclick="closeMenu()"></div>
 
     <nav>
-        <div class="logo" onclick="switchPage('home'); closeMenu()">DONGULI</div>
+        <div class="logo" onclick="switchPage('home'); closeMenu()">
+            <img src="/favicon.ico" alt="Logo" class="logo-icon" onerror="this.style.display='none'">
+            DONGULI
+        </div>
         
         <button class="hamburger" id="hamburger-btn" onclick="toggleMenu()">
             <span></span>
@@ -302,11 +304,13 @@
         <div class="hero-section">
             <h1 style="font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 10px; color: #2c2a29;">Wabi-Sabi Life</h1>
             <p style="color: #999; letter-spacing: 0.2em; font-size: 0.9rem;">自然・陶・生活</p>
-            <div class="hero-img-container" id="home-hero-root" onclick="if(this.querySelector('img')) openLightbox(this.querySelector('img').src)"></div>
+            
             <div style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
                 <p style="font-family: var(--font-serif); font-style: italic; color: #888; margin-bottom: 30px;">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
                 <button class="toggle-btn" onclick="switchPage('available')">View Available Items</button>
             </div>
+
+            <div class="hero-img-container" id="home-hero-root"></div>
         </div>
     </div>
 
@@ -333,7 +337,7 @@
     <div id="dynamic-pages-root"></div>
 
     <footer>
-        <p>© 2024 DONGULI CERAMICS. All Rights Reserved.</p>
+        <p>© <span id="footer-year"></span> DONGULI. All Rights Reserved.</p>
     </footer>
 
     <div id="lightbox" class="lightbox-modal" onclick="closeLightbox(event)">
@@ -343,7 +347,7 @@
 
     <script>
         // ==========================================
-        //  JS Data & Logic (完全相同)
+        //  JS Data & Logic
         // ==========================================
         const siteConfigCSV = `
 type,key,image
@@ -414,23 +418,31 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
         let isHideSoldOut = false;
 
         function initWebsite() {
+            // Footer Year 自動年份
+            document.getElementById('footer-year').innerText = new Date().getFullYear();
+
+            // Render Home Hero
             const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
             const heroRoot = document.getElementById('home-hero-root');
             if (homeHeroConfig && homeHeroConfig.image) {
+                // 這裡沒有加 onclick，所以首頁圖無法點擊放大
                 heroRoot.innerHTML = `<img src="${homeHeroConfig.image}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\\'loading-text\\'>Image not found</div>'">`;
             } else {
                 heroRoot.innerHTML = `<div class="loading-text">請在 CSV 設定 HomeHero 圖片</div>`;
             }
 
+            // Render About Gallery (Only first 2 images)
             const aboutRoot = document.getElementById('about-gallery-root');
-            configs.filter(c => c.type === 'About').forEach(p => {
+            // 修改：使用 slice(0, 2) 只取前兩張
+            configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'gallery-item';
-                div.onclick = () => openLightbox(p.image);
+                // 修改：移除 onclick，About 圖無法點擊放大
                 div.innerHTML = `<img src="${p.image}" onerror="this.style.display='none'">`;
                 aboutRoot.appendChild(div);
             });
 
+            // Setup Navigation & Categories
             const categories = [...new Set(products.map(p => p.category))];
             const shopDropdown = document.getElementById('shop-dropdown-content');
             const pagesRoot = document.getElementById('dynamic-pages-root');
