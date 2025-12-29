@@ -39,25 +39,98 @@
 
         .logo { font-size: 1.5rem; font-weight: bold; cursor: pointer; color: #3e3a36; letter-spacing: 0.1em; z-index: 1001; }
         .hamburger { display: none; background: none; border: none; font-size: 1.8rem; color: var(--text-color); cursor: pointer; z-index: 1001; padding: 5px; }
-        .nav-menu { display: flex; gap: 10px; }
+        
+        /* 導覽選單容器 */
+        .nav-menu { display: flex; gap: 10px; align-items: center; }
+
+        /* 一般按鈕樣式 */
         .nav-btn {
             background: none; border: none; font-size: 0.95rem; padding: 8px 15px;
             cursor: pointer; color: #888; transition: 0.3s; border-radius: 20px; white-space: nowrap;
+            text-decoration: none; display: inline-block;
         }
         .nav-btn:hover, .nav-btn.active { color: var(--text-color); background-color: #EFECE6; font-weight: 500; }
-        #btn-available { color: #2E7D32; border: 1px solid #E8F5E9; }
-        #btn-available.active { background-color: #2E7D32; color: #fff; }
 
+        /* --- 下拉選單樣式 (Dropdown) --- */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* 下拉內容容器 */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%); /* 水平置中 */
+            background-color: #ffffff;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            z-index: 1002;
+            border-radius: 8px;
+            border: 1px solid #E0DDD5;
+        }
+
+        /* 滑鼠移過 Shop 時顯示下拉 */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* 下拉選單內的選項 */
+        .dropdown-item {
+            color: var(--text-color);
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .dropdown-item:hover {
+            background-color: #F7F5F0;
+            color: var(--accent-color);
+        }
+
+        /* 特別標註 Shop All */
+        .shop-all-item {
+            color: #2E7D32;
+            font-weight: 500;
+            border-bottom: 1px dashed #eee;
+            margin-bottom: 5px;
+            padding-bottom: 12px;
+        }
+
+        /* --- RWD 手機版導覽列 --- */
         @media (max-width: 768px) {
             .hamburger { display: block; }
             .nav-menu {
                 position: absolute; top: var(--nav-height); left: 0; width: 100%;
-                background-color: #F7F5F0; flex-direction: column; align-items: center;
-                padding: 20px 0; border-bottom: 1px solid #E0DDD5; box-shadow: 0 5px 10px rgba(0,0,0,0.05);
-                max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.4s ease; display: block;
+                background-color: #F7F5F0; flex-direction: column; align-items: stretch; /* 改為 stretch 讓寬度滿版 */
+                padding: 0; border-bottom: 1px solid #E0DDD5; box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+                max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.4s ease; display: flex;
             }
-            .nav-menu.open { max-height: 80vh; opacity: 1; overflow-y: auto; }
-            .nav-btn { display: block; width: 100%; text-align: center; padding: 15px 0; border-radius: 0; border-bottom: 1px dashed #eee; }
+            .nav-menu.open { max-height: 90vh; opacity: 1; overflow-y: auto; padding: 20px 0; }
+            
+            .nav-btn { width: 100%; text-align: center; padding: 15px 0; border-radius: 0; border-bottom: 1px dashed #eee; }
+            
+            /* 手機版下拉選單調整：不再浮動，而是直接展開 */
+            .dropdown { width: 100%; text-align: center; display: block; }
+            .dropdown-content {
+                display: block; /* 手機版預設展開，或可用 JS 控制 */
+                position: static; /* 取消絕對定位 */
+                transform: none;
+                box-shadow: none;
+                border: none;
+                background-color: #F0EEE9; /* 稍微深一點的背景區分 */
+                width: 100%;
+                padding: 0;
+            }
+            .dropdown-item { padding: 12px 0; font-size: 0.85rem; color: #666; }
+            .dropbtn { width: 100%; border-radius: 0; border-bottom: 1px dashed #eee; }
         }
 
         /* --- 頁面與 Banner --- */
@@ -65,18 +138,16 @@
         .page-section.active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 新增：Banner 樣式 */
+        /* Banner 樣式 */
         .category-banner {
             width: 100%;
-            height: 250px; /* Banner 高度 */
-            background-color: #E0E0E0; /* 預設灰底 */
+            height: 250px;
+            background-color: #E0E0E0;
             border-radius: 8px;
             overflow: hidden;
             margin-bottom: 40px;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             color: #999;
         }
         .category-banner img { width: 100%; height: 100%; object-fit: cover; }
@@ -90,19 +161,11 @@
 
         /* --- 關於頁相簿 --- */
         .about-gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2x2 排列 */
-            gap: 20px;
-            margin-top: 40px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px;
         }
         .about-photo {
-            width: 100%;
-            aspect-ratio: 1 / 1; /* 正方形 */
-            background-color: #EFECE6;
-            border-radius: 4px;
-            overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-            color: #ccc;
+            width: 100%; aspect-ratio: 1 / 1; background-color: #EFECE6;
+            border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: #ccc;
         }
         .about-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .about-photo:hover img { transform: scale(1.05); }
@@ -138,10 +201,17 @@
     <nav>
         <div class="logo" onclick="switchPage('home')">DONGULI</div>
         <button class="hamburger" onclick="toggleMenu()">&#9776;</button>
-        <div class="nav-menu" id="dynamic-nav">
+        
+        <div class="nav-menu" id="nav-menu">
             <button class="nav-btn active" onclick="switchPage('home')" id="btn-home">Home</button>
             <button class="nav-btn" onclick="switchPage('about')" id="btn-about">About</button>
+            
+            <div class="dropdown">
+                <button class="nav-btn dropbtn" id="btn-shop">Shop ▾</button>
+                <div class="dropdown-content" id="shop-dropdown-content">
+                    </div>
             </div>
+        </div>
     </nav>
 
     <div id="page-home" class="page-section active-page">
@@ -152,7 +222,7 @@
             <div class="featured-preview" id="home-featured"></div>
             <br><br>
             <button class="toggle-btn" style="padding:10px 30px; font-size:1rem;" onclick="switchPage('available')">
-                查看現貨作品 (Shop Available)
+                查看現貨作品 (Shop All)
             </button>
         </div>
     </div>
@@ -178,7 +248,7 @@
     <div id="page-available" class="page-section">
         <div style="text-align:center; margin-bottom:40px;">
             <h2 style="color:#2E7D32;">Available Items</h2>
-            <p>現貨作品一覽</p>
+            <p>Shop All (現貨一覽)</p>
         </div>
         <div class="product-grid" id="grid-available"></div>
     </div>
@@ -192,8 +262,6 @@
     <script>
         // ==========================================
         //  CSV 1: 網站圖片設定區 (Banner & About)
-        //  格式: Type, Key, Image
-        //  Type: "Banner" (對應 Key 為分類名稱) 或 "About" (Key 隨意，會依序顯示)
         // ==========================================
         const siteConfigCSV = `
 type,key,image
@@ -225,9 +293,9 @@ Round-Cap (圓帽系列), RC-1, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc1.jpg
 Round-Cap (圓帽系列), RC-2, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc2.jpg
 Round-Cap (圓帽系列), RC-3, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc3.jpg
 Round-Cap (圓帽系列), RC-4, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc4.jpg
-konishii Hayata (小西氏系列), KH-1, 小西氏咚咕哩, 1280, SOLD OUT, assets/kh1.jpg
-konishii Hayata (小西氏系列), KH-2, 小西氏咚咕哩, 1080, SOLD OUT, assets/kh2.jpg
-konishii Hayata (小西氏系列), KH-3, 小西氏咚咕哩, 1280, SOLD OUT, assets/kh3.jpg
+Konishii Hayata (小西氏系列), KH-1, 小西氏咚咕哩, 1280, SOLD OUT, assets/kh1.jpg
+Konishii Hayata (小西氏系列), KH-2, 小西氏咚咕哩, 1080, SOLD OUT, assets/kh2.jpg
+Konishii Hayata (小西氏系列), KH-3, 小西氏咚咕哩, 1280, SOLD OUT, assets/kh3.jpg
 Red Oak (紅櫟系列), RO-1, 紅櫟咚咕哩, 1480, SOLD OUT, assets/ro1.jpg
 Red Oak (紅櫟系列), RO-2, 紅櫟咚咕哩, 1280, SOLD OUT, assets/ro2.jpg
 Red Oak (紅櫟系列), RO-3, 紅櫟咚咕哩, 1280, SOLD OUT, assets/ro3.jpg
@@ -241,7 +309,6 @@ Lifestyle (生活選物), SW-1, 雪花象嵌食器, 1280, SOLD OUT, assets/sw1.j
 Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
 `;
 
-        // 通用 CSV 解析器
         function parseCSV(csvText) {
             const lines = csvText.trim().split('\n');
             const headers = lines[0].split(',').map(h => h.trim());
@@ -258,27 +325,23 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
         }
 
         const products = parseCSV(productDataCSV);
-        const configs = parseCSV(siteConfigCSV); // 解析設定檔
+        const configs = parseCSV(siteConfigCSV); 
         let isHideSoldOut = false; 
 
-        // 輔助函式：取得 Banner 圖片
         function getBannerImage(categoryName) {
             const config = configs.find(c => c.type === 'Banner' && c.key === categoryName);
             return config ? config.image : '';
         }
 
         function initWebsite() {
-            const dynamicNav = document.getElementById('dynamic-nav');
             const pagesRoot = document.getElementById('dynamic-pages-root');
             const homeFeatured = document.getElementById('home-featured');
             const aboutGalleryRoot = document.getElementById('about-gallery-root');
+            const shopDropdownContent = document.getElementById('shop-dropdown-content');
 
-            // 1. 初始化 About 頁面照片 (讀取 Config CSV)
+            // 1. 初始化 About 頁面照片
             const aboutPhotos = configs.filter(c => c.type === 'About');
-            if (aboutPhotos.length === 0) {
-                // 如果沒有設定，給 4 個預設佔位符
-                for(let i=0; i<4; i++) aboutPhotos.push({image: ''});
-            }
+            if (aboutPhotos.length === 0) for(let i=0; i<4; i++) aboutPhotos.push({image: ''});
             aboutPhotos.forEach(p => {
                 const photoDiv = document.createElement('div');
                 photoDiv.className = 'about-photo';
@@ -301,34 +364,33 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 homeFeatured.appendChild(img);
             });
 
-            // 3. 導覽列按鈕 (Available)
-            const btnAvailable = document.createElement('button');
-            btnAvailable.className = 'nav-btn';
-            btnAvailable.id = 'btn-available';
-            btnAvailable.innerText = 'Shop All (現貨)';
-            btnAvailable.onclick = () => switchPage('available');
-            dynamicNav.appendChild(btnAvailable);
+            // 3. 生成下拉選單 (Shop Dropdown)
+            
+            // 3a. 加入 "Shop All (現貨)" 選項
+            const itemShopAll = document.createElement('div');
+            itemShopAll.className = 'dropdown-item shop-all-item';
+            itemShopAll.innerText = 'Shop All (現貨)';
+            itemShopAll.onclick = () => switchPage('available');
+            shopDropdownContent.appendChild(itemShopAll);
 
-            // 4. 動態分類頁面 (含 Banner)
+            // 3b. 加入動態分類選項
             const categories = [...new Set(products.map(p => p.category))];
             categories.forEach((cat, index) => {
                 const safeId = 'cat-' + index;
                 
-                // 按鈕
-                const btn = document.createElement('button');
-                btn.className = 'nav-btn';
-                btn.innerText = cat.split('(')[0];
-                btn.onclick = () => switchPage(safeId);
-                btn.id = 'btn-' + safeId;
-                dynamicNav.appendChild(btn);
+                // 下拉選單項目
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.innerText = cat.split('(')[0]; // 只顯示英文或主要名稱
+                item.onclick = () => switchPage(safeId);
+                shopDropdownContent.appendChild(item);
 
-                // 取得 Banner 圖片
+                // 同時生成該分類的頁面內容 (含 Banner)
                 const bannerImg = getBannerImage(cat);
                 const bannerHTML = bannerImg 
                     ? `<img src="${bannerImg}" onerror="this.style.display='none'">` 
                     : `<span>${cat} Banner</span>`;
 
-                // 頁面 HTML 結構
                 const pageDiv = document.createElement('div');
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
@@ -368,7 +430,6 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
         function renderAvailablePage() {
             const grid = document.getElementById('grid-available');
             grid.innerHTML = '';
-            
             const items = products.filter(p => p.status !== 'SOLD OUT');
             
             if(items.length === 0) {
@@ -401,19 +462,31 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
         }
 
         function switchPage(pageId) {
+            // 隱藏所有頁面
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
-            document.getElementById('page-' + pageId).classList.add('active-page');
+            
+            // 顯示目標頁面
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) targetPage.classList.add('active-page');
 
+            // 處理導覽列按鈕狀態 (Active State)
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            const btn = document.getElementById('btn-' + pageId);
-            if(btn) btn.classList.add('active');
+            
+            // 判斷按了哪個大分類
+            if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
+            else if(pageId === 'about') document.getElementById('btn-about').classList.add('active');
+            else {
+                // 如果是任何一個 Shop 系列或是 available，都讓 Shop 按鈕亮起
+                document.getElementById('btn-shop').classList.add('active');
+            }
 
-            document.getElementById('dynamic-nav').classList.remove('open');
+            // 關閉手機版選單
+            document.getElementById('nav-menu').classList.remove('open');
             window.scrollTo(0, 0);
         }
 
         function toggleMenu() {
-            document.getElementById('dynamic-nav').classList.toggle('open');
+            document.getElementById('nav-menu').classList.toggle('open');
         }
 
         function toggleStock(btn) {
@@ -422,6 +495,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 if(isHideSoldOut) b.classList.add('active');
                 else b.classList.remove('active');
             });
+            // 重新渲染所有分類頁面
             const categories = [...new Set(products.map(p => p.category))];
             categories.forEach((cat, index) => renderCategoryProducts('cat-' + index, cat));
         }
