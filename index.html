@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DONGULI | 咚咕哩</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     
     <style>
         :root {
@@ -222,10 +222,7 @@
         .product-card:hover .img-box img { transform: scale(1.03); }
         
         .p-name { font-size: 1rem; color: #333; margin-bottom: 5px; }
-        
-        /* 新增：編號的樣式 */
         .p-code { font-size: 0.8rem; color: #aaa; margin-bottom: 2px; letter-spacing: 0.05em; font-family: var(--font-main); }
-
         .p-price { font-family: var(--font-serif); color: var(--accent-color); font-size: 1.1rem; }
         .p-status { 
             font-size: 0.7rem; padding: 3px 8px; border: 1px solid #ccc; color: #999; 
@@ -278,7 +275,7 @@
 
     <nav>
         <div class="logo" onclick="switchPage('home'); closeMenu()">
-            <img src="/favicon.ico" alt="Logo" class="logo-icon" onerror="this.style.display='none'">
+            <img src="assets/favicon.ico" alt="Logo" class="logo-icon" onerror="this.style.display='none'">
             DONGULI
         </div>
         
@@ -310,7 +307,9 @@
                 <button class="toggle-btn" onclick="switchPage('available')">View Available Items</button>
             </div>
 
-            <div class="hero-img-container" id="home-hero-root"></div>
+            <div class="hero-img-container" id="home-hero-root">
+                <div class="loading-text">Loading...</div>
+            </div>
         </div>
     </div>
 
@@ -331,7 +330,9 @@
             <h2 style="font-family: var(--font-serif); color: #5d6d5a;">Available Stock</h2>
             <p style="color: #bbb;">現貨選購</p>
         </div>
-        <div class="product-grid" id="grid-available"></div>
+        <div class="product-grid" id="grid-available">
+             <div class="loading-text">Loading products...</div>
+        </div>
     </div>
 
     <div id="dynamic-pages-root"></div>
@@ -347,181 +348,130 @@
 
     <script>
         // ==========================================
-        //  JS Data & Logic
+        //  JS Data & Logic (External JSON Version)
         // ==========================================
-        const siteConfigCSV = `
-type,key,image
-HomeHero, Main, assets/home_hero.jpg
-Banner, Hand-Carved (手雕系列), assets/banner_hc.jpg
-Banner, Tableware (食器系列), assets/banner_ht.jpg
-Banner, Round-Cap (圓帽系列), assets/banner_rc.jpg
-Banner, Special (限定系列), assets/banner_sp.jpg
-Banner, Lifestyle (生活選物), assets/banner_ls.jpg
-Banner, Konishii Hayata (小西氏系列), assets/banner_kh.jpg
-About, Photo 1, assets/about_1.jpg
-About, Photo 2, assets/about_2.jpg
-About, Photo 3, assets/about_3.jpg
-About, Photo 4, assets/about_4.jpg
-`;
-
-        const productDataCSV = `
-category,code,name,price,status,image
-Hand-Carved (手雕系列), HC-1, 手雕咚咕哩, 1380, SOLD OUT, assets/hc1.jpg
-Hand-Carved (手雕系列), HC-2, 手雕咚咕哩, 1380, SOLD OUT, assets/hc2.jpg
-Hand-Carved (手雕系列), HC-3, 手雕咚咕哩, 1380, SOLD OUT, assets/hc3.jpg
-Hand-Carved (手雕系列), HC-4, 手雕咚咕哩, 1380, SOLD OUT, assets/hc4.jpg
-Tableware (食器系列), HT-1, 蓋碗/食器, 1480, SOLD OUT, assets/ht1.jpg
-Tableware (食器系列), HT-2, 蓋碗/食器, 980, SOLD OUT, assets/ht2.jpg
-Tableware (食器系列), HT-3, 蓋碗/食器, 1580, SOLD OUT, assets/ht3.jpg
-Round-Cap (圓帽系列), RC-1, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc1.jpg
-Round-Cap (圓帽系列), RC-2, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc2.jpg
-Round-Cap (圓帽系列), RC-3, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc3.jpg
-Round-Cap (圓帽系列), RC-4, 圓帽咚咕哩, 1480, SOLD OUT, assets/rc4.jpg
-konishii Hayata (小西氏系列), KH-1, 小西氏咚咕哩, 1280, SOLD OUT, assets/kh1.jpg
-konishii Hayata (小西氏系列), KH-2, 小西氏咚咕哩, 1080, SOLD OUT, assets/kh2.jpg
-konishii Hayata (小西氏系列), KH-3, 小西氏咚咕哩, 1280, SOLD OUT, assets/kh3.jpg
-Red Oak (紅櫟系列), RO-1, 紅櫟咚咕哩, 1480, SOLD OUT, assets/ro1.jpg
-Red Oak (紅櫟系列), RO-2, 紅櫟咚咕哩, 1280, SOLD OUT, assets/ro2.jpg
-Red Oak (紅櫟系列), RO-3, 紅櫟咚咕哩, 1280, SOLD OUT, assets/ro3.jpg
-Special (限定系列), SUN-1, 夏日薄荷, 1280, SOLD OUT, assets/sun1.jpg
-Special (限定系列), SUN-2, 夏日薄荷, 1280, SOLD OUT, assets/sun2.jpg
-Special (限定系列), SP-1, 葡萄氣泡, 1780, SOLD OUT, assets/sp1.jpg
-Special (限定系列), SP-2, 咚咕哩, 1580, SOLD OUT, assets/sp2.jpg
-Lifestyle (生活選物), FW-1, 一起去摘花吧, 1480, SOLD OUT, assets/fw1.jpg
-Lifestyle (生活選物), FW-2, 一起去摘花吧, 1480, SOLD OUT, assets/fw2.jpg
-Lifestyle (生活選物), SW-1, 雪花象嵌食器, 1280, SOLD OUT, assets/sw1.jpg
-Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
-`;
-
-        function parseCSV(csvText) {
-            const lines = csvText.trim().split(/\r?\n/);
-            if (lines.length < 2) return [];
-            const headers = lines[0].split(',').map(h => h.trim());
-            const items = [];
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line) continue;
-                const row = line.split(',');
-                if (row.length >= headers.length) {
-                    const obj = {};
-                    headers.forEach((h, idx) => {
-                        obj[h] = row[idx] ? row[idx].trim() : '';
-                    });
-                    items.push(obj);
-                }
-            }
-            return items;
-        }
-
-        const products = parseCSV(productDataCSV);
-        const configs = parseCSV(siteConfigCSV);
+        
+        let products = [];
+        let configs = [];
         let isHideSoldOut = false;
 
-        function initWebsite() {
+        async function initWebsite() {
             document.getElementById('footer-year').innerText = new Date().getFullYear();
-
-            // Home Hero
-            const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
-            const heroRoot = document.getElementById('home-hero-root');
-            if (homeHeroConfig && homeHeroConfig.image) {
-                heroRoot.innerHTML = `<img src="${homeHeroConfig.image}" alt="Home Hero" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\\'loading-text\\'>Image not found</div>'">`;
-            } else {
-                heroRoot.innerHTML = `<div class="loading-text">請在 CSV 設定 HomeHero 圖片</div>`;
-            }
-
-            // About Gallery
-            const aboutRoot = document.getElementById('about-gallery-root');
-            configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'gallery-item';
-                div.innerHTML = `<img src="${p.image}" loading="lazy" decoding="async" alt="About Image" onerror="this.style.display='none'">`;
-                aboutRoot.appendChild(div);
-            });
-
-            // Navigation
-            const categories = [...new Set(products.map(p => p.category))];
-            const shopDropdown = document.getElementById('shop-dropdown-content');
-            const pagesRoot = document.getElementById('dynamic-pages-root');
-
-            const shopAllLink = document.createElement('div');
-            shopAllLink.className = 'dropdown-item shop-all-item';
-            shopAllLink.innerText = 'Shop All / 全部現貨';
-            shopAllLink.onclick = () => { switchPage('available'); closeMenu(); };
-            shopDropdown.appendChild(shopAllLink);
-
-            categories.forEach((cat, index) => {
-                const safeId = 'cat-' + index;
-                const item = document.createElement('div');
-                item.className = 'dropdown-item';
-                item.innerText = cat;
-                item.onclick = () => { switchPage(safeId); closeMenu(); };
-                shopDropdown.appendChild(item);
-
-                const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === cat);
-                const bannerImg = bannerConfig ? bannerConfig.image : '';
-                const catName = cat.split('(')[0];
-                const catSub = cat.includes('(') ? cat.split('(')[1].replace(')', '') : '';
-
-                const pageDiv = document.createElement('div');
-                pageDiv.id = 'page-' + safeId;
-                pageDiv.className = 'page-section';
-                pageDiv.innerHTML = `
-                    <div class="category-header">
-                        ${bannerImg ? `<img src="${bannerImg}" loading="lazy" decoding="async" alt="${catName}" onerror="this.style.display='none'">` : ''}
-                        <div class="category-overlay"></div>
-                        <div class="category-text">
-                            <h2>${catName}</h2>
-                            <p>${catSub}</p>
-                        </div>
-                    </div>
-                    <div class="controls-area">
-                         <button class="toggle-btn" onclick="toggleStock(this, '${safeId}', '${cat}')">隱藏售完 Hide Sold Out</button>
-                    </div>
-                    <div class="product-grid" id="grid-${safeId}"></div>
-                `;
-                pagesRoot.appendChild(pageDiv);
-                renderProductGrid('grid-' + safeId, cat);
-            });
-
-            renderAvailablePage();
-        }
-
-        function openLightbox(imgSrc) {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = imgSrc;
-            lightbox.style.display = 'flex';
-            setTimeout(() => { lightbox.classList.add('active'); }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeLightbox(e) {
-            if (e.target !== document.getElementById('lightbox-img')) {
-                const lightbox = document.getElementById('lightbox');
-                lightbox.classList.remove('active');
-                setTimeout(() => { 
-                    lightbox.style.display = 'none'; 
-                    document.getElementById('lightbox-img').src = '';
-                }, 300);
-                if(!document.body.classList.contains('menu-open')) {
-                    document.body.style.overflow = '';
+            
+            try {
+                // 1. Fetch Data from JSON
+                // 記得確保 data.json 已經上傳到 GitHub 或在 Local Server 環境
+                const response = await fetch('data.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
                 }
+                
+                const data = await response.json();
+                products = data.products;
+                configs = data.config;
+
+                // 2. Render Home Hero
+                const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
+                const heroRoot = document.getElementById('home-hero-root');
+                if (homeHeroConfig && homeHeroConfig.image) {
+                    heroRoot.innerHTML = `<img src="${homeHeroConfig.image}" alt="Home Hero" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\\'loading-text\\'>Image not found</div>'">`;
+                } else {
+                    heroRoot.innerHTML = `<div class="loading-text">請在 JSON 設定 HomeHero 圖片</div>`;
+                }
+
+                // 3. Render About Gallery
+                const aboutRoot = document.getElementById('about-gallery-root');
+                aboutRoot.innerHTML = ''; 
+                configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'gallery-item';
+                    div.innerHTML = `<img src="${p.image}" loading="lazy" decoding="async" alt="About Image" onerror="this.style.display='none'">`;
+                    aboutRoot.appendChild(div);
+                });
+
+                // 4. Setup Navigation & Pages
+                const categories = [...new Set(products.map(p => p.category))];
+                const shopDropdown = document.getElementById('shop-dropdown-content');
+                const pagesRoot = document.getElementById('dynamic-pages-root');
+
+                shopDropdown.innerHTML = '';
+                pagesRoot.innerHTML = '';
+
+                const shopAllLink = document.createElement('div');
+                shopAllLink.className = 'dropdown-item shop-all-item';
+                shopAllLink.innerText = 'Shop All / 全部現貨';
+                shopAllLink.onclick = () => { switchPage('available'); closeMenu(); };
+                shopDropdown.appendChild(shopAllLink);
+
+                categories.forEach((cat, index) => {
+                    const safeId = 'cat-' + index;
+                    
+                    // Add to Dropdown
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.innerText = cat;
+                    item.onclick = () => { switchPage(safeId); closeMenu(); };
+                    shopDropdown.appendChild(item);
+
+                    // Create Page Section
+                    const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === cat);
+                    const bannerImg = bannerConfig ? bannerConfig.image : '';
+                    const catName = cat.split('(')[0];
+                    const catSub = cat.includes('(') ? cat.split('(')[1].replace(')', '') : '';
+
+                    const pageDiv = document.createElement('div');
+                    pageDiv.id = 'page-' + safeId;
+                    pageDiv.className = 'page-section';
+                    pageDiv.innerHTML = `
+                        <div class="category-header">
+                            ${bannerImg ? `<img src="${bannerImg}" loading="lazy" decoding="async" alt="${catName}" onerror="this.style.display='none'">` : ''}
+                            <div class="category-overlay"></div>
+                            <div class="category-text">
+                                <h2>${catName}</h2>
+                                <p>${catSub}</p>
+                            </div>
+                        </div>
+                        <div class="controls-area">
+                             <button class="toggle-btn" onclick="toggleStock(this, '${safeId}', '${cat}')">隱藏售完 Hide Sold Out</button>
+                        </div>
+                        <div class="product-grid" id="grid-${safeId}"></div>
+                    `;
+                    pagesRoot.appendChild(pageDiv);
+                    renderProductGrid('grid-' + safeId, cat);
+                });
+
+                // 5. Initial Render
+                renderAvailablePage();
+
+            } catch (error) {
+                console.error("Critical Error:", error);
+                document.body.innerHTML = `
+                    <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px; color:#555;">
+                        <h2 style="margin-bottom:20px; font-family:serif;">Website Loading Error</h2>
+                        <p>無法讀取資料設定檔 (data.json)。</p>
+                        <p style="font-size:0.8rem; color:#999; margin-top:10px;">如果是本機測試，請使用 Live Server 開啟。<br>錯誤訊息: ${error.message}</p>
+                    </div>
+                `;
             }
         }
 
-        // 修改區塊：加入編號 (p-code)
         function renderProductGrid(gridId, categoryFilter) {
             const grid = document.getElementById(gridId);
+            if(!grid) return;
+            
             grid.innerHTML = '';
             const items = products.filter(p => {
                 if (categoryFilter && p.category !== categoryFilter) return false;
                 if (isHideSoldOut && p.status === 'SOLD OUT') return false;
                 return true;
             });
+
             if(items.length === 0) {
                 grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ccc; padding:50px;">暫無商品 / No Items Found</div>';
                 return;
             }
+
             items.forEach(item => {
                 const card = document.createElement('article');
                 card.className = 'product-card';
@@ -544,15 +494,18 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             });
         }
 
-        // 修改區塊：加入編號 (p-code)
         function renderAvailablePage() {
             const grid = document.getElementById('grid-available');
+            if(!grid) return;
+
             grid.innerHTML = '';
             const items = products.filter(p => p.status !== 'SOLD OUT');
+            
             if(items.length === 0) {
                 grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ccc; padding:50px;">目前沒有現貨 / Out of Stock</div>';
                 return;
             }
+
             items.forEach(item => {
                 const card = document.createElement('article');
                 card.className = 'product-card';
@@ -572,6 +525,31 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 `;
                 grid.appendChild(card);
             });
+        }
+
+        // --- UI Interaction Functions (Same as before) ---
+
+        function openLightbox(imgSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imgSrc;
+            lightbox.style.display = 'flex';
+            setTimeout(() => { lightbox.classList.add('active'); }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(e) {
+            if (e.target !== document.getElementById('lightbox-img')) {
+                const lightbox = document.getElementById('lightbox');
+                lightbox.classList.remove('active');
+                setTimeout(() => { 
+                    lightbox.style.display = 'none'; 
+                    document.getElementById('lightbox-img').src = '';
+                }, 300);
+                if(!document.body.classList.contains('menu-open')) {
+                    document.body.style.overflow = '';
+                }
+            }
         }
 
         function switchPage(pageId) {
@@ -607,8 +585,10 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             document.body.classList.remove('menu-open');
             
             setTimeout(() => {
-                document.getElementById('shop-dropdown-content').classList.remove('show');
-                document.getElementById('btn-shop').classList.remove('open');
+                const dropdown = document.getElementById('shop-dropdown-content');
+                const btn = document.getElementById('btn-shop');
+                if(dropdown) dropdown.classList.remove('show');
+                if(btn) btn.classList.remove('open');
             }, 300);
         }
 
