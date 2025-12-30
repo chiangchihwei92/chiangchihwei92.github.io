@@ -2,24 +2,32 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta property="og:title" content="DONGULI | 咚咕哩 - Wabi-Sabi Life">
+    <meta property="og:description" content="自然・陶・生活。在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡。">
+    <meta property="og:image" content="assets/og-image.jpg">
+    <meta property="og:type" content="website">
+
     <title>DONGULI | 咚咕哩</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Noto+Serif+TC:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            /* 基礎色調 */
             --bg-color: #F9F7F2; 
             --text-color: #3D3A38;
             --accent-color: #9E8B7B;
             --nav-bg: rgba(249, 247, 242, 0.98);
             
-            /* 字體設定 */
+            /* [Typography] 更新字體設定 */
             --font-main: "Helvetica Neue", Helvetica, "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
-            --font-serif: "Times New Roman", Times, "Songti TC", serif;
+            --font-serif: "Cormorant Garamond", "Noto Serif TC", "Songti TC", serif; /* 高級感襯線體 */
         }
 
-        /* 全域設定 */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
@@ -35,7 +43,23 @@
 
         body.menu-open { overflow: hidden; }
 
-        /* --- Navbar 設定 --- */
+        /* --- [Skeleton Loading] 骨架屏動畫 --- */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: #f0f0f0;
+            background-image: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 2px;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* --- Navbar --- */
         nav {
             position: fixed; top: 0; left: 0; width: 100%;
             min-height: 70px; 
@@ -50,34 +74,31 @@
         }
 
         .logo { 
-            font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; 
-            cursor: pointer; color: #2c2a29; letter-spacing: 0.15em; 
+            font-family: var(--font-serif); font-size: 1.8rem; font-weight: 600; 
+            cursor: pointer; color: #2c2a29; letter-spacing: 0.1em; 
             text-transform: uppercase;
             z-index: 1100;
             line-height: 70px;
-            display: flex;
-            align-items: center; 
+            display: flex; align-items: center; 
         }
         
-        .logo-icon {
-            height: 24px;
-            width: auto;
-            margin-right: 12px;
-            opacity: 0.8;
-        }
-
-        .nav-menu { 
-            display: flex; gap: 40px; align-items: center; height: 100%;
-        }
+        .logo-icon { height: 24px; width: auto; margin-right: 12px; opacity: 0.8; }
+        .nav-menu { display: flex; gap: 40px; align-items: center; height: 100%; }
 
         .nav-btn {
-            background: none; border: none; font-size: 0.9rem; 
+            background: none; border: none; font-size: 0.95rem; 
             font-family: var(--font-main); cursor: pointer; color: #777; 
             position: relative; padding: 5px 0; letter-spacing: 0.1em;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease; /* [Button Feedback] 加入 transform */
             text-transform: uppercase;
         }
-        .nav-btn:hover, .nav-btn.active { color: var(--text-color); }
+        
+        /* [Button Feedback] PC 版 Hover 微微上浮 */
+        @media (min-width: 769px) {
+            .nav-btn:hover { transform: translateY(-2px); color: var(--text-color); }
+        }
+        
+        .nav-btn.active { color: var(--text-color); font-weight: 500; }
         .nav-btn::after {
             content: ''; position: absolute; bottom: -2px; left: 50%; width: 0; height: 1px;
             background-color: var(--text-color); transition: all 0.3s ease; transform: translateX(-50%);
@@ -107,10 +128,11 @@
         }
 
         .dropdown-item { 
-            padding: 12px 25px; font-size: 0.85rem; cursor: pointer; 
+            padding: 12px 25px; font-size: 0.9rem; cursor: pointer; 
             transition: 0.2s; color: #888; display: block; white-space: nowrap;
+            font-family: var(--font-serif); /* 使用襯線體增加質感 */
         }
-        .dropdown-item:hover { color: var(--accent-color); background-color: #fbfbfb; }
+        .dropdown-item:hover { color: var(--accent-color); background-color: #fbfbfb; padding-left: 30px; }
         .shop-all-item { color: var(--accent-color); font-weight: 600; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; }
 
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1200; position: relative; }
@@ -124,9 +146,7 @@
 
         @media (max-width: 768px) {
             nav { padding: 0 20px; min-height: 60px; }
-            .logo { line-height: 60px; font-size: 1.4rem; }
-            .logo-icon { height: 20px; margin-right: 8px; }
-            
+            .logo { line-height: 60px; font-size: 1.5rem; }
             .hamburger { display: block; }
             
             .nav-menu {
@@ -134,8 +154,7 @@
                 width: 80%; max-width: 320px; height: 100vh;
                 background-color: #fff; 
                 flex-direction: column; align-items: flex-start;
-                padding: 80px 30px 40px; 
-                gap: 0; 
+                padding: 80px 30px 40px; gap: 0; 
                 transform: translateX(100%); 
                 transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
                 box-shadow: -10px 0 30px rgba(0,0,0,0.05);
@@ -143,36 +162,28 @@
                 overflow-y: auto; 
             }
             .nav-menu.open { transform: translateX(0); }
-
             .menu-overlay {
                 position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-                background: rgba(0,0,0,0.4); 
-                z-index: 900; 
+                background: rgba(0,0,0,0.4); z-index: 900; 
                 opacity: 0; pointer-events: none; transition: 0.3s;
                 backdrop-filter: blur(2px);
             }
             .menu-overlay.active { opacity: 1; pointer-events: auto; }
-
             .nav-btn { 
                 font-size: 1.1rem; width: 100%; text-align: left; 
                 padding: 20px 0; border-bottom: 1px solid #f5f5f5;
                 color: #333; display: flex; justify-content: space-between; align-items: center;
             }
             .nav-btn::after { display: none; }
-
             .dropdown { display: block; width: 100%; height: auto; }
             .dropdown-content {
                 position: static; transform: none; box-shadow: none; 
                 background: #fafafa; width: 100%; border: none; opacity: 1; 
                 visibility: visible; pointer-events: auto;
                 max-height: 0; overflow: hidden; transition: max-height 0.5s ease;
-                padding: 0;
-                min-width: auto; text-align: left;
+                padding: 0; min-width: auto; text-align: left;
             }
             .dropdown-content.show { max-height: 800px; border-bottom: 1px solid #f5f5f5; margin-bottom: 10px; }
-            
-            .dropdown-item { text-align: left; padding: 15px 15px; border-bottom: 1px solid #fff; font-size: 0.95rem; color: #666; }
-            
             #btn-shop::after { 
                 content: '+'; position: static; width: auto; height: auto; 
                 background: none; transform: none; font-size: 1.4rem; font-weight: 300; 
@@ -189,12 +200,19 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .hero-section { text-align: center; margin-top: 10px; }
+        
         .hero-img-container { 
-            width: 100%; aspect-ratio: 16/9; max-height: 600px; 
-            background: #eee; margin: 30px auto; overflow: hidden; border-radius: 2px;
-            cursor: default; 
+            width: 100%; aspect-ratio: 16/9; max-height: 650px; 
+            background: #f0f0f0; margin: 30px auto; overflow: hidden; border-radius: 2px;
+            cursor: default; position: relative;
         }
-        .hero-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-img-container img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.8s ease; }
+        .hero-img-container img.loaded { opacity: 1; }
+
+        .quote-box {
+            max-width: 600px; margin: 60px auto 40px; padding: 0 20px;
+            text-align: center;
+        }
         
         #dynamic-pages-root .page-section { max-width: 100%; padding: 0 0 60px 0; }
         .category-header {
@@ -204,49 +222,51 @@
         .category-header img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .category-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); }
         .category-text { position: relative; z-index: 2; color: #fff; text-align: right; padding: 40px 5%; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .category-text h2 { font-size: 2.5rem; font-family: var(--font-serif); margin: 0; }
-        .category-text p { font-size: 1rem; opacity: 0.9; letter-spacing: 0.1em; margin-top: 5px; }
+        .category-text h2 { font-size: 3rem; font-family: var(--font-serif); margin: 0; font-weight: 400; font-style: italic; }
+        .category-text p { font-size: 1rem; opacity: 0.9; letter-spacing: 0.1em; margin-top: 5px; font-family: var(--font-main); }
 
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 50px 30px; padding: 0 20px; max-width: 1200px; margin: 0 auto;
+            gap: 60px 30px; padding: 0 20px; max-width: 1200px; margin: 0 auto;
         }
 
         .product-card { text-align: center; }
         .img-box {
-            width: 100%; aspect-ratio: 1/1; background: #f0f0f0; margin-bottom: 15px; 
+            width: 100%; aspect-ratio: 1/1; background: #f9f9f9; margin-bottom: 18px; 
             position: relative; overflow: hidden; 
             cursor: zoom-in; 
         }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; opacity: 0; }
+        .img-box img.loaded { opacity: 1; }
         .product-card:hover .img-box img { transform: scale(1.03); }
         
-        .p-name { font-size: 1rem; color: #333; margin-bottom: 5px; }
-        .p-code { font-size: 0.8rem; color: #aaa; margin-bottom: 2px; letter-spacing: 0.05em; font-family: var(--font-main); }
+        .p-name { font-size: 1.05rem; color: #333; margin-bottom: 6px; font-family: var(--font-serif); }
+        .p-code { font-size: 0.75rem; color: #aaa; margin-bottom: 4px; letter-spacing: 0.05em; font-family: var(--font-main); }
         .p-price { font-family: var(--font-serif); color: var(--accent-color); font-size: 1.1rem; }
         .p-status { 
-            font-size: 0.7rem; padding: 3px 8px; border: 1px solid #ccc; color: #999; 
-            display: inline-block; margin-top: 10px; border-radius: 50px;
+            font-size: 0.7rem; padding: 4px 10px; border: 1px solid #ccc; color: #999; 
+            display: inline-block; margin-top: 12px; border-radius: 50px; letter-spacing: 0.05em;
         }
         .p-status.available { border-color: #5d6d5a; color: #5d6d5a; }
 
         .controls-area { max-width: 1200px; margin: 0 auto 30px; padding: 0 20px; text-align: right; }
         .toggle-btn {
             background: transparent; border: 1px solid var(--accent-color); color: var(--accent-color);
-            padding: 8px 18px; border-radius: 30px; font-size: 0.85rem; cursor: pointer; transition: 0.3s;
+            padding: 8px 20px; border-radius: 30px; font-size: 0.85rem; cursor: pointer; transition: 0.3s;
+            font-family: var(--font-main);
         }
-        .toggle-btn:hover, .toggle-btn.active { background: var(--accent-color); color: white; }
+        @media (min-width: 769px) { .toggle-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(158, 139, 123, 0.2); } }
+        .toggle-btn.active, .toggle-btn:active { background: var(--accent-color); color: white; transform: translateY(0); }
 
         .about-container { max-width: 800px; margin: 0 auto; text-align: center; }
-        .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #666; padding: 0 20px; }
-        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 40px; padding: 0 20px; }
-        
-        .gallery-item { aspect-ratio: 1/1; background: #ddd; cursor: default; overflow: hidden; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #555; padding: 0 20px; font-size: 1.05rem; }
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; padding: 0 20px; }
+        .gallery-item { aspect-ratio: 1/1; background: #f0f0f0; cursor: default; overflow: hidden; position: relative; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; opacity: 0; }
+        .gallery-item img.loaded { opacity: 1; }
         .gallery-item:hover img { transform: scale(1.05); }
 
         footer { text-align: center; padding: 60px 20px; color: #ccc; font-size: 0.8rem; margin-top: 80px; border-top: 1px solid #f0f0f0; }
-        .loading-text { color: #ccc; font-size: 0.9rem; padding: 40px; text-align: center; }
 
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -274,7 +294,7 @@
     <div class="menu-overlay" onclick="closeMenu()"></div>
 
     <nav>
-        <div class="logo" onclick="switchPage('home'); closeMenu()">
+        <div class="logo" onclick="handleNavClick('home'); closeMenu()">
             <img src="assets/favicon.ico" alt="Logo" class="logo-icon" onerror="this.style.display='none'">
             DONGULI
         </div>
@@ -286,8 +306,8 @@
         </button>
 
         <div class="nav-menu" id="nav-menu">
-            <button class="nav-btn active" onclick="switchPage('home'); closeMenu()" id="btn-home">HOME</button>
-            <button class="nav-btn" onclick="switchPage('about'); closeMenu()" id="btn-about">ABOUT</button>
+            <button class="nav-btn active" onclick="handleNavClick('home'); closeMenu()" id="btn-home">HOME</button>
+            <button class="nav-btn" onclick="handleNavClick('about'); closeMenu()" id="btn-about">ABOUT</button>
             
             <div class="dropdown">
                 <button class="nav-btn" id="btn-shop" onclick="toggleMobileShop(event)">SHOP</button>
@@ -299,39 +319,50 @@
 
     <div id="page-home" class="page-section active-page">
         <div class="hero-section">
-            <h1 style="font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 10px; color: #2c2a29;">Wabi-Sabi Life</h1>
-            <p style="color: #999; letter-spacing: 0.2em; font-size: 0.9rem;">自然・陶・生活</p>
+            <h1 style="font-family: var(--font-serif); font-size: 3.5rem; margin-bottom: 5px; color: #2c2a29; font-weight: 400; letter-spacing: 0.05em;">Wabi-Sabi Life</h1>
+            <p style="color: #999; letter-spacing: 0.3em; font-size: 0.9rem; text-transform: uppercase;">Nature・Ceramics・Living</p>
             
-            <div style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
-                <p style="font-family: var(--font-serif); font-style: italic; color: #888; margin-bottom: 30px;">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
-                <button class="toggle-btn" onclick="switchPage('available')">View Available Items</button>
+            <div class="hero-img-container" id="home-hero-root">
+                <div class="skeleton"></div>
             </div>
 
-            <div class="hero-img-container" id="home-hero-root">
-                <div class="loading-text">Loading...</div>
+            <div class="quote-box">
+                <p style="font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.6; color: #666;">
+                    "一顆橡實，靜靜落地，等待著屬於自己的季節。"
+                </p>
+                <div style="width: 40px; height: 1px; background: #ccc; margin: 20px auto;"></div>
+                <button class="toggle-btn" onclick="handleNavClick('available')">View Available Items</button>
             </div>
         </div>
     </div>
 
     <div id="page-about" class="page-section">
         <div class="about-container">
-            <h2 style="font-family: var(--font-serif); font-size: 2rem;">About Us</h2>
+            <h2 style="font-family: var(--font-serif); font-size: 2.5rem; font-weight: 400; margin-bottom: 20px;">About Us</h2>
+            
             <div class="about-text">
                 <p>DONGULI 來自於對自然的觀察與熱愛。</p>
                 <p>我們相信器皿不只是盛裝的工具，更是生活情感的延伸。</p>
                 <p>在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡。</p>
             </div>
-            <div class="gallery-grid" id="about-gallery-root"></div>
+            
+            <div class="gallery-grid" id="about-gallery-root">
+                <div class="gallery-item"><div class="skeleton"></div></div>
+                <div class="gallery-item"><div class="skeleton"></div></div>
+            </div>
         </div>
     </div>
 
     <div id="page-available" class="page-section">
         <div style="text-align: center; margin-bottom: 60px;">
-            <h2 style="font-family: var(--font-serif); color: #5d6d5a;">Available Stock</h2>
-            <p style="color: #bbb;">現貨選購</p>
+            <h2 style="font-family: var(--font-serif); color: #5d6d5a; font-size: 2.5rem; font-weight: 400;">Available Stock</h2>
+            <p style="color: #bbb; letter-spacing: 0.1em;">現貨選購</p>
         </div>
         <div class="product-grid" id="grid-available">
-             <div class="loading-text">Loading products...</div>
+             <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
+             <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
+             <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
+             <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
         </div>
     </div>
 
@@ -348,36 +379,47 @@
 
     <script>
         // ==========================================
-        //  JS Data & Logic (External JSON Version)
+        //  JS Data & Logic
         // ==========================================
         
         let products = [];
         let configs = [];
         let isHideSoldOut = false;
 
+        // [History API] 處理網址狀態
+        window.onpopstate = function(event) {
+            if (event.state && event.state.page) {
+                switchPage(event.state.page, false); // false = 不再重複 pushState
+            } else {
+                switchPage('home', false);
+            }
+        };
+
+        // 統一導航點擊入口
+        function handleNavClick(pageId) {
+            switchPage(pageId, true);
+        }
+
         async function initWebsite() {
             document.getElementById('footer-year').innerText = new Date().getFullYear();
             
+            // 檢查網址參數是否有指定頁面 (例如 ?page=about)
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialPage = urlParams.get('page') || 'home';
+
             try {
-                // 1. Fetch Data from JSON
-                // 記得確保 data.json 已經上傳到 GitHub 或在 Local Server 環境
+                // Fetch Data
                 const response = await fetch('data.json');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-                
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                 const data = await response.json();
                 products = data.products;
                 configs = data.config;
 
-                // 2. Render Home Hero
+                // 2. Render Home Hero (使用 loading="eager" 加速 LCP)
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 const heroRoot = document.getElementById('home-hero-root');
                 if (homeHeroConfig && homeHeroConfig.image) {
-                    heroRoot.innerHTML = `<img src="${homeHeroConfig.image}" alt="Home Hero" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\\'loading-text\\'>Image not found</div>'">`;
-                } else {
-                    heroRoot.innerHTML = `<div class="loading-text">請在 JSON 設定 HomeHero 圖片</div>`;
+                    heroRoot.innerHTML = `<img src="${homeHeroConfig.image}" loading="eager" alt="Wabi-Sabi Life" onload="this.classList.add('loaded')" onerror="this.style.display='none'">`;
                 }
 
                 // 3. Render About Gallery
@@ -386,81 +428,108 @@
                 configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
                     const div = document.createElement('div');
                     div.className = 'gallery-item';
-                    div.innerHTML = `<img src="${p.image}" loading="lazy" decoding="async" alt="About Image" onerror="this.style.display='none'">`;
+                    div.innerHTML = `<img src="${p.image}" loading="lazy" alt="About Studio" onload="this.classList.add('loaded')" onerror="this.style.display='none'">`;
                     aboutRoot.appendChild(div);
                 });
 
-                // 4. Setup Navigation & Pages
-                const categories = [...new Set(products.map(p => p.category))];
-                const shopDropdown = document.getElementById('shop-dropdown-content');
-                const pagesRoot = document.getElementById('dynamic-pages-root');
-
-                shopDropdown.innerHTML = '';
-                pagesRoot.innerHTML = '';
-
-                const shopAllLink = document.createElement('div');
-                shopAllLink.className = 'dropdown-item shop-all-item';
-                shopAllLink.innerText = 'Shop All / 全部現貨';
-                shopAllLink.onclick = () => { switchPage('available'); closeMenu(); };
-                shopDropdown.appendChild(shopAllLink);
-
-                categories.forEach((cat, index) => {
-                    const safeId = 'cat-' + index;
-                    
-                    // Add to Dropdown
-                    const item = document.createElement('div');
-                    item.className = 'dropdown-item';
-                    item.innerText = cat;
-                    item.onclick = () => { switchPage(safeId); closeMenu(); };
-                    shopDropdown.appendChild(item);
-
-                    // Create Page Section
-                    const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === cat);
-                    const bannerImg = bannerConfig ? bannerConfig.image : '';
-                    const catName = cat.split('(')[0];
-                    const catSub = cat.includes('(') ? cat.split('(')[1].replace(')', '') : '';
-
-                    const pageDiv = document.createElement('div');
-                    pageDiv.id = 'page-' + safeId;
-                    pageDiv.className = 'page-section';
-                    pageDiv.innerHTML = `
-                        <div class="category-header">
-                            ${bannerImg ? `<img src="${bannerImg}" loading="lazy" decoding="async" alt="${catName}" onerror="this.style.display='none'">` : ''}
-                            <div class="category-overlay"></div>
-                            <div class="category-text">
-                                <h2>${catName}</h2>
-                                <p>${catSub}</p>
-                            </div>
-                        </div>
-                        <div class="controls-area">
-                             <button class="toggle-btn" onclick="toggleStock(this, '${safeId}', '${cat}')">隱藏售完 Hide Sold Out</button>
-                        </div>
-                        <div class="product-grid" id="grid-${safeId}"></div>
-                    `;
-                    pagesRoot.appendChild(pageDiv);
-                    renderProductGrid('grid-' + safeId, cat);
-                });
+                // 4. Setup Navigation & Dynamic Pages
+                setupCategories();
 
                 // 5. Initial Render
                 renderAvailablePage();
+                
+                // 根據網址切換到正確頁面
+                if(initialPage !== 'home') {
+                    switchPage(initialPage, false);
+                }
 
             } catch (error) {
                 console.error("Critical Error:", error);
-                document.body.innerHTML = `
-                    <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px; color:#555;">
-                        <h2 style="margin-bottom:20px; font-family:serif;">Website Loading Error</h2>
-                        <p>無法讀取資料設定檔 (data.json)。</p>
-                        <p style="font-size:0.8rem; color:#999; margin-top:10px;">如果是本機測試，請使用 Live Server 開啟。<br>錯誤訊息: ${error.message}</p>
+                document.body.innerHTML = `<div style="padding:50px; text-align:center;">Site loading failed. Please refresh.</div>`;
+            }
+        }
+
+        function setupCategories() {
+            const categories = [...new Set(products.map(p => p.category))];
+            const shopDropdown = document.getElementById('shop-dropdown-content');
+            const pagesRoot = document.getElementById('dynamic-pages-root');
+
+            shopDropdown.innerHTML = '';
+            pagesRoot.innerHTML = '';
+
+            // Add "Shop All"
+            const shopAllLink = document.createElement('div');
+            shopAllLink.className = 'dropdown-item shop-all-item';
+            shopAllLink.innerText = 'Shop All / 全部現貨';
+            shopAllLink.onclick = () => { handleNavClick('available'); closeMenu(); };
+            shopDropdown.appendChild(shopAllLink);
+
+            categories.forEach((cat, index) => {
+                const safeId = 'cat-' + index;
+                
+                // Dropdown Item
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.innerText = cat;
+                item.onclick = () => { handleNavClick(safeId); closeMenu(); };
+                shopDropdown.appendChild(item);
+
+                // Page Section
+                const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === cat);
+                const bannerImg = bannerConfig ? bannerConfig.image : '';
+                const catName = cat.split('(')[0];
+                const catSub = cat.includes('(') ? cat.split('(')[1].replace(')', '') : '';
+
+                const pageDiv = document.createElement('div');
+                pageDiv.id = 'page-' + safeId;
+                pageDiv.className = 'page-section';
+                // [Skeleton] Banner 區塊也可以加載入效果
+                pageDiv.innerHTML = `
+                    <div class="category-header">
+                        ${bannerImg ? `<img src="${bannerImg}" loading="lazy" alt="${catName}" onload="this.style.opacity=1" style="opacity:0; transition:opacity 0.5s;">` : ''}
+                        <div class="category-overlay"></div>
+                        <div class="category-text">
+                            <h2>${catName}</h2>
+                            <p>${catSub}</p>
+                        </div>
+                    </div>
+                    <div class="controls-area">
+                         <button class="toggle-btn" onclick="toggleStock(this, '${safeId}', '${cat}')">隱藏售完 Hide Sold Out</button>
+                    </div>
+                    <div class="product-grid" id="grid-${safeId}">
+                        <div class="skeleton" style="height:300px; grid-column:1/-1;"></div>
                     </div>
                 `;
-            }
+                pagesRoot.appendChild(pageDiv);
+                renderProductGrid('grid-' + safeId, cat);
+            });
+        }
+
+        function createProductCard(item) {
+            const isSold = item.status === 'SOLD OUT';
+            return `
+                <article class="product-card">
+                    <div class="img-box" onclick="openLightbox('${item.image}')">
+                        <img 
+                            src="${item.image}" 
+                            loading="lazy" 
+                            decoding="async" 
+                            alt="${item.name}"
+                            onload="this.classList.add('loaded')"
+                            onerror="this.style.display='none';">
+                    </div>
+                    <div class="p-code">${item.code}</div>
+                    <div class="p-name">${item.name}</div>
+                    <div class="p-price">NT$ ${item.price}</div>
+                    <div class="p-status ${!isSold ? 'available' : ''}">${item.status}</div>
+                </article>
+            `;
         }
 
         function renderProductGrid(gridId, categoryFilter) {
             const grid = document.getElementById(gridId);
             if(!grid) return;
             
-            grid.innerHTML = '';
             const items = products.filter(p => {
                 if (categoryFilter && p.category !== categoryFilter) return false;
                 if (isHideSoldOut && p.status === 'SOLD OUT') return false;
@@ -469,65 +538,49 @@
 
             if(items.length === 0) {
                 grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ccc; padding:50px;">暫無商品 / No Items Found</div>';
-                return;
+            } else {
+                grid.innerHTML = items.map(item => createProductCard(item)).join('');
             }
-
-            items.forEach(item => {
-                const card = document.createElement('article');
-                card.className = 'product-card';
-                const isSold = item.status === 'SOLD OUT';
-                card.innerHTML = `
-                    <div class="img-box" onclick="openLightbox('${item.image}')">
-                        <img 
-                            src="${item.image}" 
-                            loading="lazy" 
-                            decoding="async" 
-                            alt="${item.name}"
-                            onerror="this.style.display='none'; this.parentNode.style.backgroundColor='#eee';">
-                    </div>
-                    <div class="p-code">${item.code}</div>
-                    <div class="p-name">${item.name}</div>
-                    <div class="p-price">NT$ ${item.price}</div>
-                    <div class="p-status ${!isSold ? 'available' : ''}">${item.status}</div>
-                `;
-                grid.appendChild(card);
-            });
         }
 
         function renderAvailablePage() {
             const grid = document.getElementById('grid-available');
             if(!grid) return;
-
-            grid.innerHTML = '';
             const items = products.filter(p => p.status !== 'SOLD OUT');
             
             if(items.length === 0) {
                 grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ccc; padding:50px;">目前沒有現貨 / Out of Stock</div>';
-                return;
+            } else {
+                grid.innerHTML = items.map(item => createProductCard(item)).join('');
             }
-
-            items.forEach(item => {
-                const card = document.createElement('article');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <div class="img-box" onclick="openLightbox('${item.image}')">
-                        <img 
-                            src="${item.image}" 
-                            loading="lazy" 
-                            decoding="async" 
-                            alt="${item.name}"
-                            onerror="this.style.display='none'">
-                    </div>
-                    <div class="p-code">${item.code}</div>
-                    <div class="p-name">${item.name}</div>
-                    <div class="p-price">NT$ ${item.price}</div>
-                    <div class="p-status available">AVAILABLE</div>
-                `;
-                grid.appendChild(card);
-            });
         }
 
-        // --- UI Interaction Functions (Same as before) ---
+        // [History API] 核心切換功能
+        function switchPage(pageId, pushToHistory = true) {
+            // 隱藏所有頁面
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+            
+            // 顯示目標頁面
+            const target = document.getElementById('page-' + pageId);
+            if(target) {
+                target.classList.add('active-page');
+                window.scrollTo(0, 0);
+
+                // 更新 Navbar 狀態
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
+                else if(pageId === 'about') document.getElementById('btn-about').classList.add('active');
+                else document.getElementById('btn-shop').classList.add('active');
+
+                // 更新瀏覽器歷史紀錄與網址
+                if (pushToHistory) {
+                    const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
+                    window.history.pushState({ page: pageId }, '', newUrl);
+                }
+            }
+        }
+
+        // --- UI Interactions ---
 
         function openLightbox(imgSrc) {
             const lightbox = document.getElementById('lightbox');
@@ -550,17 +603,6 @@
                     document.body.style.overflow = '';
                 }
             }
-        }
-
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
-            const target = document.getElementById('page-' + pageId);
-            if(target) target.classList.add('active-page');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
-            else if(pageId === 'about') document.getElementById('btn-about').classList.add('active');
-            else document.getElementById('btn-shop').classList.add('active');
-            window.scrollTo(0, 0);
         }
 
         function toggleMenu() {
@@ -600,7 +642,7 @@
                 content.classList.toggle('show');
                 btn.classList.toggle('open');
             } else {
-                switchPage('available');
+                handleNavClick('available');
             }
         }
 
