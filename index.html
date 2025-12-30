@@ -88,49 +88,33 @@
         }
         .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
 
-        /* Dropdown [修正] */
+        /* Dropdown */
         .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
         
         .dropdown-content {
-            position: absolute; top: 100%; 
-            /* [修正] 強制靠右對齊按鈕邊緣，解決超出問題 */
-            right: 0; left: auto;
-            padding-top: 10px; /* 橋接層 */
-            opacity: 0; pointer-events: none; transition: all 0.2s ease;
+            position: absolute; top: 100%; right: 0; left: auto;
+            padding-top: 10px; opacity: 0; pointer-events: none; transition: all 0.2s ease;
             visibility: hidden; z-index: 1002;
         }
         
         .dropdown-inner {
-            background-color: #fff; 
-            min-width: 200px;
+            background-color: #fff; min-width: 200px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            padding: 10px 0; 
-            border: 1px solid rgba(0,0,0,0.05);
-            text-align: left;
-            transform: translateY(10px);
-            transition: transform 0.3s ease;
-            white-space: nowrap; 
+            padding: 10px 0; border: 1px solid rgba(0,0,0,0.05);
+            text-align: left; transform: translateY(10px);
+            transition: transform 0.3s ease; white-space: nowrap; 
         }
 
         @media (min-width: 769px) {
-            .dropdown:hover .dropdown-content { 
-                opacity: 1; pointer-events: auto; visibility: visible; 
-            }
-            .dropdown:hover .dropdown-inner {
-                transform: translateY(0);
-            }
+            .dropdown:hover .dropdown-content { opacity: 1; pointer-events: auto; visibility: visible; }
+            .dropdown:hover .dropdown-inner { transform: translateY(0); }
         }
 
         .dropdown-item { 
-            padding: 12px 25px; 
-            font-size: 0.85rem; cursor: pointer; 
+            padding: 12px 25px; font-size: 0.85rem; cursor: pointer; 
             transition: all 0.2s ease; color: #666; display: block;
         }
-        .dropdown-item:hover { 
-            color: #000; background-color: #f9f9f9; 
-            padding-left: 25px; /* 不改變 padding 避免跳動 */
-            transform: translateX(4px); /* 視覺位移 */
-        }
+        .dropdown-item:hover { color: #000; background-color: #f9f9f9; padding-left: 25px; transform: translateX(4px); }
         .shop-all-item { color: #333; font-weight: 700; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; }
 
         /* Mobile Hamburger */
@@ -188,12 +172,12 @@
             max-width: 1200px; margin: 0 auto; padding: 0 20px;
         }
 
-        /* --- Hero Section (Updated) --- */
+        /* --- Hero Section & Ken Burns --- */
         .hero-section { width: 100%; position: relative; }
         
         .slideshow-container {
             width: 100%; 
-            height: calc(100vh - var(--nav-height)); /* 扣除 navbar 高度 */
+            height: calc(100vh - var(--nav-height));
             min-height: 500px;
             max-height: 900px;
             background: #e0e0e0;
@@ -214,54 +198,46 @@
         }
         .slide.active { opacity: 1; z-index: 1; animation: kenBurns 6s linear forwards; }
 
-        /* [更新] 整合遮罩，顏色稍微加深以確保文字在任何圖片上都可見 */
+        /* [修復 2] 漸層黑不見的問題 */
+        /* 改用更強的黑色漸層，並確保 z-index */
         .hero-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
-            background: rgba(0,0,0,0.25); /* 全局稍微變暗 */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 2; /* 位於 slide(1) 之上 */
+            background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.75) 100%);
             pointer-events: none;
         }
-        
-        /* [更新] 首頁置中文字區塊 */
-        .hero-center-content {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 10; color: #fff; text-align: center;
-            width: 90%; max-width: 800px;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.5);
-            pointer-events: none; /* 讓點擊穿透到按鈕 */
-        }
-        .hero-center-content * { pointer-events: auto; } /* 按鈕恢復可點擊 */
 
-        .hero-center-content h1 { 
-            font-size: 3.5rem; margin-bottom: 5px; font-weight: 700; letter-spacing: 0.1em;
-            line-height: 1.2;
+        /* [修復 1] 首頁設計：改回左下角，提升質感 */
+        .hero-text-container {
+            position: absolute; bottom: 80px; left: 5%;
+            z-index: 10; color: #fff; text-align: left;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+            pointer-events: none; /* 讓點擊穿透 */
         }
-        .hero-center-content p.subtitle { 
-            font-size: 0.9rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.9; margin-bottom: 30px; 
-        }
-        .hero-center-content .hero-quote {
-            font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; font-weight: 300; opacity: 0.95;
-            font-style: italic; 
+        .hero-text-container * { pointer-events: auto; } /* 按鈕可點 */
+
+        .hero-text-container h1 { font-size: 3.5rem; margin-bottom: 5px; font-weight: 700; letter-spacing: 0.05em; line-height: 1.1; }
+        .hero-text-container p.subtitle { font-size: 1rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.9; margin-bottom: 20px; }
+        .hero-text-container .quote { 
+            font-size: 1.1rem; margin-bottom: 30px; font-weight: 300; opacity: 0.95; font-style: italic; display: block;
         }
 
-        /* Banner 上按鈕樣式 */
         .hero-btn {
-            background: rgba(255,255,255,0.2); 
+            background: transparent; 
             border: 1px solid #fff; color: #fff;
-            padding: 12px 35px; border-radius: 50px; 
-            font-size: 0.9rem; cursor: pointer; transition: 0.3s;
-            backdrop-filter: blur(5px);
+            padding: 12px 30px; border-radius: 50px; 
+            font-size: 0.85rem; cursor: pointer; transition: 0.3s;
             text-transform: uppercase; letter-spacing: 0.1em;
+            display: inline-block;
         }
         .hero-btn:hover { background: #fff; color: #000; transform: translateY(-2px); }
 
-        /* [更新] Mobile Hero 優化 */
         @media (max-width: 768px) {
-            .hero-center-content h1 { font-size: 2.2rem; }
-            .hero-center-content .hero-quote { font-size: 1rem; margin-bottom: 30px; }
-            .hero-btn { padding: 10px 30px; font-size: 0.85rem; }
+            .hero-text-container { bottom: 60px; left: 20px; right: 20px; }
+            .hero-text-container h1 { font-size: 2.5rem; }
+            .hero-overlay { background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.6) 100%); }
         }
 
-        /* Slide Arrows */
         .slide-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(255,255,255,0.1); border: none; color: #fff;
@@ -272,15 +248,17 @@
         .slide-prev { left: 0; }
         .slide-next { right: 0; }
 
-        /* [新增] 製作花絮區塊 (Placeholder) */
-        #making-of-section {
-            background-color: #f2f2f2;
+        /* [修復 5] Behind the Scenes (花絮) 樣式 - 移動到分類頁 */
+        .making-of-section {
+            width: 100%;
+            background-color: #fafafa;
             padding: 80px 20px;
             text-align: center;
-            border-bottom: 1px solid #e0e0e0;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
         }
-        #making-of-section h3 { font-size: 1.5rem; color: #999; font-weight: 400; margin-bottom: 10px; }
-        #making-of-section p { color: #ccc; }
+        .making-of-section h3 { font-size: 1.5rem; color: #555; font-weight: 400; margin-bottom: 15px; }
+        .making-of-section p { color: #999; font-size: 0.9rem; letter-spacing: 0.05em; }
 
         /* Category Header */
         .category-header-wrapper {
@@ -299,7 +277,7 @@
         /* Product Grid */
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 60px 40px; margin-bottom: 80px;
+            gap: 60px 40px; margin-bottom: 40px; /* 底部間距減少，因為下面接花絮 */
         }
         .product-card { text-align: center; }
         
@@ -307,18 +285,23 @@
             width: 100%; aspect-ratio: 1/1; background: #f9f9f9; margin-bottom: 20px; 
             position: relative; overflow: hidden; cursor: pointer; 
         }
+        
+        /* [修復 3] 產品多圖 Hover 邏輯 */
         .img-box img, .img-box video { 
             width: 100%; height: 100%; object-fit: cover; 
-            transition: opacity 0.4s ease, transform 0.8s ease; 
+            transition: opacity 0.5s ease, transform 0.8s ease; 
             position: absolute; top: 0; left: 0;
         }
-        .img-main { opacity: 0; z-index: 2; }
-        .img-hover { opacity: 0; z-index: 1; }
-        .img-box img.loaded { opacity: 1; }
-        
+        /* 預設：主圖顯示，Hover圖隱藏 */
+        .img-main { opacity: 1; z-index: 2; }
+        .img-hover { opacity: 0; z-index: 3; } /* Hover圖層級更高 */
+
         .product-card:hover .img-box img { transform: scale(1.05); }
-        .product-card.has-hover:hover .img-main { opacity: 0; }
-        .product-card.has-hover:hover .img-hover { opacity: 1; z-index: 3; }
+        
+        /* 只有當有 hover 圖時，Hover 狀態下顯示 hover 圖 */
+        .product-card.has-hover:hover .img-hover { opacity: 1; }
+        /* 選擇性：如果要讓主圖淡出，可以加 .product-card.has-hover:hover .img-main { opacity: 0; } 
+           但通常讓上方圖片蓋過下方圖片比較平滑，不需要讓主圖消失 */
 
         .p-code { font-size: 0.75rem; color: #aaa; margin-bottom: 5px; }
         .p-name { font-size: 1rem; color: #333; margin-bottom: 8px; font-weight: 600; }
@@ -341,11 +324,15 @@
         .gallery-item { aspect-ratio: 1/1; background: #f0f0f0; overflow: hidden; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.5s; }
         .gallery-item img.loaded { opacity: 1; }
+        
         .social-link {
             display: inline-flex; align-items: center; margin-top: 30px; text-decoration: none; color: #333; 
             border-bottom: 1px solid transparent; padding-bottom: 2px; transition: 0.2s;
         }
         .social-link:hover { border-bottom: 1px solid #333; }
+        /* [修復 4] Instagram Icon 樣式 */
+        .social-icon { width: 20px; height: 20px; margin-right: 10px; fill: currentColor; display: block; }
+        
         footer { text-align: center; padding: 80px 20px; color: #bbb; font-size: 0.75rem; border-top: 1px solid #f0f0f0; }
 
         /* Lightbox (Dark) */
@@ -419,21 +406,15 @@
             
             <div class="hero-overlay"></div>
             
-            <div class="hero-center-content">
+            <div class="hero-text-container">
                 <h1>Wabi-Sabi Life</h1>
                 <p class="subtitle">Nature・Ceramics・Living</p>
-                <p class="hero-quote">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
+                <p class="quote">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
                 <button class="hero-btn" onclick="handleNavClick('available')">View Available Items</button>
             </div>
         </div>
-
-        <div id="making-of-section">
-            <div class="content-container">
-                <h3>Behind the Scenes</h3>
-                <p>製作花絮 (Coming Soon)</p>
-            </div>
+        
         </div>
-    </div>
 
     <div id="page-about" class="page-section">
         <div class="content-container">
@@ -444,7 +425,9 @@
                     <p>我們相信器皿不只是盛裝的工具，更是生活情感的延伸。</p>
                     <p>在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡。</p>
                     <a href="https://www.instagram.com" target="_blank" class="social-link">
-                        <svg class="social-icon" style="width:18px;height:18px;margin-right:8px;fill:currentColor;" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        <svg class="social-icon" viewBox="0 0 448 512">
+                            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                        </svg>
                         Follow us on Instagram
                     </a>
                 </div>
@@ -649,6 +632,13 @@
                             <div class="skeleton" style="height:300px; grid-column:1/-1;"></div>
                         </div>
                     </div>
+                    
+                    <div class="making-of-section">
+                        <div class="content-container">
+                            <h3>Making of ${catName}</h3>
+                            <p>Handcrafting Process & Studio Stories</p>
+                            </div>
+                    </div>
                 `;
                 pagesRoot.appendChild(pageDiv);
                 
@@ -657,13 +647,19 @@
             });
         }
 
+        // [修復 3] 產品卡片生成邏輯
         function createProductCard(item) {
             const isSold = item.status === 'SOLD OUT';
+            // 兼容舊資料(string)與新資料(array)
             const mediaList = item.images && Array.isArray(item.images) ? item.images : [item.image];
+            
             const mainImg = mediaList[0];
+            // 如果有第二張，則設為 Hover 圖
             const hoverImg = mediaList.length > 1 ? mediaList[1] : null;
+            
             const mediaJson = JSON.stringify(mediaList).replace(/"/g, '&quot;');
             
+            // 如果有 Hover 圖，加上 css class
             const hasHoverClass = hoverImg ? 'has-hover' : '';
             const hoverHtml = hoverImg ? `<img class="img-hover" src="${hoverImg}" loading="lazy" alt="${item.name}">` : '';
 
