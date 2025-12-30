@@ -56,7 +56,7 @@
             z-index: 1100;
             line-height: 70px;
             display: flex;
-            align-items: center; /* 讓圖片與文字垂直置中 */
+            align-items: center; 
         }
         
         .logo-icon {
@@ -222,6 +222,10 @@
         .product-card:hover .img-box img { transform: scale(1.03); }
         
         .p-name { font-size: 1rem; color: #333; margin-bottom: 5px; }
+        
+        /* 新增：編號的樣式 */
+        .p-code { font-size: 0.8rem; color: #aaa; margin-bottom: 2px; letter-spacing: 0.05em; font-family: var(--font-main); }
+
         .p-price { font-family: var(--font-serif); color: var(--accent-color); font-size: 1.1rem; }
         .p-status { 
             font-size: 0.7rem; padding: 3px 8px; border: 1px solid #ccc; color: #999; 
@@ -414,10 +418,9 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
         let isHideSoldOut = false;
 
         function initWebsite() {
-            // Footer Year 自動年份
             document.getElementById('footer-year').innerText = new Date().getFullYear();
 
-            // Render Home Hero (注意：Hero 圖不使用 lazy load，以確保首屏載入速度)
+            // Home Hero
             const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
             const heroRoot = document.getElementById('home-hero-root');
             if (homeHeroConfig && homeHeroConfig.image) {
@@ -426,7 +429,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 heroRoot.innerHTML = `<div class="loading-text">請在 CSV 設定 HomeHero 圖片</div>`;
             }
 
-            // Render About Gallery (Only first 2 images) - 已加入 lazy
+            // About Gallery
             const aboutRoot = document.getElementById('about-gallery-root');
             configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
                 const div = document.createElement('div');
@@ -435,7 +438,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 aboutRoot.appendChild(div);
             });
 
-            // Setup Navigation & Categories
+            // Navigation
             const categories = [...new Set(products.map(p => p.category))];
             const shopDropdown = document.getElementById('shop-dropdown-content');
             const pagesRoot = document.getElementById('dynamic-pages-root');
@@ -462,7 +465,6 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 const pageDiv = document.createElement('div');
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
-                // Banner 加入 lazy load
                 pageDiv.innerHTML = `
                     <div class="category-header">
                         ${bannerImg ? `<img src="${bannerImg}" loading="lazy" decoding="async" alt="${catName}" onerror="this.style.display='none'">` : ''}
@@ -507,7 +509,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             }
         }
 
-        // 修改：商品列表加入 lazy load
+        // 修改區塊：加入編號 (p-code)
         function renderProductGrid(gridId, categoryFilter) {
             const grid = document.getElementById(gridId);
             grid.innerHTML = '';
@@ -533,6 +535,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                             alt="${item.name}"
                             onerror="this.style.display='none'; this.parentNode.style.backgroundColor='#eee';">
                     </div>
+                    <div class="p-code">${item.code}</div>
                     <div class="p-name">${item.name}</div>
                     <div class="p-price">NT$ ${item.price}</div>
                     <div class="p-status ${!isSold ? 'available' : ''}">${item.status}</div>
@@ -541,7 +544,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             });
         }
 
-        // 修改：現貨頁面加入 lazy load
+        // 修改區塊：加入編號 (p-code)
         function renderAvailablePage() {
             const grid = document.getElementById('grid-available');
             grid.innerHTML = '';
@@ -562,6 +565,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                             alt="${item.name}"
                             onerror="this.style.display='none'">
                     </div>
+                    <div class="p-code">${item.code}</div>
                     <div class="p-name">${item.name}</div>
                     <div class="p-price">NT$ ${item.price}</div>
                     <div class="p-status available">AVAILABLE</div>
