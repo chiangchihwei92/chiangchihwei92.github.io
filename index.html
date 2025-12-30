@@ -59,7 +59,6 @@
             align-items: center; /* 讓圖片與文字垂直置中 */
         }
         
-        /* 新增：Logo 圖片樣式 */
         .logo-icon {
             height: 24px;
             width: auto;
@@ -193,7 +192,6 @@
         .hero-img-container { 
             width: 100%; aspect-ratio: 16/9; max-height: 600px; 
             background: #eee; margin: 30px auto; overflow: hidden; border-radius: 2px;
-            /* 修改：移除 pointer，因為首頁圖不再有燈箱 */
             cursor: default; 
         }
         .hero-img-container img { width: 100%; height: 100%; object-fit: cover; }
@@ -218,7 +216,6 @@
         .img-box {
             width: 100%; aspect-ratio: 1/1; background: #f0f0f0; margin-bottom: 15px; 
             position: relative; overflow: hidden; 
-            /* 只有 Shop 裡的商品圖有放大游標 */
             cursor: zoom-in; 
         }
         .img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
@@ -243,7 +240,6 @@
         .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #666; padding: 0 20px; }
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 40px; padding: 0 20px; }
         
-        /* 修改：About 圖片不再放大，游標改回預設 */
         .gallery-item { aspect-ratio: 1/1; background: #ddd; cursor: default; overflow: hidden; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
         .gallery-item:hover img { transform: scale(1.05); }
@@ -421,24 +417,21 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             // Footer Year 自動年份
             document.getElementById('footer-year').innerText = new Date().getFullYear();
 
-            // Render Home Hero
+            // Render Home Hero (注意：Hero 圖不使用 lazy load，以確保首屏載入速度)
             const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
             const heroRoot = document.getElementById('home-hero-root');
             if (homeHeroConfig && homeHeroConfig.image) {
-                // 這裡沒有加 onclick，所以首頁圖無法點擊放大
-                heroRoot.innerHTML = `<img src="${homeHeroConfig.image}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\\'loading-text\\'>Image not found</div>'">`;
+                heroRoot.innerHTML = `<img src="${homeHeroConfig.image}" alt="Home Hero" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\\'loading-text\\'>Image not found</div>'">`;
             } else {
                 heroRoot.innerHTML = `<div class="loading-text">請在 CSV 設定 HomeHero 圖片</div>`;
             }
 
-            // Render About Gallery (Only first 2 images)
+            // Render About Gallery (Only first 2 images) - 已加入 lazy
             const aboutRoot = document.getElementById('about-gallery-root');
-            // 修改：使用 slice(0, 2) 只取前兩張
             configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'gallery-item';
-                // 修改：移除 onclick，About 圖無法點擊放大
-                div.innerHTML = `<img src="${p.image}" onerror="this.style.display='none'">`;
+                div.innerHTML = `<img src="${p.image}" loading="lazy" decoding="async" alt="About Image" onerror="this.style.display='none'">`;
                 aboutRoot.appendChild(div);
             });
 
@@ -469,9 +462,10 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 const pageDiv = document.createElement('div');
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
+                // Banner 加入 lazy load
                 pageDiv.innerHTML = `
                     <div class="category-header">
-                        ${bannerImg ? `<img src="${bannerImg}" onerror="this.style.display='none'">` : ''}
+                        ${bannerImg ? `<img src="${bannerImg}" loading="lazy" decoding="async" alt="${catName}" onerror="this.style.display='none'">` : ''}
                         <div class="category-overlay"></div>
                         <div class="category-text">
                             <h2>${catName}</h2>
@@ -513,6 +507,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             }
         }
 
+        // 修改：商品列表加入 lazy load
         function renderProductGrid(gridId, categoryFilter) {
             const grid = document.getElementById(gridId);
             grid.innerHTML = '';
@@ -531,7 +526,12 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 const isSold = item.status === 'SOLD OUT';
                 card.innerHTML = `
                     <div class="img-box" onclick="openLightbox('${item.image}')">
-                        <img src="${item.image}" onerror="this.style.display='none'; this.parentNode.style.backgroundColor='#eee';">
+                        <img 
+                            src="${item.image}" 
+                            loading="lazy" 
+                            decoding="async" 
+                            alt="${item.name}"
+                            onerror="this.style.display='none'; this.parentNode.style.backgroundColor='#eee';">
                     </div>
                     <div class="p-name">${item.name}</div>
                     <div class="p-price">NT$ ${item.price}</div>
@@ -541,6 +541,7 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
             });
         }
 
+        // 修改：現貨頁面加入 lazy load
         function renderAvailablePage() {
             const grid = document.getElementById('grid-available');
             grid.innerHTML = '';
@@ -554,7 +555,12 @@ Lifestyle (生活選物), SW-2, 雪日造物, 1280, SOLD OUT, assets/sw2.jpg
                 card.className = 'product-card';
                 card.innerHTML = `
                     <div class="img-box" onclick="openLightbox('${item.image}')">
-                        <img src="${item.image}" onerror="this.style.display='none'">
+                        <img 
+                            src="${item.image}" 
+                            loading="lazy" 
+                            decoding="async" 
+                            alt="${item.name}"
+                            onerror="this.style.display='none'">
                     </div>
                     <div class="p-name">${item.name}</div>
                     <div class="p-price">NT$ ${item.price}</div>
