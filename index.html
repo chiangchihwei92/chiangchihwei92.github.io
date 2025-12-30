@@ -33,7 +33,7 @@
 
         body.menu-open { overflow: hidden; }
 
-        /* --- Skeleton Loading --- */
+        /* --- Skeleton --- */
         @keyframes shimmer {
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
@@ -88,27 +88,28 @@
         }
         .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
 
-        /* Dropdown [修正重點] */
+        /* Dropdown [修正] */
         .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
+        
         .dropdown-content {
-            position: absolute; top: 100%; left: auto; right: -10px;
-            padding-top: 10px; /* 透明橋接層 */
+            position: absolute; top: 100%; 
+            /* [修正] 強制靠右對齊按鈕邊緣，解決超出問題 */
+            right: 0; left: auto;
+            padding-top: 10px; /* 橋接層 */
             opacity: 0; pointer-events: none; transition: all 0.2s ease;
             visibility: hidden; z-index: 1002;
         }
         
-        /* 下拉選單內部容器 */
         .dropdown-inner {
             background-color: #fff; 
-            min-width: 220px;
-            /* 使用 max-content 讓寬度一次定好，不會亂跳，但為了保險我們固定樣式 */
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            min-width: 200px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             padding: 10px 0; 
             border: 1px solid rgba(0,0,0,0.05);
             text-align: left;
             transform: translateY(10px);
             transition: transform 0.3s ease;
-            white-space: nowrap; /* 確保不換行 */
+            white-space: nowrap; 
         }
 
         @media (min-width: 769px) {
@@ -120,24 +121,16 @@
             }
         }
 
-        /* [重點修正] Item 樣式：不再改變 padding */
         .dropdown-item { 
-            padding: 12px 25px; /* 固定內距 */
+            padding: 12px 25px; 
             font-size: 0.85rem; cursor: pointer; 
-            transition: all 0.2s ease; 
-            color: #666; display: block;
+            transition: all 0.2s ease; color: #666; display: block;
         }
-        
         .dropdown-item:hover { 
-            color: #000; 
-            background-color: #f9f9f9; 
-            /* padding-left: 30px; <--- 刪除這行，這是造成跳動的主因 */
-            padding-left: 25px; /* 維持原樣 */
-            
-            /* 如果想要動態感，改用 transform (只移動視覺，不影響寬度) */
-            transform: translateX(4px); 
+            color: #000; background-color: #f9f9f9; 
+            padding-left: 25px; /* 不改變 padding 避免跳動 */
+            transform: translateX(4px); /* 視覺位移 */
         }
-        
         .shop-all-item { color: #333; font-weight: 700; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; }
 
         /* Mobile Hamburger */
@@ -181,9 +174,7 @@
                 max-height: 0; overflow: hidden; transition: max-height 0.5s ease; padding: 0;
             }
             .dropdown-inner.show { max-height: 800px; border-bottom: 1px solid #f5f5f5; margin-bottom: 10px; }
-            /* Mobile 不使用 transform 位移 */
-            .dropdown-item:hover { transform: none; padding-left: 25px; }
-            
+            .dropdown-item:hover { transform: none; }
             #btn-shop::after { content: '+'; position: static; transform: none; font-size: 1.4rem; font-weight: 300; margin-left: 10px; }
             #btn-shop.open::after { content: '-'; }
         }
@@ -197,14 +188,14 @@
             max-width: 1200px; margin: 0 auto; padding: 0 20px;
         }
 
-        /* --- Full Width Banner & Ken Burns --- */
+        /* --- Hero Section (Updated) --- */
         .hero-section { width: 100%; position: relative; }
         
         .slideshow-container {
             width: 100%; 
-            height: calc(100vh - var(--nav-height));
+            height: calc(100vh - var(--nav-height)); /* 扣除 navbar 高度 */
             min-height: 500px;
-            max-height: 800px;
+            max-height: 900px;
             background: #e0e0e0;
             overflow: hidden; 
             position: relative;
@@ -221,25 +212,56 @@
             transition: opacity 1.5s ease-in-out; 
             transform-origin: center center;
         }
-        .slide.active { 
-            opacity: 1; z-index: 1; 
-            animation: kenBurns 6s linear forwards; 
-        }
+        .slide.active { opacity: 1; z-index: 1; animation: kenBurns 6s linear forwards; }
 
+        /* [更新] 整合遮罩，顏色稍微加深以確保文字在任何圖片上都可見 */
         .hero-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
-            background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+            background: rgba(0,0,0,0.25); /* 全局稍微變暗 */
             pointer-events: none;
         }
         
-        .hero-text {
-            position: absolute; top: 50%; left: 8%; transform: translateY(-50%);
-            z-index: 3; color: #fff; text-align: left;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3); pointer-events: none;
+        /* [更新] 首頁置中文字區塊 */
+        .hero-center-content {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 10; color: #fff; text-align: center;
+            width: 90%; max-width: 800px;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.5);
+            pointer-events: none; /* 讓點擊穿透到按鈕 */
         }
-        .hero-text h1 { font-size: 3.5rem; margin-bottom: 10px; font-weight: 700; letter-spacing: 0.05em; }
-        .hero-text p { font-size: 0.9rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.9; }
+        .hero-center-content * { pointer-events: auto; } /* 按鈕恢復可點擊 */
 
+        .hero-center-content h1 { 
+            font-size: 3.5rem; margin-bottom: 5px; font-weight: 700; letter-spacing: 0.1em;
+            line-height: 1.2;
+        }
+        .hero-center-content p.subtitle { 
+            font-size: 0.9rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.9; margin-bottom: 30px; 
+        }
+        .hero-center-content .hero-quote {
+            font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; font-weight: 300; opacity: 0.95;
+            font-style: italic; 
+        }
+
+        /* Banner 上按鈕樣式 */
+        .hero-btn {
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid #fff; color: #fff;
+            padding: 12px 35px; border-radius: 50px; 
+            font-size: 0.9rem; cursor: pointer; transition: 0.3s;
+            backdrop-filter: blur(5px);
+            text-transform: uppercase; letter-spacing: 0.1em;
+        }
+        .hero-btn:hover { background: #fff; color: #000; transform: translateY(-2px); }
+
+        /* [更新] Mobile Hero 優化 */
+        @media (max-width: 768px) {
+            .hero-center-content h1 { font-size: 2.2rem; }
+            .hero-center-content .hero-quote { font-size: 1rem; margin-bottom: 30px; }
+            .hero-btn { padding: 10px 30px; font-size: 0.85rem; }
+        }
+
+        /* Slide Arrows */
         .slide-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(255,255,255,0.1); border: none; color: #fff;
@@ -249,6 +271,16 @@
         .slide-btn:hover { background: rgba(255,255,255,0.3); }
         .slide-prev { left: 0; }
         .slide-next { right: 0; }
+
+        /* [新增] 製作花絮區塊 (Placeholder) */
+        #making-of-section {
+            background-color: #f2f2f2;
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        #making-of-section h3 { font-size: 1.5rem; color: #999; font-weight: 400; margin-bottom: 10px; }
+        #making-of-section p { color: #ccc; }
 
         /* Category Header */
         .category-header-wrapper {
@@ -264,11 +296,7 @@
         .category-text h2 { font-size: 3rem; margin: 0; font-weight: 700; }
         .category-text p { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; }
 
-        /* --- Quote & Grid --- */
-        .quote-box {
-            max-width: 600px; margin: 80px auto; padding: 0 20px; text-align: center;
-        }
-
+        /* Product Grid */
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 60px 40px; margin-bottom: 80px;
@@ -328,20 +356,17 @@
             opacity: 0; transition: opacity 0.3s ease;
         }
         .lightbox-modal.active { display: flex; opacity: 1; }
-        
         .lightbox-wrapper { position: relative; width: 90vw; height: 85vh; display: flex; align-items: center; justify-content: center; }
         .lightbox-content {
             max-width: 100%; max-height: 100%; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
             animation: zoomIn 0.3s ease; object-fit: contain;
         }
-        
         .close-lightbox {
             position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; 
             cursor: pointer; transition: 0.3s; z-index: 2005; line-height: 1; opacity: 0.8;
         }
         .close-lightbox:hover { transform: rotate(90deg); opacity: 1; }
-
         .lb-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: transparent; border: none; color: #fff;
@@ -391,20 +416,21 @@
             <div class="slideshow-container" id="home-hero-root">
                 <div class="skeleton"></div>
             </div>
+            
             <div class="hero-overlay"></div>
-            <div class="hero-text">
+            
+            <div class="hero-center-content">
                 <h1>Wabi-Sabi Life</h1>
-                <p>Nature・Ceramics・Living</p>
+                <p class="subtitle">Nature・Ceramics・Living</p>
+                <p class="hero-quote">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
+                <button class="hero-btn" onclick="handleNavClick('available')">View Available Items</button>
             </div>
         </div>
 
-        <div class="content-container">
-            <div class="quote-box">
-                <p style="font-size: 1.1rem; line-height: 1.8; color: #444;">
-                    "一顆橡實，靜靜落地，等待著屬於自己的季節。"
-                </p>
-                <div style="width: 40px; height: 1px; background: #ddd; margin: 30px auto;"></div>
-                <button class="toggle-btn" onclick="handleNavClick('available')">View Available Items</button>
+        <div id="making-of-section">
+            <div class="content-container">
+                <h3>Behind the Scenes</h3>
+                <p>製作花絮 (Coming Soon)</p>
             </div>
         </div>
     </div>
@@ -418,7 +444,7 @@
                     <p>我們相信器皿不只是盛裝的工具，更是生活情感的延伸。</p>
                     <p>在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡。</p>
                     <a href="https://www.instagram.com" target="_blank" class="social-link">
-                        <svg class="social-icon" style="width:18px;height:18px;margin-right:8px;fill:currentColor;" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        <svg class="social-icon" style="width:18px;height:18px;margin-right:8px;fill:currentColor;" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                         Follow us on Instagram
                     </a>
                 </div>
