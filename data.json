@@ -1,7 +1,7 @@
 {
   "config": [
     { "type": "HomeHero", "key": "Main", "image": "assets/home_hero.jpg" },
-    { "type": "Banner", "key": "Hand-Carved (手雕系列)", "image": "assets/banner_hc.jpg" },
+    { "type": "Banner", "key": "Hand-Carved (手雕系列)", "image": ["assets/banner_hc.jpg", "assets/hc1.jpg"] },
     { "type": "Banner", "key": "Tableware (食器系列)", "image": "assets/banner_ht.jpg" },
     { "type": "Banner", "key": "Round-Cap (圓帽系列)", "image": "assets/banner_rc.jpg" },
     { "type": "Banner", "key": "Special (限定系列)", "image": "assets/banner_sp.jpg" },
@@ -13,7 +13,7 @@
     { "type": "About", "key": "Photo 4", "image": "assets/about_4.jpg" }
   ],
   "products": [
-    { "category": "Hand-Carved (手雕系列)", "code": "HC-1", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": "assets/hc1.jpg" },
+    { "category": "Hand-Carved (手雕系列)", "code": "HC-1", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": ["assets/hc1.jpg", "assets/hc2.jpg"] },
     { "category": "Hand-Carved (手雕系列)", "code": "HC-2", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": "assets/hc2.jpg" },
     { "category": "Hand-Carved (手雕系列)", "code": "HC-3", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": "assets/hc3.jpg" },
     { "category": "Hand-Carved (手雕系列)", "code": "HC-4", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": "assets/hc4.jpg" },
