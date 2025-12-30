@@ -26,7 +26,7 @@
             color: var(--text-color);
             line-height: 1.6;
             letter-spacing: 0.05em;
-            padding-top: var(--nav-height); /* 預留 Navbar 空間 */
+            padding-top: var(--nav-height);
             overflow-x: hidden;
             width: 100%;
         }
@@ -51,7 +51,6 @@
             position: fixed; top: 0; left: 0; width: 100%;
             height: var(--nav-height); 
             padding: 0 40px;
-            /* 漸層與毛玻璃 */
             background: linear-gradient(180deg, rgba(249, 247, 242, 0.98) 0%, rgba(249, 247, 242, 0.9) 100%);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -75,7 +74,7 @@
         .nav-btn {
             background: none; border: none; font-size: 0.9rem; font-weight: 600;
             font-family: var(--font-main); cursor: pointer; color: #666; 
-            position: relative; padding: 25px 0; /* 增加感應區 */
+            position: relative; padding: 25px 0; 
             letter-spacing: 0.1em;
             transition: color 0.3s ease;
             text-transform: uppercase;
@@ -89,24 +88,27 @@
         }
         .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
 
-        /* Dropdown [修復 Hover 問題] */
+        /* Dropdown [修正重點] */
         .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
         .dropdown-content {
-            position: absolute; top: 100%; left: auto; right: -10px; /* 稍微往右對齊 */
-            /* 關鍵修復: 增加 padding-top 作為透明橋接層，防止滑鼠移開時選單消失 */
-            padding-top: 10px; 
+            position: absolute; top: 100%; left: auto; right: -10px;
+            padding-top: 10px; /* 透明橋接層 */
             opacity: 0; pointer-events: none; transition: all 0.2s ease;
             visibility: hidden; z-index: 1002;
         }
-        /* 實際內容框 */
+        
+        /* 下拉選單內部容器 */
         .dropdown-inner {
-            background-color: #fff; min-width: 220px;
+            background-color: #fff; 
+            min-width: 220px;
+            /* 使用 max-content 讓寬度一次定好，不會亂跳，但為了保險我們固定樣式 */
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             padding: 10px 0; 
             border: 1px solid rgba(0,0,0,0.05);
             text-align: left;
             transform: translateY(10px);
             transition: transform 0.3s ease;
+            white-space: nowrap; /* 確保不換行 */
         }
 
         @media (min-width: 769px) {
@@ -118,11 +120,24 @@
             }
         }
 
+        /* [重點修正] Item 樣式：不再改變 padding */
         .dropdown-item { 
-            padding: 12px 25px; font-size: 0.85rem; cursor: pointer; 
-            transition: 0.2s; color: #666; display: block; white-space: nowrap;
+            padding: 12px 25px; /* 固定內距 */
+            font-size: 0.85rem; cursor: pointer; 
+            transition: all 0.2s ease; 
+            color: #666; display: block;
         }
-        .dropdown-item:hover { color: #000; background-color: #f9f9f9; padding-left: 30px; }
+        
+        .dropdown-item:hover { 
+            color: #000; 
+            background-color: #f9f9f9; 
+            /* padding-left: 30px; <--- 刪除這行，這是造成跳動的主因 */
+            padding-left: 25px; /* 維持原樣 */
+            
+            /* 如果想要動態感，改用 transform (只移動視覺，不影響寬度) */
+            transform: translateX(4px); 
+        }
+        
         .shop-all-item { color: #333; font-weight: 700; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; }
 
         /* Mobile Hamburger */
@@ -166,27 +181,27 @@
                 max-height: 0; overflow: hidden; transition: max-height 0.5s ease; padding: 0;
             }
             .dropdown-inner.show { max-height: 800px; border-bottom: 1px solid #f5f5f5; margin-bottom: 10px; }
+            /* Mobile 不使用 transform 位移 */
+            .dropdown-item:hover { transform: none; padding-left: 25px; }
+            
             #btn-shop::after { content: '+'; position: static; transform: none; font-size: 1.4rem; font-weight: 300; margin-left: 10px; }
             #btn-shop.open::after { content: '-'; }
         }
 
         /* --- Page Layout --- */
-        /* [修正] 移除 page-section 的 max-width，允許內容滿版 */
         .page-section { display: none; width: 100%; animation: fadeIn 0.6s ease; }
         .page-section.active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* [新] 內容容器：用於需要置中的文字或產品 */
         .content-container {
             max-width: 1200px; margin: 0 auto; padding: 0 20px;
         }
 
-        /* --- Full Width Banner & Ken Burns Effect --- */
+        /* --- Full Width Banner & Ken Burns --- */
         .hero-section { width: 100%; position: relative; }
         
         .slideshow-container {
             width: 100%; 
-            /* [修正] 高度設定，確保緊貼 Navbar 且有氣勢 */
             height: calc(100vh - var(--nav-height));
             min-height: 500px;
             max-height: 800px;
@@ -195,7 +210,6 @@
             position: relative;
         }
 
-        /* [Ken Burns 動畫] */
         @keyframes kenBurns {
             0% { transform: scale(1); }
             100% { transform: scale(1.1); }
@@ -204,24 +218,20 @@
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0; object-fit: cover;
-            transition: opacity 1.5s ease-in-out; /* 讓切換更柔和 */
+            transition: opacity 1.5s ease-in-out; 
             transform-origin: center center;
         }
-        /* 當 active 時，加上 Ken Burns 動畫 */
         .slide.active { 
             opacity: 1; z-index: 1; 
             animation: kenBurns 6s linear forwards; 
         }
 
-        /* 文字遮罩 (Gradient Overlay) */
         .hero-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
-            /* [修正] 改為左側漸層，讓左邊文字清楚 */
             background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
             pointer-events: none;
         }
         
-        /* Banner 文字 - [修正] 改為靠左 */
         .hero-text {
             position: absolute; top: 50%; left: 8%; transform: translateY(-50%);
             z-index: 3; color: #fff; text-align: left;
@@ -240,14 +250,14 @@
         .slide-prev { left: 0; }
         .slide-next { right: 0; }
 
-        /* Category Header (Banner) */
+        /* Category Header */
         .category-header-wrapper {
             position: relative; width: 100%; height: 45vh; min-height: 300px;
             margin-bottom: 50px; background: #e0e0e0; overflow: hidden;
         }
         .category-header-wrapper .slideshow-container { height: 100%; min-height: auto; max-height: none; }
         .category-text { 
-            position: absolute; bottom: 40px; left: 5%; /* [修正] 靠左 */
+            position: absolute; bottom: 40px; left: 5%; 
             z-index: 10; color: #fff; text-align: left; 
             text-shadow: 0 2px 15px rgba(0,0,0,0.5); pointer-events: none;
         }
@@ -278,7 +288,6 @@
         .img-hover { opacity: 0; z-index: 1; }
         .img-box img.loaded { opacity: 1; }
         
-        /* Hover Effect */
         .product-card:hover .img-box img { transform: scale(1.05); }
         .product-card.has-hover:hover .img-main { opacity: 0; }
         .product-card.has-hover:hover .img-hover { opacity: 1; z-index: 3; }
@@ -299,7 +308,6 @@
         }
         .toggle-btn:hover, .toggle-btn.active { background: #333; color: white; border-color: #333; }
 
-        /* About & Footer */
         .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #444; font-size: 1.05rem; }
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
         .gallery-item { aspect-ratio: 1/1; background: #f0f0f0; overflow: hidden; }
@@ -309,13 +317,12 @@
             display: inline-flex; align-items: center; margin-top: 30px; text-decoration: none; color: #333; 
             border-bottom: 1px solid transparent; padding-bottom: 2px; transition: 0.2s;
         }
-        .social-link:hover { border-bottom- 1px solid #333; }
+        .social-link:hover { border-bottom: 1px solid #333; }
         footer { text-align: center; padding: 80px 20px; color: #bbb; font-size: 0.75rem; border-top: 1px solid #f0f0f0; }
 
-        /* --- [修正] Lightbox 回歸原樣 (Dark Mode) --- */
+        /* Lightbox (Dark) */
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* 改回深色背景 */
             background-color: rgba(30, 30, 30, 0.95); 
             z-index: 2000; justify-content: center; align-items: center;
             opacity: 0; transition: opacity 0.3s ease;
@@ -325,11 +332,10 @@
         .lightbox-wrapper { position: relative; width: 90vw; height: 85vh; display: flex; align-items: center; justify-content: center; }
         .lightbox-content {
             max-width: 100%; max-height: 100%; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5); /* 加強陰影 */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
             animation: zoomIn 0.3s ease; object-fit: contain;
         }
         
-        /* 關閉按鈕與箭頭改回白色 */
         .close-lightbox {
             position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; 
             cursor: pointer; transition: 0.3s; z-index: 2005; line-height: 1; opacity: 0.8;
@@ -385,7 +391,6 @@
             <div class="slideshow-container" id="home-hero-root">
                 <div class="skeleton"></div>
             </div>
-            
             <div class="hero-overlay"></div>
             <div class="hero-text">
                 <h1>Wabi-Sabi Life</h1>
@@ -408,18 +413,15 @@
         <div class="content-container">
             <div class="about-container" style="max-width: 800px; margin: 0 auto; text-align: center;">
                 <h2 style="font-size: 2rem; font-weight: 700; margin: 60px 0 30px;">About Us</h2>
-                
                 <div class="about-text">
                     <p>DONGULI 來自於對自然的觀察與熱愛。</p>
                     <p>我們相信器皿不只是盛裝的工具，更是生活情感的延伸。</p>
                     <p>在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡。</p>
-                    
                     <a href="https://www.instagram.com" target="_blank" class="social-link">
                         <svg class="social-icon" style="width:18px;height:18px;margin-right:8px;fill:currentColor;" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                         Follow us on Instagram
                     </a>
                 </div>
-                
                 <div class="gallery-grid" id="about-gallery-root">
                     <div class="gallery-item"><div class="skeleton"></div></div>
                     <div class="gallery-item"><div class="skeleton"></div></div>
@@ -436,7 +438,6 @@
             </div>
             <div class="product-grid" id="grid-available">
                 <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
-                <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
             </div>
         </div>
     </div>
@@ -449,42 +450,28 @@
 
     <div id="lightbox" class="lightbox-modal" onclick="closeLightbox(event)">
         <span class="close-lightbox">&times;</span>
-        
         <button class="lb-btn lb-prev" id="lb-prev" onclick="changeLightboxItem(-1)">&lt;</button>
-        <div class="lightbox-wrapper" id="lightbox-wrapper">
-            </div>
+        <div class="lightbox-wrapper" id="lightbox-wrapper"></div>
         <button class="lb-btn lb-next" id="lb-next" onclick="changeLightboxItem(1)">&gt;</button>
     </div>
 
     <script>
-        // ==========================================
-        //  JS Data & Logic
-        // ==========================================
-        
         let products = [];
         let configs = [];
         let isHideSoldOut = false;
         let slideshowIntervals = {};
-        
-        // Lightbox State
         let currentLbImages = [];
         let currentLbIndex = 0;
 
         window.onpopstate = function(event) {
-            if (event.state && event.state.page) {
-                switchPage(event.state.page, false);
-            } else {
-                switchPage('home', false);
-            }
+            if (event.state && event.state.page) switchPage(event.state.page, false);
+            else switchPage('home', false);
         };
 
-        function handleNavClick(pageId) {
-            switchPage(pageId, true);
-        }
+        function handleNavClick(pageId) { switchPage(pageId, true); }
 
         async function initWebsite() {
             document.getElementById('footer-year').innerText = new Date().getFullYear();
-            
             const urlParams = new URLSearchParams(window.location.search);
             const initialPage = urlParams.get('page') || 'home';
 
@@ -495,16 +482,12 @@
                 products = data.products;
                 configs = data.config;
 
-                // Home Hero
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
-                    const images = Array.isArray(homeHeroConfig.image) 
-                        ? homeHeroConfig.image 
-                        : [homeHeroConfig.image];
+                    const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
                     renderSlideshow('home-hero-root', images);
                 }
 
-                // About Gallery
                 const aboutRoot = document.getElementById('about-gallery-root');
                 aboutRoot.innerHTML = ''; 
                 configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
@@ -538,7 +521,6 @@
                 container.appendChild(img);
             });
 
-            // Only arrows if > 1
             if (images.length > 1) {
                 const prevBtn = document.createElement('button');
                 prevBtn.className = 'slide-btn slide-prev';
@@ -580,9 +562,7 @@
 
         function startAutoPlay(id) {
             if(slideshowIntervals[id]) clearInterval(slideshowIntervals[id]);
-            slideshowIntervals[id] = setInterval(() => {
-                changeSlide(id, 1);
-            }, 6000); // 延長至6秒以配合動畫
+            slideshowIntervals[id] = setInterval(() => { changeSlide(id, 1); }, 6000);
         }
 
         function stopAutoPlay(id) {
@@ -614,9 +594,7 @@
 
                 const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === cat);
                 let bannerImages = [];
-                if (bannerConfig) {
-                     bannerImages = Array.isArray(bannerConfig.image) ? bannerConfig.image : [bannerConfig.image];
-                }
+                if (bannerConfig) bannerImages = Array.isArray(bannerConfig.image) ? bannerConfig.image : [bannerConfig.image];
                 
                 const catName = cat.split('(')[0];
                 const catSub = cat.includes('(') ? cat.split('(')[1].replace(')', '') : '';
@@ -625,7 +603,6 @@
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
                 
-                // Banner Full Width
                 pageDiv.innerHTML = `
                     <div class="category-header-wrapper">
                         <div class="slideshow-container" id="banner-${safeId}">
@@ -649,10 +626,7 @@
                 `;
                 pagesRoot.appendChild(pageDiv);
                 
-                if(bannerImages.length > 0) {
-                    renderSlideshow(`banner-${safeId}`, bannerImages);
-                }
-                
+                if(bannerImages.length > 0) renderSlideshow(`banner-${safeId}`, bannerImages);
                 renderProductGrid('grid-' + safeId, cat);
             });
         }
@@ -662,13 +636,10 @@
             const mediaList = item.images && Array.isArray(item.images) ? item.images : [item.image];
             const mainImg = mediaList[0];
             const hoverImg = mediaList.length > 1 ? mediaList[1] : null;
-
             const mediaJson = JSON.stringify(mediaList).replace(/"/g, '&quot;');
             
             const hasHoverClass = hoverImg ? 'has-hover' : '';
-            const hoverHtml = hoverImg 
-                ? `<img class="img-hover" src="${hoverImg}" loading="lazy" alt="${item.name}">` 
-                : '';
+            const hoverHtml = hoverImg ? `<img class="img-hover" src="${hoverImg}" loading="lazy" alt="${item.name}">` : '';
 
             return `
                 <article class="product-card ${hasHoverClass}">
@@ -687,18 +658,14 @@
         function renderProductGrid(gridId, categoryFilter) {
             const grid = document.getElementById(gridId);
             if(!grid) return;
-            
             const items = products.filter(p => {
                 if (categoryFilter && p.category !== categoryFilter) return false;
                 if (isHideSoldOut && p.status === 'SOLD OUT') return false;
                 return true;
             });
 
-            if(items.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#999; padding:50px;">暫無商品 / No Items Found</div>';
-            } else {
-                grid.innerHTML = items.map(item => createProductCard(item)).join('');
-            }
+            if(items.length === 0) grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#999; padding:50px;">暫無商品 / No Items Found</div>';
+            else grid.innerHTML = items.map(item => createProductCard(item)).join('');
         }
 
         function renderAvailablePage() {
@@ -706,26 +673,20 @@
             if(!grid) return;
             const items = products.filter(p => p.status !== 'SOLD OUT');
             
-            if(items.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#999; padding:50px;">目前沒有現貨 / Out of Stock</div>';
-            } else {
-                grid.innerHTML = items.map(item => createProductCard(item)).join('');
-            }
+            if(items.length === 0) grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#999; padding:50px;">目前沒有現貨 / Out of Stock</div>';
+            else grid.innerHTML = items.map(item => createProductCard(item)).join('');
         }
 
         function switchPage(pageId, pushToHistory = true) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
-            
             const target = document.getElementById('page-' + pageId);
             if(target) {
                 target.classList.add('active-page');
                 window.scrollTo(0, 0);
-
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
                 if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
                 else if(pageId === 'about') document.getElementById('btn-about').classList.add('active');
                 else document.getElementById('btn-shop').classList.add('active');
-
                 if (pushToHistory) {
                     const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
                     window.history.pushState({ page: pageId }, '', newUrl);
@@ -733,7 +694,6 @@
             }
         }
 
-        // --- Lightbox Logic ---
         function openProductLightbox(imagesArray) {
             currentLbImages = imagesArray;
             currentLbIndex = 0;
@@ -759,7 +719,6 @@
             const wrapper = document.getElementById('lightbox-wrapper');
             const src = currentLbImages[currentLbIndex];
             const isVideo = src.toLowerCase().endsWith('.mp4') || src.toLowerCase().endsWith('.webm');
-
             wrapper.innerHTML = ''; 
 
             if (isVideo) {
@@ -788,13 +747,10 @@
         }
 
         function closeLightbox(e) {
-            if (!e.target.classList.contains('lightbox-content') && 
-                !e.target.classList.contains('lb-btn')) {
-                
+            if (!e.target.classList.contains('lightbox-content') && !e.target.classList.contains('lb-btn')) {
                 const lightbox = document.getElementById('lightbox');
                 lightbox.classList.remove('active');
-                const wrapper = document.getElementById('lightbox-wrapper');
-                wrapper.innerHTML = '';
+                document.getElementById('lightbox-wrapper').innerHTML = '';
                 setTimeout(() => { lightbox.style.display = 'none'; }, 300);
                 if(!document.body.classList.contains('menu-open')) document.body.style.overflow = '';
             }
@@ -809,7 +765,6 @@
             }
         });
 
-        // Menu functions
         function toggleMenu() {
             const menu = document.getElementById('nav-menu');
             const overlay = document.querySelector('.menu-overlay');
