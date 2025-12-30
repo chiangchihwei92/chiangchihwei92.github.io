@@ -4,14 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <meta name="description" content="DONGULI 咚咕哩 - 自然・陶・生活。在陶土的粗糙與釉色的溫潤之間，尋找 Wabi-Sabi 的生活平衡。">
-    <meta name="keywords" content="陶藝, 陶瓷, 手作, 生活道具, Wabi-Sabi, 侘寂, DONGULI">
+    <meta name="description" content="DONGULI 咚咕哩 - 自然・陶・生活。">
     <meta name="robots" content="index, follow">
-
-    <meta property="og:title" content="DONGULI | 咚咕哩">
-    <meta property="og:description" content="自然・陶・生活">
-    <meta property="og:image" content="assets/og-image.jpg">
-    <meta property="og:type" content="website">
 
     <title>DONGULI | 咚咕哩</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
@@ -21,8 +15,6 @@
             --bg-color: #F9F7F2; 
             --text-color: #333333;
             --accent-color: #666666;
-            
-            /* [Font] 使用標準無襯線字體 */
             --font-main: "Helvetica Neue", Helvetica, Arial, "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
         }
 
@@ -41,7 +33,7 @@
 
         body.menu-open { overflow: hidden; }
 
-        /* --- [恢復] Skeleton Loading 骨架屏 --- */
+        /* --- Skeleton --- */
         @keyframes shimmer {
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
@@ -59,7 +51,6 @@
             position: fixed; top: 0; left: 0; width: 100%;
             min-height: 70px; 
             padding: 0 5%;
-            /* [特效] 漸層 + 模糊 */
             background: linear-gradient(180deg, rgba(249, 247, 242, 0.98) 0%, rgba(249, 247, 242, 0.85) 100%);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -95,8 +86,6 @@
         }
         
         .nav-btn.active { color: #000; }
-
-        /* [恢復] 下底線滑動特效 */
         .nav-btn::after {
             content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px;
             background-color: #000; transition: all 0.3s ease; transform: translateX(-50%);
@@ -107,7 +96,7 @@
         .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
         .dropdown-content {
             position: absolute; top: 100%; left: auto; right: 0; 
-            transform: translateY(10px); /* [恢復] 上浮特效 */
+            transform: translateY(10px);
             background-color: #fff; min-width: 220px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             padding: 10px 0; z-index: 1002;
@@ -120,8 +109,7 @@
 
         @media (min-width: 769px) {
             .dropdown:hover .dropdown-content { 
-                opacity: 1; pointer-events: auto; visibility: visible; 
-                transform: translateY(0); 
+                opacity: 1; pointer-events: auto; visibility: visible; transform: translateY(0); 
             }
         }
 
@@ -172,7 +160,7 @@
                 padding: 20px 0; border-bottom: 1px solid #f5f5f5;
                 color: #333; display: flex; justify-content: space-between; align-items: center;
             }
-            .nav-btn::after { display: none; } /* Mobile 不用底線特效 */
+            .nav-btn::after { display: none; }
             
             .dropdown { display: block; width: 100%; height: auto; }
             .dropdown-content {
@@ -183,8 +171,6 @@
                 padding: 0; min-width: auto; text-align: left;
             }
             .dropdown-content.show { max-height: 800px; border-bottom: 1px solid #f5f5f5; margin-bottom: 10px; }
-            
-            /* [恢復] Mobile +/- Icon Logic */
             #btn-shop::after { 
                 content: '+'; position: static; width: auto; height: auto; 
                 background: none; transform: none; font-size: 1.4rem; font-weight: 300; 
@@ -202,11 +188,11 @@
 
         .hero-section { text-align: center; margin-top: 10px; }
         
-        /* Slideshow */
+        /* --- Slideshow & Banner --- */
         .slideshow-container {
             width: 100%; aspect-ratio: 16/9; max-height: 650px; 
             background: #f0f0f0; margin: 30px auto; overflow: hidden; 
-            position: relative; border-radius: 2px; /* [恢復] 微微圓角 */
+            position: relative; border-radius: 2px;
         }
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -225,52 +211,67 @@
         .slide-prev { left: 0; }
         .slide-next { right: 0; }
 
-        .quote-box {
-            max-width: 600px; margin: 60px auto 40px; padding: 0 20px;
-            text-align: center;
-        }
-        
-        #dynamic-pages-root .page-section { max-width: 100%; padding: 0 0 60px 0; }
-        
-        /* Banner & Layout */
+        /* Category Header - [Fix] Text z-index & positioning */
         .category-header-wrapper {
             position: relative;
             width: 100%; height: 35vh; min-height: 250px;
             margin-bottom: 40px;
             background: #e0e0e0;
+            overflow: hidden; /* Ensure text doesn't flow out */
         }
-        .category-header-wrapper .slide { width: 100%; height: 100%; object-fit: cover; }
-        .category-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); z-index: 5; pointer-events: none; }
+        .category-header-wrapper .slideshow-container {
+            margin: 0; width: 100%; height: 100%; max-height: none; border-radius: 0;
+        }
+        .category-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); 
+            z-index: 5; pointer-events: none; 
+        }
         .category-text { 
-            position: absolute; bottom: 0; right: 0;
-            z-index: 6; color: #fff; text-align: right; 
+            position: absolute; bottom: 0; right: 0; width: 100%;
+            z-index: 10; /* [Fix] Ensure higher than slide index */
+            color: #fff; text-align: right; 
             padding: 40px 5%; text-shadow: 0 2px 10px rgba(0,0,0,0.3); 
             pointer-events: none;
         }
         .category-text h2 { font-size: 2.8rem; margin: 0; font-weight: 700; letter-spacing: 0.05em; }
         .category-text p { font-size: 1rem; opacity: 0.9; margin-top: 5px; }
 
+        .quote-box {
+            max-width: 600px; margin: 60px auto 40px; padding: 0 20px;
+            text-align: center;
+        }
+
+        /* --- Product Grid --- */
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 60px 30px; padding: 0 20px; max-width: 1200px; margin: 0 auto;
         }
-
         .product-card { text-align: center; }
+        
+        /* [New] Hover Swap Image */
         .img-box {
             width: 100%; aspect-ratio: 1/1; background: #f9f9f9; margin-bottom: 18px; 
             position: relative; overflow: hidden; cursor: zoom-in; 
         }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; opacity: 0; }
-        .img-box img.loaded { opacity: 1; }
+        .img-box img, .img-box video { 
+            width: 100%; height: 100%; object-fit: cover; 
+            transition: opacity 0.5s ease, transform 0.7s ease; 
+            position: absolute; top: 0; left: 0;
+        }
+        .img-main { opacity: 0; z-index: 2; }
+        .img-hover { opacity: 0; z-index: 1; }
         
-        /* [恢復] 圖片懸停特效 */
+        .img-box img.loaded { opacity: 1; }
         .product-card:hover .img-box img { transform: scale(1.03); }
         
+        /* If hover image exists, hide main on hover */
+        .product-card.has-hover:hover .img-main { opacity: 0; }
+        .product-card.has-hover:hover .img-hover { opacity: 1; z-index: 3; }
+
         .p-code { font-size: 0.75rem; color: #aaa; margin-bottom: 4px; letter-spacing: 0.05em; }
         .p-name { font-size: 1rem; color: #333; margin-bottom: 6px; font-weight: 600; }
         .p-price { color: #666; font-size: 1rem; font-weight: 400; }
-        
-        /* [恢復] 圓角標籤設計 */
         .p-status { 
             font-size: 0.7rem; padding: 4px 10px; border: 1px solid #ccc; color: #999; 
             display: inline-block; margin-top: 12px; border-radius: 50px; letter-spacing: 0.05em;
@@ -281,8 +282,6 @@
             max-width: 1200px; margin: 0 auto 30px; padding: 0 20px; text-align: right; 
             position: relative; z-index: 10; 
         }
-        
-        /* [恢復] 按鈕圓角與浮動 */
         .toggle-btn {
             background: transparent; border: 1px solid #888; color: #666;
             padding: 8px 20px; border-radius: 30px; font-size: 0.85rem; cursor: pointer; transition: 0.3s;
@@ -305,27 +304,43 @@
         .gallery-item { aspect-ratio: 1/1; background: #f0f0f0; cursor: default; overflow: hidden; position: relative; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; opacity: 0; }
         .gallery-item img.loaded { opacity: 1; }
-        /* [恢復] Gallery 懸停放大 */
         .gallery-item:hover img { transform: scale(1.05); }
 
         footer { text-align: center; padding: 60px 20px; color: #bbb; font-size: 0.75rem; margin-top: 80px; border-top: 1px solid #f0f0f0; }
 
+        /* --- Lightbox (Enhanced) --- */
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(255, 255, 255, 0.98); z-index: 2000;
             justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.3s ease; padding: 20px;
+            opacity: 0; transition: opacity 0.3s ease;
         }
         .lightbox-modal.active { display: flex; opacity: 1; }
+        
+        .lightbox-wrapper { position: relative; width: 90vw; height: 85vh; display: flex; align-items: center; justify-content: center; }
         .lightbox-content {
-            max-width: 90vw; max-height: 85vh; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            max-width: 100%; max-height: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             animation: zoomIn 0.3s ease; object-fit: contain;
         }
+        /* Video specific in lightbox */
+        video.lightbox-content { background: #000; }
+
         .close-lightbox {
             position: absolute; top: 20px; right: 30px; color: #333; font-size: 40px; 
-            cursor: pointer; transition: 0.3s; z-index: 2001; line-height: 1;
+            cursor: pointer; transition: 0.3s; z-index: 2005; line-height: 1;
         }
         .close-lightbox:hover { transform: rotate(90deg); color: #000; }
+
+        .lb-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: transparent; border: none; color: #333;
+            font-size: 3rem; padding: 20px; cursor: pointer; z-index: 2002;
+            transition: 0.2s; font-weight: 300;
+        }
+        .lb-btn:hover { color: #000; transform: translateY(-50%) scale(1.1); }
+        .lb-prev { left: 10px; }
+        .lb-next { right: 10px; }
+
         @keyframes zoomIn { from { transform: scale(0.95); } to { transform: scale(1); } }
 
     </style>
@@ -352,8 +367,7 @@
             
             <div class="dropdown">
                 <button class="nav-btn" id="btn-shop" onclick="toggleMobileShop(event)">SHOP</button>
-                <div class="dropdown-content" id="shop-dropdown-content">
-                    </div>
+                <div class="dropdown-content" id="shop-dropdown-content"></div>
             </div>
         </div>
     </nav>
@@ -407,8 +421,6 @@
         <div class="product-grid" id="grid-available">
              <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
              <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
-             <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
-             <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
         </div>
     </div>
 
@@ -420,7 +432,11 @@
 
     <div id="lightbox" class="lightbox-modal" onclick="closeLightbox(event)">
         <span class="close-lightbox">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" src="" alt="Enlarged Image">
+        
+        <button class="lb-btn lb-prev" id="lb-prev" onclick="changeLightboxItem(-1)">&lt;</button>
+        <div class="lightbox-wrapper" id="lightbox-wrapper">
+            </div>
+        <button class="lb-btn lb-next" id="lb-next" onclick="changeLightboxItem(1)">&gt;</button>
     </div>
 
     <script>
@@ -431,7 +447,11 @@
         let products = [];
         let configs = [];
         let isHideSoldOut = false;
-        let slideshowIntervals = {}; 
+        let slideshowIntervals = {};
+        
+        // Lightbox State
+        let currentLbImages = [];
+        let currentLbIndex = 0;
 
         window.onpopstate = function(event) {
             if (event.state && event.state.page) {
@@ -458,19 +478,16 @@
                 products = data.products;
                 configs = data.config;
 
-                // Render Home Hero Slideshow
+                // Home Hero
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) 
                         ? homeHeroConfig.image 
                         : [homeHeroConfig.image];
-                    
-                    if(images.length === 1 && images[0]) images.push(images[0]); 
-
                     renderSlideshow('home-hero-root', images);
                 }
 
-                // Render About Gallery
+                // About Gallery
                 const aboutRoot = document.getElementById('about-gallery-root');
                 aboutRoot.innerHTML = ''; 
                 configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
@@ -483,13 +500,10 @@
                 setupCategories();
                 renderAvailablePage();
                 
-                if(initialPage !== 'home') {
-                    switchPage(initialPage, false);
-                }
+                if(initialPage !== 'home') switchPage(initialPage, false);
 
             } catch (error) {
                 console.error("Critical Error:", error);
-                // 錯誤時至少把 Skeleton 移除，避免永遠卡在骨架屏
                 document.querySelectorAll('.skeleton').forEach(el => el.style.display = 'none');
             }
         }
@@ -497,7 +511,7 @@
         function renderSlideshow(containerId, images) {
             const container = document.getElementById(containerId);
             if(!container) return;
-            container.innerHTML = ''; // 清除 Skeleton
+            container.innerHTML = ''; 
 
             images.forEach((src, index) => {
                 const img = document.createElement('img');
@@ -507,24 +521,25 @@
                 container.appendChild(img);
             });
 
-            if (images.length <= 1) return;
+            // [Fix] Only show arrows and autoplay if > 1 image
+            if (images.length > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'slide-btn slide-prev';
+                prevBtn.innerHTML = '&lt;'; 
+                prevBtn.onclick = () => changeSlide(containerId, -1);
 
-            const prevBtn = document.createElement('button');
-            prevBtn.className = 'slide-btn slide-prev';
-            prevBtn.innerHTML = '&lt;'; 
-            prevBtn.onclick = () => changeSlide(containerId, -1);
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'slide-btn slide-next';
+                nextBtn.innerHTML = '&gt;'; 
+                nextBtn.onclick = () => changeSlide(containerId, 1);
 
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'slide-btn slide-next';
-            nextBtn.innerHTML = '&gt;'; 
-            nextBtn.onclick = () => changeSlide(containerId, 1);
+                container.appendChild(prevBtn);
+                container.appendChild(nextBtn);
 
-            container.appendChild(prevBtn);
-            container.appendChild(nextBtn);
-
-            startAutoPlay(containerId);
-            container.onmouseenter = () => stopAutoPlay(containerId);
-            container.onmouseleave = () => startAutoPlay(containerId);
+                startAutoPlay(containerId);
+                container.onmouseenter = () => stopAutoPlay(containerId);
+                container.onmouseleave = () => startAutoPlay(containerId);
+            }
         }
 
         function changeSlide(containerId, direction) {
@@ -584,7 +599,6 @@
                 let bannerImages = [];
                 if (bannerConfig) {
                      bannerImages = Array.isArray(bannerConfig.image) ? bannerConfig.image : [bannerConfig.image];
-                     if(bannerImages.length === 1 && bannerImages[0]) bannerImages.push(bannerImages[0]);
                 }
                 
                 const catName = cat.split('(')[0];
@@ -594,10 +608,12 @@
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
                 
-                // [Skeleton] 加入 Banner 的 Skeleton
+                // [Fix] HTML Structure ensures text is overlaying the slideshow container
                 pageDiv.innerHTML = `
-                    <div class="category-header-wrapper" id="banner-${safeId}">
-                        <div class="skeleton"></div>
+                    <div class="category-header-wrapper">
+                        <div class="slideshow-container" id="banner-${safeId}">
+                            <div class="skeleton"></div>
+                        </div>
                         <div class="category-overlay"></div>
                         <div class="category-text">
                             <h2>${catName}</h2>
@@ -624,16 +640,24 @@
 
         function createProductCard(item) {
             const isSold = item.status === 'SOLD OUT';
+            // Data compatibility: item.images (array) or fallback to item.image (string)
+            const mediaList = item.images && Array.isArray(item.images) ? item.images : [item.image];
+            const mainImg = mediaList[0];
+            const hoverImg = mediaList.length > 1 ? mediaList[1] : null;
+
+            // Safe encode for passing to function
+            const mediaJson = JSON.stringify(mediaList).replace(/"/g, '&quot;');
+            
+            const hasHoverClass = hoverImg ? 'has-hover' : '';
+            const hoverHtml = hoverImg 
+                ? `<img class="img-hover" src="${hoverImg}" loading="lazy" alt="${item.name}">` 
+                : '';
+
             return `
-                <article class="product-card">
-                    <div class="img-box" onclick="openLightbox('${item.image}')">
-                        <img 
-                            src="${item.image}" 
-                            loading="lazy" 
-                            decoding="async" 
-                            alt="${item.name}"
-                            onload="this.classList.add('loaded')"
-                            onerror="this.style.display='none';">
+                <article class="product-card ${hasHoverClass}">
+                    <div class="img-box" onclick="openProductLightbox(${mediaJson})">
+                        <img class="img-main" src="${mainImg}" loading="lazy" alt="${item.name}" onload="this.classList.add('loaded')">
+                        ${hoverHtml}
                     </div>
                     <div class="p-code">${item.code}</div>
                     <div class="p-name">${item.name}</div>
@@ -692,22 +716,76 @@
             }
         }
 
-        function openLightbox(imgSrc) {
+        // --- Lightbox Logic ---
+
+        function openProductLightbox(imagesArray) {
+            currentLbImages = imagesArray;
+            currentLbIndex = 0;
+            updateLightboxContent();
+            
             const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = imgSrc;
             lightbox.style.display = 'flex';
             setTimeout(() => { lightbox.classList.add('active'); }, 10);
             document.body.style.overflow = 'hidden';
+            
+            // Show/Hide arrows based on count
+            const prevBtn = document.getElementById('lb-prev');
+            const nextBtn = document.getElementById('lb-next');
+            if(currentLbImages.length > 1) {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+            } else {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            }
+        }
+
+        function updateLightboxContent() {
+            const wrapper = document.getElementById('lightbox-wrapper');
+            const src = currentLbImages[currentLbIndex];
+            const isVideo = src.toLowerCase().endsWith('.mp4') || src.toLowerCase().endsWith('.webm');
+
+            wrapper.innerHTML = ''; // Clear prev
+
+            if (isVideo) {
+                const video = document.createElement('video');
+                video.className = 'lightbox-content';
+                video.controls = true;
+                video.autoplay = true;
+                video.loop = true;
+                video.src = src;
+                wrapper.appendChild(video);
+            } else {
+                const img = document.createElement('img');
+                img.className = 'lightbox-content';
+                img.src = src;
+                img.alt = 'Gallery Image';
+                wrapper.appendChild(img);
+            }
+        }
+
+        function changeLightboxItem(dir) {
+            if (currentLbImages.length <= 1) return;
+            currentLbIndex += dir;
+            if (currentLbIndex >= currentLbImages.length) currentLbIndex = 0;
+            if (currentLbIndex < 0) currentLbIndex = currentLbImages.length - 1;
+            updateLightboxContent();
         }
 
         function closeLightbox(e) {
-            if (e.target !== document.getElementById('lightbox-img')) {
+            // Check if clicked outside the content/video
+            if (!e.target.classList.contains('lightbox-content') && 
+                !e.target.classList.contains('lb-btn')) {
+                
                 const lightbox = document.getElementById('lightbox');
                 lightbox.classList.remove('active');
+                
+                // Stop video playback if open
+                const wrapper = document.getElementById('lightbox-wrapper');
+                wrapper.innerHTML = '';
+
                 setTimeout(() => { 
                     lightbox.style.display = 'none'; 
-                    document.getElementById('lightbox-img').src = '';
                 }, 300);
                 if(!document.body.classList.contains('menu-open')) {
                     document.body.style.overflow = '';
@@ -715,11 +793,21 @@
             }
         }
 
+        // Keyboard navigation for lightbox
+        document.addEventListener('keydown', function(e) {
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox.style.display === 'flex') {
+                if (e.key === 'ArrowLeft') changeLightboxItem(-1);
+                if (e.key === 'ArrowRight') changeLightboxItem(1);
+                if (e.key === 'Escape') closeLightbox({target: lightbox}); // Simulate click outside
+            }
+        });
+
+        // Menu functions
         function toggleMenu() {
             const menu = document.getElementById('nav-menu');
             const overlay = document.querySelector('.menu-overlay');
             const hamburger = document.getElementById('hamburger-btn');
-            
             menu.classList.toggle('open');
             overlay.classList.toggle('active');
             hamburger.classList.toggle('active');
@@ -730,12 +818,10 @@
             const menu = document.getElementById('nav-menu');
             const overlay = document.querySelector('.menu-overlay');
             const hamburger = document.getElementById('hamburger-btn');
-
             menu.classList.remove('open');
             overlay.classList.remove('active');
             hamburger.classList.remove('active');
             document.body.classList.remove('menu-open');
-            
             setTimeout(() => {
                 const dropdown = document.getElementById('shop-dropdown-content');
                 const btn = document.getElementById('btn-shop');
