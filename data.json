@@ -11,38 +11,5 @@
     { "type": "About", "key": "Photo 2", "image": "assets/about_2.jpg" },
     { "type": "About", "key": "Photo 3", "image": "assets/about_3.jpg" },
     { "type": "About", "key": "Photo 4", "image": "assets/about_4.jpg" }
-  ],
-  "products": [
-    { "category": "Hand-Carved (手雕系列)", "code": "HC-1", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": ["assets/hc1.jpg", "assets/hc2.jpg"] },
-    { "category": "Hand-Carved (手雕系列)", "code": "HC-2", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": "assets/hc2.jpg" },
-    { "category": "Hand-Carved (手雕系列)", "code": "HC-3", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": "assets/hc3.jpg" },
-    { "category": "Hand-Carved (手雕系列)", "code": "HC-4", "name": "手雕咚咕哩", "price": 1380, "status": "SOLD OUT", "image": "assets/hc4.jpg" },
-    { "category": "Tableware (食器系列)", "code": "HT-1", "name": "蓋碗/食器", "price": 1480, "status": "SOLD OUT", "image": "assets/ht1.jpg" },
-    { "category": "Tableware (食器系列)", "code": "HT-2", "name": "蓋碗/食器", "price": 980, "status": "SOLD OUT", "image": "assets/ht2.jpg" },
-    { "category": "Tableware (食器系列)", "code": "HT-3", "name": "蓋碗/食器", "price": 1580, "status": "SOLD OUT", "image": "assets/ht3.jpg" },
-    { "category": "Round-Cap (圓帽系列)", "code": "RC-1", "name": "圓帽咚咕哩", "price": 1480, "status": "SOLD OUT", "image": "assets/rc1.jpg" },
-    { "category": "Round-Cap (圓帽系列)", "code": "RC-2", "name": "圓帽咚咕哩", "price": 1480, "status": "SOLD OUT", "image": "assets/rc2.jpg" },
-    { "category": "Round-Cap (圓帽系列)", "code": "RC-3", "name": "圓帽咚咕哩", "price": 1480, "status": "SOLD OUT", "image": "assets/rc3.jpg" },
-    { "category": "Round-Cap (圓帽系列)", "code": "RC-4", "name": "圓帽咚咕哩", "price": 1480, "status": "SOLD OUT", "image": "assets/rc4.jpg" },
-    { "category": "konishii Hayata (小西氏系列)", "code": "KH-1", "name": "小西氏咚咕哩", "price": 1280, "status": "SOLD OUT", "image": "assets/kh1.jpg" },
-    { "category": "konishii Hayata (小西氏系列)", "code": "KH-2", "name": "小西氏咚咕哩", "price": 1080, "status": "SOLD OUT", "image": "assets/kh2.jpg" },
-    { "category": "konishii Hayata (小西氏系列)", "code": "KH-3", "name": "小西氏咚咕哩", "price": 1280, "status": "SOLD OUT", "image": "assets/kh3.jpg" },
-    { "category": "Red Oak (紅櫟系列)", "code": "RO-1", "name": "紅櫟咚咕哩", "price": 1280, "status": "SOLD OUT", "image": "assets/ro1.jpg" },
-    { "category": "Red Oak (紅櫟系列)", "code": "RO-2", "name": "紅櫟咚咕哩", "price": 1280, "status": "SOLD OUT", "image": "assets/ro2.jpg" },
-    { "category": "Red Oak (紅櫟系列)", "code": "RO-3", "name": "紅櫟咚咕哩", "price": 1280, "status": "SOLD OUT", "image": "assets/ro3.jpg" },
-    { "category": "Red Oak (紅櫟系列)", "code": "RO-4", "name": "紅櫟維尼", "price": 1280, "status": "Available", "image": ["assets/RO-4.jpg", "assets/RO-4-1.jpg"] },
-    { "category": "Special (限定系列)", "code": "SUN-1", "name": "夏日薄荷", "price": 1280, "status": "SOLD OUT", "image": "assets/sun1.jpg" },
-    { "category": "Special (限定系列)", "code": "SUN-2", "name": "夏日薄荷", "price": 1280, "status": "SOLD OUT", "image": "assets/sun2.jpg" },
-    { "category": "Special (限定系列)", "code": "SP-1", "name": "葡萄氣泡", "price": 1780, "status": "SOLD OUT", "image": "assets/sp1.jpg" },
-    { "category": "Special (限定系列)", "code": "SP-2", "name": "咚咕哩", "price": 1580, "status": "SOLD OUT", "image": "assets/sp2.jpg" },
-    { "category": "Special (限定系列)", "code": "SP-3", "name": "紫霧啵啵", "price": 1280, "status": "Available", "image": ["assets/sp3.jpg", "assets/sp3-1.jpg"] },
-    { "category": "Special (手雕系列)", "code": "HC-5", "name": "手雕小巧克", "price": 1380, "status": "Available", "image": ["assets/hc-5.jpg", "assets/hc-5-1.jpg", "assets/hc-5-2.jpg"] },
-    { "category": "Lifestyle (生活選物)", "code": "FW-1", "name": "一起去摘花吧", "price": 1480, "status": "SOLD OUT", "image": "assets/fw1.jpg" },
-    { "category": "Lifestyle (生活選物)", "code": "FW-2", "name": "一起去摘花吧", "price": 1480, "status": "SOLD OUT", "image": "assets/fw2.jpg" },
-    { "category": "Lifestyle (生活選物)", "code": "SW-1", "name": "雪花象嵌食器", "price": 1280, "status": "SOLD OUT", "image": "assets/sw1.jpg" },
-    { "category": "Lifestyle (生活選物)", "code": "SW-2", "name": "雪日造物", "price": 1280, "status": "SOLD OUT", "image": "assets/sw2.jpg" }
-
-
-
   ]
 }

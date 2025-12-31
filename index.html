@@ -39,7 +39,7 @@
             100% { background-position: 200% 0; }
         }
         .skeleton {
-            background: #e0e0e0; /* [調整] 改深一點的灰，避免太亮 */
+            background: #e0e0e0;
             background-image: linear-gradient(90deg, #e0e0e0 25%, #eeeeee 50%, #e0e0e0 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
@@ -246,7 +246,6 @@
         .slide-prev { left: 0; }
         .slide-next { right: 0; }
 
-        /* [修復 2] Behind the Scenes 位置修正 */
         .making-of-section {
             width: 100%;
             background-color: #fafafa;
@@ -254,7 +253,6 @@
             text-align: center;
             border-top: 1px solid #eee;
             margin-top: 60px;
-            /* 確保它不會被 grid 影響 */
             clear: both; 
             display: block;
         }
@@ -284,7 +282,6 @@
         
         .img-box {
             width: 100%; aspect-ratio: 1/1; 
-            /* [修復 4] 移除白色或亮色背景，避免照片載入前過亮 */
             background-color: transparent; 
             margin-bottom: 20px; 
             position: relative; overflow: hidden; cursor: pointer; 
@@ -294,7 +291,7 @@
             width: 100%; height: 100%; object-fit: cover; 
             transition: opacity 0.5s ease, transform 0.8s ease; 
             position: absolute; top: 0; left: 0;
-            z-index: 2; /* 確保圖片在 skeleton 之上 */
+            z-index: 2;
         }
         
         .img-main { opacity: 1; z-index: 2; }
@@ -320,7 +317,7 @@
         }
         .toggle-btn:hover, .toggle-btn.active { background: #333; color: white; border-color: #333; }
 
-        /* [修復 3] About Gallery Hover */
+        /* About Gallery */
         .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #444; font-size: 1.05rem; }
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
         
@@ -329,10 +326,9 @@
             background: #f0f0f0; 
             overflow: hidden; 
             position: relative; 
-            cursor: pointer; /* 讓滑鼠變成手指 */
+            cursor: pointer; 
         }
         
-        /* 確保圖片在 skeleton 上面 */
         .gallery-item img { 
             width: 100%; height: 100%; object-fit: cover; 
             opacity: 0; transition: transform 0.6s ease, opacity 0.5s ease; 
@@ -340,7 +336,6 @@
         }
         .gallery-item img.loaded { opacity: 1; }
         
-        /* 放大效果 */
         .gallery-item:hover img { transform: scale(1.06); }
         
         .social-link {
@@ -488,6 +483,10 @@
     </div>
 
     <script>
+        // 設定 CSV 的來源。如果是 Google Sheets，請使用發布後的 CSV 連結。
+        // 例如: const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSox1X7TkN9sthpcPPEALmBn6zIpYGKSRowSXKodN3fkLf3X8NAzCKjltFjQk5xgK3-Kt5wuVCRUT25/pub?gid=1824240757&single=true&output=csv';
+        const GOOGLE_SHEET_CSV_URL = 'DONGULI DB - Products.csv'; 
+
         let products = [];
         let configs = [];
         let isHideSoldOut = false;
@@ -508,12 +507,34 @@
             const initialPage = urlParams.get('page') || 'home';
 
             try {
-                const response = await fetch('data.json');
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                const data = await response.json();
-                products = data.products;
-                configs = data.config;
+                // 1. 嘗試讀取 data.json 來取得 Config (Banner, Hero 圖片設定)
+                // 即使失敗也不要中斷，因為我們要從 CSV 讀取產品
+                try {
+                    const response = await fetch('data.json');
+                    if (response.ok) {
+                        const data = await response.json();
+                        configs = data.config || [];
+                    }
+                } catch (e) {
+                    console.warn("data.json for configs not found or invalid, proceeding with defaults.");
+                    configs = [];
+                }
 
+                // 2. 讀取 CSV 產品資料
+                if (GOOGLE_SHEET_CSV_URL) {
+                    try {
+                        const csvResponse = await fetch(GOOGLE_SHEET_CSV_URL);
+                        if (!csvResponse.ok) throw new Error(`CSV Fetch Failed: ${csvResponse.status}`);
+                        const csvText = await csvResponse.text();
+                        products = parseCSV(csvText);
+                        console.log("Loaded products from CSV:", products.length);
+                    } catch (err) {
+                        console.error("Error loading product CSV:", err);
+                        // 如果 CSV 失敗，這裡可以保留 products 為空，或者做其他錯誤處理
+                    }
+                }
+
+                // 初始化頁面渲染
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
@@ -538,6 +559,74 @@
                 console.error("Critical Error:", error);
                 document.querySelectorAll('.skeleton').forEach(el => el.style.display = 'none');
             }
+        }
+
+        // CSV 解析函式
+        function parseCSV(text) {
+            const lines = text.trim().split(/\r?\n/);
+            if (lines.length < 2) return [];
+            
+            // 讀取 Header，假設第一行為標題
+            const headers = lines[0].split(',').map(h => h.trim());
+
+            // 輔助函式：取得欄位內容
+            // 對應 CSV 欄位名稱: Category, Code, Name, Price (NTD), Status, Image(s)
+            const getVal = (rowArr, headerName) => {
+                const idx = headers.indexOf(headerName);
+                return idx !== -1 && rowArr[idx] ? rowArr[idx] : '';
+            };
+
+            const result = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                // 簡單的 CSV Parser，處理引號內的逗號
+                const values = [];
+                let currentVal = '';
+                let inQuote = false;
+                
+                for(let j=0; j<line.length; j++) {
+                    const char = line[j];
+                    if(char === '"') {
+                        inQuote = !inQuote;
+                    } else if(char === ',' && !inQuote) {
+                        values.push(currentVal.trim());
+                        currentVal = '';
+                    } else {
+                        currentVal += char;
+                    }
+                }
+                values.push(currentVal.trim()); // 最後一個欄位
+
+                // 移除前後引號 (如果有的話)
+                const cleanValues = values.map(v => v.replace(/^"|"$/g, '').trim());
+
+                // 建立 Product 物件
+                const product = {
+                    category: getVal(cleanValues, 'Category'),
+                    code: getVal(cleanValues, 'Code'),
+                    name: getVal(cleanValues, 'Name'),
+                    price: parseInt(getVal(cleanValues, 'Price (NTD)').replace(/,/g, '') || '0'),
+                    status: getVal(cleanValues, 'Status'),
+                    // 圖片處理：加上 assets/ 前綴，處理多張圖片
+                    image: getVal(cleanValues, 'Image(s)')
+                        .split(',')
+                        .map(s => {
+                            const trimmed = s.trim();
+                            // 如果檔名已經包含 assets/ 則不重複加，否則加上
+                            return trimmed.startsWith('assets/') ? trimmed : 'assets/' + trimmed;
+                        })
+                        .filter(s => s !== 'assets/') // 過濾掉空字串
+                };
+
+                // 簡單驗證，確保至少有名稱和分類才加入
+                if (product.name && product.category) {
+                    result.push(product);
+                }
+            }
+            return result;
         }
 
         function renderSlideshow(containerId, images) {
@@ -670,13 +759,10 @@
             });
         }
 
-        // [修復 1] 支援 image 為陣列的 JSON 邏輯
         function createProductCard(item) {
             const isSold = item.status === 'SOLD OUT';
             
-            // 邏輯修正：無論 key 是 image 還是 images，只要是陣列就當作多圖
             let rawSource = item.images || item.image;
-            // 確保轉為陣列，如果是單字串就轉為 [string]
             const mediaList = Array.isArray(rawSource) ? rawSource : [rawSource];
             
             const mainImg = mediaList[0];
