@@ -301,6 +301,20 @@
         
         .product-card.has-hover:hover .img-hover { opacity: 1; }
 
+        /* --- Notes Overlay --- */
+        .note-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 30px 15px 15px 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+            color: #fff; font-size: 0.9rem; font-weight: 400; letter-spacing: 0.08em;
+            opacity: 0; transition: opacity 0.4s ease; z-index: 5;
+            text-align: left; pointer-events: none;
+            display: flex; align-items: flex-end; justify-content: center;
+            text-align: center;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+        .product-card:hover .note-overlay { opacity: 1; }
+
         .p-code { font-size: 0.75rem; color: #aaa; margin-bottom: 5px; }
         .p-name { font-size: 1rem; color: #333; margin-bottom: 8px; font-weight: 600; }
         .p-price { color: #555; font-size: 1rem; }
@@ -354,14 +368,27 @@
             background-color: rgba(30, 30, 30, 0.95); 
             z-index: 2000; justify-content: center; align-items: center;
             opacity: 0; transition: opacity 0.3s ease;
+            flex-direction: column; /* Changed to handle caption */
         }
         .lightbox-modal.active { display: flex; opacity: 1; }
-        .lightbox-wrapper { position: relative; width: 90vw; height: 85vh; display: flex; align-items: center; justify-content: center; }
+        .lightbox-wrapper { position: relative; width: 90vw; height: 80vh; display: flex; align-items: center; justify-content: center; }
         .lightbox-content {
             max-width: 100%; max-height: 100%; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
             animation: zoomIn 0.3s ease; object-fit: contain;
         }
+        
+        /* Lightbox Caption */
+        .lightbox-caption {
+            margin-top: 20px;
+            text-align: center; color: rgba(255,255,255,0.9);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            font-size: 1.1rem; font-weight: 300; letter-spacing: 0.1em;
+            opacity: 0; transition: opacity 0.5s ease;
+            max-width: 80%;
+        }
+        .lightbox-caption.has-text { opacity: 1; }
+
         .close-lightbox {
             position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; 
             cursor: pointer; transition: 0.3s; z-index: 2005; line-height: 1; opacity: 0.8;
@@ -479,13 +506,13 @@
         <span class="close-lightbox">&times;</span>
         <button class="lb-btn lb-prev" id="lb-prev" onclick="changeLightboxItem(-1)">&lt;</button>
         <div class="lightbox-wrapper" id="lightbox-wrapper"></div>
+        <div id="lightbox-caption" class="lightbox-caption"></div>
         <button class="lb-btn lb-next" id="lb-next" onclick="changeLightboxItem(1)">&gt;</button>
     </div>
 
     <script>
-        // 設定 CSV 的來源。如果是 Google Sheets，請使用發布後的 CSV 連結。
-        // 例如: const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSox1X7TkN9sthpcPPEALmBn6zIpYGKSRowSXKodN3fkLf3X8NAzCKjltFjQk5xgK3-Kt5wuVCRUT25/pub?gid=1824240757&single=true&output=csv';
-        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSox1X7TkN9sthpcPPEALmBn6zIpYGKSRowSXKodN3fkLf3X8NAzCKjltFjQk5xgK3-Kt5wuVCRUT25/pub?gid=1824240757&single=true&output=csv'; 
+        // 設定 CSV 的來源。
+        const GOOGLE_SHEET_CSV_URL = 'DONGULI DB - Products (2).csv'; // 注意：這裡暫時指向您的本地檔案，上線時請改回 Google Sheet 連結
 
         let products = [];
         let configs = [];
@@ -493,6 +520,7 @@
         let slideshowIntervals = {};
         let currentLbImages = [];
         let currentLbIndex = 0;
+        let currentLbNote = "";
 
         window.onpopstate = function(event) {
             if (event.state && event.state.page) switchPage(event.state.page, false);
@@ -507,8 +535,7 @@
             const initialPage = urlParams.get('page') || 'home';
 
             try {
-                // 1. 嘗試讀取 data.json 來取得 Config (Banner, Hero 圖片設定)
-                // 即使失敗也不要中斷，因為我們要從 CSV 讀取產品
+                // 1. 嘗試讀取 data.json
                 try {
                     const response = await fetch('data.json');
                     if (response.ok) {
@@ -516,25 +543,23 @@
                         configs = data.config || [];
                     }
                 } catch (e) {
-                    console.warn("data.json for configs not found or invalid, proceeding with defaults.");
+                    console.warn("data.json not found, defaults.");
                     configs = [];
                 }
 
-                // 2. 讀取 CSV 產品資料
+                // 2. 讀取 CSV
                 if (GOOGLE_SHEET_CSV_URL) {
                     try {
                         const csvResponse = await fetch(GOOGLE_SHEET_CSV_URL);
                         if (!csvResponse.ok) throw new Error(`CSV Fetch Failed: ${csvResponse.status}`);
                         const csvText = await csvResponse.text();
                         products = parseCSV(csvText);
-                        console.log("Loaded products from CSV:", products.length);
+                        console.log("Loaded products:", products.length);
                     } catch (err) {
                         console.error("Error loading product CSV:", err);
-                        // 如果 CSV 失敗，這裡可以保留 products 為空，或者做其他錯誤處理
                     }
                 }
 
-                // 初始化頁面渲染
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
@@ -561,16 +586,12 @@
             }
         }
 
-        // CSV 解析函式
+        // CSV 解析函式 (更新支援 Notes)
         function parseCSV(text) {
             const lines = text.trim().split(/\r?\n/);
             if (lines.length < 2) return [];
             
-            // 讀取 Header，假設第一行為標題
             const headers = lines[0].split(',').map(h => h.trim());
-
-            // 輔助函式：取得欄位內容
-            // 對應 CSV 欄位名稱: Category, Code, Name, Price (NTD), Status, Image(s)
             const getVal = (rowArr, headerName) => {
                 const idx = headers.indexOf(headerName);
                 return idx !== -1 && rowArr[idx] ? rowArr[idx] : '';
@@ -582,7 +603,6 @@
                 const line = lines[i].trim();
                 if (!line) continue;
 
-                // 簡單的 CSV Parser，處理引號內的逗號
                 const values = [];
                 let currentVal = '';
                 let inQuote = false;
@@ -598,30 +618,26 @@
                         currentVal += char;
                     }
                 }
-                values.push(currentVal.trim()); // 最後一個欄位
+                values.push(currentVal.trim());
 
-                // 移除前後引號 (如果有的話)
                 const cleanValues = values.map(v => v.replace(/^"|"$/g, '').trim());
 
-                // 建立 Product 物件
                 const product = {
                     category: getVal(cleanValues, 'Category'),
                     code: getVal(cleanValues, 'Code'),
                     name: getVal(cleanValues, 'Name'),
                     price: parseInt(getVal(cleanValues, 'Price (NTD)').replace(/,/g, '') || '0'),
                     status: getVal(cleanValues, 'Status'),
-                    // 圖片處理：加上 assets/ 前綴，處理多張圖片
+                    notes: getVal(cleanValues, 'Notes'), // 新增 Notes
                     image: getVal(cleanValues, 'Image(s)')
                         .split(',')
                         .map(s => {
                             const trimmed = s.trim();
-                            // 如果檔名已經包含 assets/ 則不重複加，否則加上
                             return trimmed.startsWith('assets/') ? trimmed : 'assets/' + trimmed;
                         })
-                        .filter(s => s !== 'assets/') // 過濾掉空字串
+                        .filter(s => s !== 'assets/')
                 };
 
-                // 簡單驗證，確保至少有名稱和分類才加入
                 if (product.name && product.category) {
                     result.push(product);
                 }
@@ -769,15 +785,21 @@
             const hoverImg = mediaList.length > 1 ? mediaList[1] : null;
             const mediaJson = JSON.stringify(mediaList).replace(/"/g, '&quot;');
             
+            // 安全處理 Note 文字，避免引號破壞 HTML
+            const noteText = item.notes || '';
+            const safeNote = noteText.replace(/"/g, '&quot;').replace(/'/g, "\\'"); 
+            const noteHtml = noteText ? `<div class="note-overlay">${noteText}</div>` : '';
+            
             const hasHoverClass = hoverImg ? 'has-hover' : '';
             const hoverHtml = hoverImg ? `<img class="img-hover" src="${hoverImg}" loading="lazy" alt="${item.name}">` : '';
 
             return `
                 <article class="product-card ${hasHoverClass}">
-                    <div class="img-box" onclick="openProductLightbox(${mediaJson})">
+                    <div class="img-box" onclick="openProductLightbox(${mediaJson}, '${safeNote}')">
                         <img class="img-main" src="${mainImg}" loading="lazy" alt="${item.name}" onload="this.classList.add('loaded')">
                         <div class="skeleton"></div>
                         ${hoverHtml}
+                        ${noteHtml}
                     </div>
                     <div class="p-code">${item.code}</div>
                     <div class="p-name">${item.name}</div>
@@ -826,13 +848,26 @@
             }
         }
 
-        function openProductLightbox(imagesArray) {
+        function openProductLightbox(imagesArray, noteText) {
             currentLbImages = imagesArray;
             currentLbIndex = 0;
+            currentLbNote = noteText || "";
+            
             updateLightboxContent();
             
             const lightbox = document.getElementById('lightbox');
             lightbox.style.display = 'flex';
+            
+            // 處理 Caption
+            const caption = document.getElementById('lightbox-caption');
+            if(currentLbNote) {
+                caption.innerText = currentLbNote;
+                caption.classList.add('has-text');
+            } else {
+                caption.innerText = '';
+                caption.classList.remove('has-text');
+            }
+
             setTimeout(() => { lightbox.classList.add('active'); }, 10);
             document.body.style.overflow = 'hidden';
             
