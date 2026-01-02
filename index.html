@@ -33,6 +33,63 @@
 
         body.menu-open { overflow: hidden; }
 
+        /* --- Global Loader Styles --- */
+        #global-loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column; /* 垂直排列 */
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            opacity: 1; visibility: visible;
+        }
+
+        #global-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-icon {
+            width: 50px;
+            height: 50px;
+            opacity: 0.8;
+            margin-bottom: 20px; /* 圖標與文字的距離 */
+            animation: spinIcon 2s linear infinite;
+        }
+
+        .loader-text {
+            font-size: 0.9rem;
+            color: #666;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        /* 點點跳動動畫 */
+        .dot {
+            display: inline-block;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        .dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes spinIcon {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
         /* --- Skeleton --- */
         @keyframes shimmer {
             0% { background-position: -200% 0; }
@@ -287,7 +344,6 @@
             position: relative; overflow: hidden; cursor: pointer; 
         }
         
-        /* 增加 video 的支援樣式，確保覆蓋 */
         .img-box img, .img-box video { 
             width: 100%; height: 100%; object-fit: cover; 
             transition: opacity 0.5s ease, transform 0.8s ease; 
@@ -411,6 +467,13 @@
 </head>
 <body>
 
+    <div id="global-loader">
+        <img src="assets/favicon.ico" alt="Icon" class="loader-icon" onerror="this.style.display='none'">
+        <div class="loader-text">
+            Loading<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+        </div>
+    </div>
+
     <div class="menu-overlay" onclick="closeMenu()"></div>
 
     <nav>
@@ -448,7 +511,7 @@
             <div class="hero-overlay"></div>
             
             <div class="hero-text-container">
-                <h1>Wabi-Sabi Life</h1>
+                <h1>Donguli Ko-lo Ko-lo</h1>
                 <p class="subtitle">Nature・Ceramics・Living</p>
                 <p class="quote">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
                 <button class="hero-btn" onclick="handleNavClick('available')">View Available Items</button>
@@ -516,6 +579,7 @@
 
         let products = [];
         let configs = [];
+        let categories = []; // Store categories globally to access them later
         let isHideSoldOut = false;
         let slideshowIntervals = {};
         let currentLbImages = [];
@@ -529,37 +593,67 @@
 
         function handleNavClick(pageId) { switchPage(pageId, true); }
 
+        function hideLoader() {
+            const loader = document.getElementById('global-loader');
+            if (loader) {
+                loader.classList.add('hidden');
+                setTimeout(() => { loader.style.display = 'none'; }, 600);
+            }
+        }
+
+        function preloadImage(src) {
+            return new Promise((resolve) => {
+                if (!src) { resolve(); return; }
+                const img = new Image();
+                img.onload = () => resolve();
+                img.onerror = () => resolve(); 
+                img.src = src;
+            });
+        }
+
         async function initWebsite() {
             document.getElementById('footer-year').innerText = new Date().getFullYear();
             const urlParams = new URLSearchParams(window.location.search);
-            const initialPage = urlParams.get('page') || 'home';
+            // 取得當前要顯示的頁面 ID (例如 'home', 'available', 'cat-0')
+            let initialPage = urlParams.get('page') || 'home';
+
+            // 安全閥：5秒後強制關閉 Loader
+            const safetyTimeout = setTimeout(() => {
+                console.warn("Loading timeout, forcing display.");
+                hideLoader();
+            }, 5000);
 
             try {
-                // 1. 嘗試讀取 data.json
-                try {
-                    const response = await fetch('data.json');
-                    if (response.ok) {
-                        const data = await response.json();
-                        configs = data.config || [];
-                    }
-                } catch (e) {
-                    console.warn("data.json not found, defaults.");
-                    configs = [];
-                }
-
-                // 2. 讀取 CSV
-                if (GOOGLE_SHEET_CSV_URL) {
+                // 1. 下載資料
+                const loadConfig = async () => {
                     try {
-                        const csvResponse = await fetch(GOOGLE_SHEET_CSV_URL);
-                        if (!csvResponse.ok) throw new Error(`CSV Fetch Failed: ${csvResponse.status}`);
-                        const csvText = await csvResponse.text();
-                        products = parseCSV(csvText);
-                        console.log("Loaded products:", products.length);
-                    } catch (err) {
-                        console.error("Error loading product CSV:", err);
+                        const response = await fetch('data.json');
+                        if (response.ok) {
+                            const data = await response.json();
+                            configs = data.config || [];
+                        }
+                    } catch (e) {
+                        console.warn("data.json not found, defaults.");
+                        configs = [];
                     }
-                }
+                };
 
+                const loadCSV = async () => {
+                    if (GOOGLE_SHEET_CSV_URL) {
+                        try {
+                            const csvResponse = await fetch(GOOGLE_SHEET_CSV_URL);
+                            if (!csvResponse.ok) throw new Error(`CSV Fetch Failed: ${csvResponse.status}`);
+                            const csvText = await csvResponse.text();
+                            products = parseCSV(csvText);
+                        } catch (err) {
+                            console.error("Error loading product CSV:", err);
+                        }
+                    }
+                };
+
+                await Promise.all([loadConfig(), loadCSV()]);
+
+                // 2. 渲染頁面結構 (DOM 必須先建立好，才能決定頁面)
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
@@ -575,14 +669,46 @@
                     aboutRoot.appendChild(div);
                 });
 
-                setupCategories();
+                setupCategories(); // 這會產生 cat-0, cat-1 等頁面結構
                 renderAvailablePage();
                 
-                if(initialPage !== 'home') switchPage(initialPage, false);
+                // 3. 切換到當前頁面
+                switchPage(initialPage, false);
+
+                // 4. 判斷需要等待哪一張圖 (根據 initialPage)
+                let targetImage = null;
+
+                if (initialPage === 'home') {
+                    // 如果在首頁，找 HomeHero 的第一張圖
+                    if (homeHeroConfig) {
+                        const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
+                        if (images.length > 0) targetImage = images[0];
+                    }
+                } else if (initialPage.startsWith('cat-')) {
+                    // 如果在分類頁，找出該分類名稱，然後去 Config 找對應 Banner
+                    const catIndex = parseInt(initialPage.replace('cat-', ''));
+                    if (categories[catIndex]) {
+                        const catName = categories[catIndex];
+                        const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === catName);
+                        if (bannerConfig) {
+                            const images = Array.isArray(bannerConfig.image) ? bannerConfig.image : [bannerConfig.image];
+                            if (images.length > 0) targetImage = images[0];
+                        }
+                    }
+                }
+                // 注意：About 或 Available 頁面如果沒有設定大圖，targetImage 就會是 null，Loader 會直接關閉 (這也是合理的)
+
+                // 5. 等待圖片載入
+                if (targetImage) {
+                    await preloadImage(targetImage);
+                }
 
             } catch (error) {
                 console.error("Critical Error:", error);
                 document.querySelectorAll('.skeleton').forEach(el => el.style.display = 'none');
+            } finally {
+                clearTimeout(safetyTimeout);
+                hideLoader();
             }
         }
 
@@ -707,7 +833,7 @@
         }
 
         function setupCategories() {
-            const categories = [...new Set(products.map(p => p.category))];
+            categories = [...new Set(products.map(p => p.category))]; // Save to global var
             const shopInner = document.getElementById('shop-dropdown-inner');
             const pagesRoot = document.getElementById('dynamic-pages-root');
 
@@ -775,7 +901,6 @@
             });
         }
 
-        // --- Modified to support Video ---
         function createProductCard(item) {
             const isSold = item.status === 'SOLD OUT';
             
@@ -795,11 +920,9 @@
             // 判斷是否為影片
             const isVideo = (src) => src && src.match(/\.(mp4|webm|mov)$/i);
 
-            // 產生 HTML (圖片或影片)
             const getMediaHtml = (src, className) => {
                 if (!src) return '';
                 if (isVideo(src)) {
-                    // 列表影片：靜音、自動播放
                     return `<video class="${className}" src="${src}" autoplay muted loop playsinline disablepictureinpicture></video>`;
                 } else {
                     return `<img class="${className}" src="${src}" loading="lazy" alt="${item.name}">`;
@@ -897,12 +1020,10 @@
             }
         }
 
-        // --- Modified to support Video ---
         function updateLightboxContent() {
             const wrapper = document.getElementById('lightbox-wrapper');
             const src = currentLbImages[currentLbIndex];
             
-            // 判斷是否為影片
             const isVideo = src.match(/\.(mp4|webm|mov)$/i);
 
             wrapper.innerHTML = ''; 
@@ -910,12 +1031,12 @@
             if (isVideo) {
                 const video = document.createElement('video');
                 video.className = 'lightbox-content';
-                video.controls = true; // 彈窗中顯示控制列
-                video.autoplay = true; // 彈窗中自動播放
+                video.controls = true; 
+                video.autoplay = true; 
                 video.loop = true;
                 video.playsInline = true; 
                 video.src = src;
-                video.muted = false; // 彈窗中開啟聲音
+                video.muted = false; 
                 wrapper.appendChild(video);
             } else {
                 const img = document.createElement('img');
