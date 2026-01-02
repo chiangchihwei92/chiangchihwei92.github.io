@@ -56,12 +56,7 @@
 
         /* 彈跳容器：核心物理修正 */
         .icon-bounce-wrapper {
-            /* 1. 0.5s: 節奏加快，比較有彈性
-               2. alternate: 去程(落下) -> 回程(彈起)
-               3. cubic-bezier(0.6, 0.05, 1, 0.5): 模擬重力加速曲線 (Ease In)
-                  - 落下時：慢 -> 快 (撞擊地面最快)
-                  - 彈起時：快 -> 慢 (被重力拉住)
-            */
+            /* 模擬重力加速曲線 */
             animation: bounceGravity 0.5s infinite alternate cubic-bezier(0.6, 0.05, 1, 0.5);
             position: relative;
             z-index: 2;
@@ -72,7 +67,7 @@
             width: 50px;
             height: 50px;
             opacity: 0.9;
-            animation: spinIcon 2s linear infinite; /* 獨立的旋轉 */
+            animation: spinIcon 2s linear infinite;
             display: block;
         }
 
@@ -84,10 +79,9 @@
             border-radius: 50%;
             margin-top: -4px;
             margin-bottom: 30px;
-            /* 必須使用與彈跳完全相同的 cubic-bezier，才能同步撞擊地面 */
             animation: shadowGravity 0.5s infinite alternate cubic-bezier(0.6, 0.05, 1, 0.5);
             z-index: 1;
-            filter: blur(2px); /* 讓影子邊緣柔和一點 */
+            filter: blur(2px);
         }
 
         .loader-text {
@@ -99,44 +93,23 @@
         }
 
         /* --- Keyframes --- */
+        @keyframes spinIcon { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* 1. 旋轉 */
-        @keyframes spinIcon {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* 2. 重力彈跳 (定義從最高點到最低點) */
         @keyframes bounceGravity {
-            0% { 
-                transform: translateY(-35px); /* 最高點 */
-            }
-            100% { 
-                transform: translateY(0);     /* 撞擊地面 */
-            }
+            0% { transform: translateY(-35px); } /* 最高點 */
+            100% { transform: translateY(0); }     /* 撞擊地面 */
         }
 
-        /* 3. 影子變化 (配合高度) */
         @keyframes shadowGravity {
-            0% { 
-                transform: scale(0.4);   /* 在空中時，影子很小 */
-                opacity: 0.1;            /* 且很淡 */
-            }
-            100% { 
-                transform: scale(1.1);   /* 撞擊時，影子最大 */
-                opacity: 0.6;            /* 且最深 */
-            }
+            0% { transform: scale(0.4); opacity: 0.1; } /* 空中 */
+            100% { transform: scale(1.1); opacity: 0.6; } /* 地面 */
         }
 
-        /* 4. 文字點點 */
-        .dot {
-            display: inline-block;
-            animation: bounceDot 1.4s infinite ease-in-out both;
-        }
+        .dot { display: inline-block; animation: bounceDot 1.4s infinite ease-in-out both; }
         .dot:nth-child(1) { animation-delay: -0.32s; }
         .dot:nth-child(2) { animation-delay: -0.16s; }
         .dot:nth-child(3) { animation-delay: 0s; }
-
+        
         @keyframes bounceDot {
             0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
             40% { transform: scale(1); opacity: 1; }
@@ -153,7 +126,8 @@
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             width: 100%; height: 100%; display: block;
-            position: absolute; top: 0; left: 0; z-index: 1;
+            position: absolute; top: 0; left: 0; 
+            z-index: 1; /* 確保在圖片下方 */
         }
 
         /* --- Navbar --- */
@@ -382,7 +356,7 @@
         .category-text h2 { font-size: 3rem; margin: 0; font-weight: 700; }
         .category-text p { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; }
 
-        /* Product Grid */
+        /* --- Product Grid & Images (Crucial Fixes) --- */
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 60px 40px; margin-bottom: 40px; 
@@ -390,38 +364,43 @@
         .product-card { text-align: center; }
         
         .img-box {
-            width: 100%; aspect-ratio: 1/1; 
+            width: 100%; 
+            aspect-ratio: 1/1; /* 強制正方形容器 */
             background-color: transparent; 
             margin-bottom: 20px; 
             position: relative; overflow: hidden; cursor: pointer; 
         }
         
-
+        /* 基礎圖片樣式：預設透明 */
         .img-box img, .img-box video { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover;   /* 確保裁切 */
-            
-            opacity: 0;   
-            
+            width: 100%; height: 100%; 
+            object-fit: cover; /* 關鍵：防止變形，填滿容器 */
+            opacity: 0;        /* 關鍵：初始隱藏，載入後才顯示 */
             transition: opacity 0.6s ease, transform 0.8s ease; 
             position: absolute; top: 0; left: 0;
+        }
+
+        /* 主圖：載入完成後顯示 */
+        .img-box .img-main.loaded {
+            opacity: 1;
             z-index: 2;
         }
 
-        /* 當圖片載入完成，加上 .loaded class 後，變回不透明 */
-        .img-box img.loaded, .img-box video.loaded {
+        /* Hover圖：載入完成後依然隱藏！ */
+        .img-box .img-hover.loaded {
+            opacity: 0;
+            z-index: 3;
+        }
+
+        /* 觸發 Hover */
+        .product-card.has-hover:hover .img-box .img-hover.loaded {
             opacity: 1;
         }
-        
-        .img-main { opacity: 1; z-index: 2; }
-        .img-hover { opacity: 0; z-index: 3; } 
 
+        /* 放大效果 */
         .product-card:hover .img-box img, 
         .product-card:hover .img-box video { transform: scale(1.05); }
         
-        .product-card.has-hover:hover .img-hover { opacity: 1; }
-
         /* --- Notes Overlay --- */
         .note-overlay {
             position: absolute; bottom: 0; left: 0; width: 100%;
