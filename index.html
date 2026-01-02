@@ -153,7 +153,7 @@
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             width: 100%; height: 100%; display: block;
-            position: absolute; top: 0; left: 0; z-index: 0;
+            position: absolute; top: 0; left: 0; z-index: 1;
         }
 
         /* --- Navbar --- */
@@ -396,11 +396,22 @@
             position: relative; overflow: hidden; cursor: pointer; 
         }
         
+
         .img-box img, .img-box video { 
-            width: 100%; height: 100%; object-fit: cover; 
-            transition: opacity 0.5s ease, transform 0.8s ease; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;   /* 確保裁切 */
+            
+            opacity: 0;   
+            
+            transition: opacity 0.6s ease, transform 0.8s ease; 
             position: absolute; top: 0; left: 0;
             z-index: 2;
+        }
+
+        /* 當圖片載入完成，加上 .loaded class 後，變回不透明 */
+        .img-box img.loaded, .img-box video.loaded {
+            opacity: 1;
         }
         
         .img-main { opacity: 1; z-index: 2; }
@@ -973,9 +984,9 @@
             const getMediaHtml = (src, className) => {
                 if (!src) return '';
                 if (isVideo(src)) {
-                    return `<video class="${className}" src="${src}" autoplay muted loop playsinline disablepictureinpicture></video>`;
+                    return `<video class="${className}" src="${src}" autoplay muted loop playsinline disablepictureinpicture onloadeddata="this.classList.add('loaded')"></video>`;
                 } else {
-                    return `<img class="${className}" src="${src}" loading="lazy" alt="${item.name}">`;
+                    return `<img class="${className}" src="${src}" loading="lazy" alt="${item.name}" onload="this.classList.add('loaded')">`;
                 }
             };
 
