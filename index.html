@@ -33,7 +33,7 @@
 
         body.menu-open { overflow: hidden; }
 
-        /* --- Global Loader Styles --- */
+        /* --- Global Loader Styles (重力加速度版) --- */
         #global-loader {
             position: fixed;
             top: 0; left: 0;
@@ -54,11 +54,17 @@
             pointer-events: none;
         }
 
-        /* 彈跳容器 wrapper */
+        /* 彈跳容器：核心物理修正 */
         .icon-bounce-wrapper {
-            animation: bounceIcon 0.8s infinite ease-in-out alternate;
+            /* 1. 0.5s: 節奏加快，比較有彈性
+               2. alternate: 去程(落下) -> 回程(彈起)
+               3. cubic-bezier(0.6, 0.05, 1, 0.5): 模擬重力加速曲線 (Ease In)
+                  - 落下時：慢 -> 快 (撞擊地面最快)
+                  - 彈起時：快 -> 慢 (被重力拉住)
+            */
+            animation: bounceGravity 0.5s infinite alternate cubic-bezier(0.6, 0.05, 1, 0.5);
             position: relative;
-            z-index: 2; /* 確保在影子上方 */
+            z-index: 2;
         }
 
         /* 旋轉的 Icon */
@@ -66,57 +72,63 @@
             width: 50px;
             height: 50px;
             opacity: 0.9;
-            /* 這裡移除了 margin-bottom，改由影子負責間距 */
-            animation: spinIcon 2s linear infinite;
+            animation: spinIcon 2s linear infinite; /* 獨立的旋轉 */
+            display: block;
         }
 
-        /* 影子 */
+        /* 影子：配合重力 */
         .icon-shadow {
-            width: 50px;
-            height: 10px; /* 扁平的橢圓形 */
-            background: radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 70%);
+            width: 40px;
+            height: 8px;
+            background: rgba(0,0,0,0.2);
             border-radius: 50%;
-            margin-top: -5px; /* 稍微往上拉，讓它貼近 Icon 底部 */
-            margin-bottom: 25px; /* 與下方文字的距離 */
-            animation: shadowPulse 0.8s infinite ease-in-out alternate;
+            margin-top: -4px;
+            margin-bottom: 30px;
+            /* 必須使用與彈跳完全相同的 cubic-bezier，才能同步撞擊地面 */
+            animation: shadowGravity 0.5s infinite alternate cubic-bezier(0.6, 0.05, 1, 0.5);
             z-index: 1;
+            filter: blur(2px); /* 讓影子邊緣柔和一點 */
         }
 
         .loader-text {
             font-size: 0.9rem;
-            color: #666;
-            letter-spacing: 0.1em;
+            color: #888;
+            letter-spacing: 0.15em;
             font-weight: 500;
             text-transform: uppercase;
         }
 
-        /* --- Keyframes 動畫關鍵影格 --- */
+        /* --- Keyframes --- */
 
-        /* 1. 旋轉 (原本的) */
+        /* 1. 旋轉 */
         @keyframes spinIcon {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* 2. 上下彈跳 (新加入) */
-        @keyframes bounceIcon {
-            0% { transform: translateY(0); } /* 在地面 */
-            100% { transform: translateY(-25px); } /* 跳到最高點 */
-        }
-
-        /* 3. 影子縮放與深淺 (新加入 - 配合彈跳) */
-        @keyframes shadowPulse {
+        /* 2. 重力彈跳 (定義從最高點到最低點) */
+        @keyframes bounceGravity {
             0% { 
-                transform: scale(1); /* Icon 在地面時，影子最大 */
-                opacity: 1;         /* 影子最深 */
+                transform: translateY(-35px); /* 最高點 */
             }
             100% { 
-                transform: scale(0.6); /* Icon 在空中時，影子變小 */
-                opacity: 0.3;          /* 影子變淺 */
+                transform: translateY(0);     /* 撞擊地面 */
             }
         }
 
-        /* 4. 文字點點跳動 (原本的) */
+        /* 3. 影子變化 (配合高度) */
+        @keyframes shadowGravity {
+            0% { 
+                transform: scale(0.4);   /* 在空中時，影子很小 */
+                opacity: 0.1;            /* 且很淡 */
+            }
+            100% { 
+                transform: scale(1.1);   /* 撞擊時，影子最大 */
+                opacity: 0.6;            /* 且最深 */
+            }
+        }
+
+        /* 4. 文字點點 */
         .dot {
             display: inline-block;
             animation: bounceDot 1.4s infinite ease-in-out both;
@@ -512,7 +524,6 @@
             <img src="assets/favicon.ico" alt="Icon" class="loader-icon spinning" onerror="this.style.display='none'">
         </div>
         <div class="icon-shadow"></div>
-        
         <div class="loader-text">
             Loading<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
         </div>
@@ -555,7 +566,7 @@
             <div class="hero-overlay"></div>
             
             <div class="hero-text-container">
-                <h1>Donguli Ko-lo Ko-lo</h1>
+                <h1>Donguli Ko-Lo Ko-Lo</h1>
                 <p class="subtitle">Nature・Ceramics・Living</p>
                 <p class="quote">"一顆橡實，靜靜落地，等待著屬於自己的季節。"</p>
                 <button class="hero-btn" onclick="handleNavClick('available')">View Available Items</button>
@@ -623,7 +634,7 @@
 
         let products = [];
         let configs = [];
-        let categories = []; // Store categories globally to access them later
+        let categories = []; 
         let isHideSoldOut = false;
         let slideshowIntervals = {};
         let currentLbImages = [];
@@ -658,17 +669,16 @@
         async function initWebsite() {
             document.getElementById('footer-year').innerText = new Date().getFullYear();
             const urlParams = new URLSearchParams(window.location.search);
-            // 取得當前要顯示的頁面 ID (例如 'home', 'available', 'cat-0')
             let initialPage = urlParams.get('page') || 'home';
 
-            // 安全閥：5秒後強制關閉 Loader
+            // Safety timeout
             const safetyTimeout = setTimeout(() => {
                 console.warn("Loading timeout, forcing display.");
                 hideLoader();
             }, 5000);
 
             try {
-                // 1. 下載資料
+                // 1. Download Data
                 const loadConfig = async () => {
                     try {
                         const response = await fetch('data.json');
@@ -697,7 +707,7 @@
 
                 await Promise.all([loadConfig(), loadCSV()]);
 
-                // 2. 渲染頁面結構 (DOM 必須先建立好，才能決定頁面)
+                // 2. Render Page Structure
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
@@ -713,23 +723,21 @@
                     aboutRoot.appendChild(div);
                 });
 
-                setupCategories(); // 這會產生 cat-0, cat-1 等頁面結構
+                setupCategories(); 
                 renderAvailablePage();
                 
-                // 3. 切換到當前頁面
+                // 3. Switch to current page
                 switchPage(initialPage, false);
 
-                // 4. 判斷需要等待哪一張圖 (根據 initialPage)
+                // 4. Determine target image to wait for
                 let targetImage = null;
 
                 if (initialPage === 'home') {
-                    // 如果在首頁，找 HomeHero 的第一張圖
                     if (homeHeroConfig) {
                         const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
                         if (images.length > 0) targetImage = images[0];
                     }
                 } else if (initialPage.startsWith('cat-')) {
-                    // 如果在分類頁，找出該分類名稱，然後去 Config 找對應 Banner
                     const catIndex = parseInt(initialPage.replace('cat-', ''));
                     if (categories[catIndex]) {
                         const catName = categories[catIndex];
@@ -740,9 +748,8 @@
                         }
                     }
                 }
-                // 注意：About 或 Available 頁面如果沒有設定大圖，targetImage 就會是 null，Loader 會直接關閉 (這也是合理的)
 
-                // 5. 等待圖片載入
+                // 5. Wait for the main image
                 if (targetImage) {
                     await preloadImage(targetImage);
                 }
@@ -756,7 +763,7 @@
             }
         }
 
-        // CSV 解析函式
+        // CSV Parser
         function parseCSV(text) {
             const lines = text.trim().split(/\r?\n/);
             if (lines.length < 2) return [];
@@ -877,7 +884,7 @@
         }
 
         function setupCategories() {
-            categories = [...new Set(products.map(p => p.category))]; // Save to global var
+            categories = [...new Set(products.map(p => p.category))]; 
             const shopInner = document.getElementById('shop-dropdown-inner');
             const pagesRoot = document.getElementById('dynamic-pages-root');
 
@@ -961,7 +968,6 @@
             
             const hasHoverClass = hoverSrc ? 'has-hover' : '';
 
-            // 判斷是否為影片
             const isVideo = (src) => src && src.match(/\.(mp4|webm|mov)$/i);
 
             const getMediaHtml = (src, className) => {
