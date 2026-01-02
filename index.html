@@ -287,6 +287,7 @@
             position: relative; overflow: hidden; cursor: pointer; 
         }
         
+        /* 增加 video 的支援樣式，確保覆蓋 */
         .img-box img, .img-box video { 
             width: 100%; height: 100%; object-fit: cover; 
             transition: opacity 0.5s ease, transform 0.8s ease; 
@@ -297,7 +298,8 @@
         .img-main { opacity: 1; z-index: 2; }
         .img-hover { opacity: 0; z-index: 3; } 
 
-        .product-card:hover .img-box img { transform: scale(1.05); }
+        .product-card:hover .img-box img, 
+        .product-card:hover .img-box video { transform: scale(1.05); }
         
         .product-card.has-hover:hover .img-hover { opacity: 1; }
 
@@ -367,7 +369,7 @@
             background-color: rgba(30, 30, 30, 0.95); 
             z-index: 2000; justify-content: center; align-items: center;
             opacity: 0; transition: opacity 0.3s ease;
-            flex-direction: column; /* Changed to handle caption */
+            flex-direction: column; 
         }
         .lightbox-modal.active { display: flex; opacity: 1; }
         .lightbox-wrapper { position: relative; width: 90vw; height: 80vh; display: flex; align-items: center; justify-content: center; }
@@ -510,7 +512,6 @@
     </div>
 
     <script>
-        // 設定 CSV 的來源。
         const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSox1X7TkN9sthpcPPEALmBn6zIpYGKSRowSXKodN3fkLf3X8NAzCKjltFjQk5xgK3-Kt5wuVCRUT25/pub?gid=1824240757&single=true&output=csv'; 
 
         let products = [];
@@ -585,7 +586,7 @@
             }
         }
 
-        // CSV 解析函式 (更新支援 Notes)
+        // CSV 解析函式
         function parseCSV(text) {
             const lines = text.trim().split(/\r?\n/);
             if (lines.length < 2) return [];
@@ -627,7 +628,7 @@
                     name: getVal(cleanValues, 'Name'),
                     price: parseInt(getVal(cleanValues, 'Price (NTD)').replace(/,/g, '') || '0'),
                     status: getVal(cleanValues, 'Status'),
-                    notes: getVal(cleanValues, 'Notes'), // 新增 Notes
+                    notes: getVal(cleanValues, 'Notes'), 
                     image: getVal(cleanValues, 'Image(s)')
                         .split(',')
                         .map(s => {
@@ -774,28 +775,44 @@
             });
         }
 
+        // --- Modified to support Video ---
         function createProductCard(item) {
             const isSold = item.status === 'SOLD OUT';
             
             let rawSource = item.images || item.image;
             const mediaList = Array.isArray(rawSource) ? rawSource : [rawSource];
             
-            const mainImg = mediaList[0];
-            const hoverImg = mediaList.length > 1 ? mediaList[1] : null;
+            const mainSrc = mediaList[0];
+            const hoverSrc = mediaList.length > 1 ? mediaList[1] : null;
             const mediaJson = JSON.stringify(mediaList).replace(/"/g, '&quot;');
             
-            // 安全處理 Note 文字，避免引號破壞 HTML
             const noteText = item.notes || '';
             const safeNote = noteText.replace(/"/g, '&quot;').replace(/'/g, "\\'"); 
             const noteHtml = noteText ? `<div class="note-overlay">${noteText}</div>` : '';
             
-            const hasHoverClass = hoverImg ? 'has-hover' : '';
-            const hoverHtml = hoverImg ? `<img class="img-hover" src="${hoverImg}" loading="lazy" alt="${item.name}">` : '';
+            const hasHoverClass = hoverSrc ? 'has-hover' : '';
+
+            // 判斷是否為影片
+            const isVideo = (src) => src && src.match(/\.(mp4|webm|mov)$/i);
+
+            // 產生 HTML (圖片或影片)
+            const getMediaHtml = (src, className) => {
+                if (!src) return '';
+                if (isVideo(src)) {
+                    // 列表影片：靜音、自動播放
+                    return `<video class="${className}" src="${src}" autoplay muted loop playsinline disablepictureinpicture></video>`;
+                } else {
+                    return `<img class="${className}" src="${src}" loading="lazy" alt="${item.name}">`;
+                }
+            };
+
+            const mainHtml = getMediaHtml(mainSrc, 'img-main');
+            const hoverHtml = getMediaHtml(hoverSrc, 'img-hover');
 
             return `
                 <article class="product-card ${hasHoverClass}">
                     <div class="img-box" onclick="openProductLightbox(${mediaJson}, '${safeNote}')">
-                        <img class="img-main" src="${mainImg}" loading="lazy" alt="${item.name}" onload="this.classList.add('loaded')">
+                        ${mainHtml}
                         <div class="skeleton"></div>
                         ${hoverHtml}
                         ${noteHtml}
@@ -857,7 +874,6 @@
             const lightbox = document.getElementById('lightbox');
             lightbox.style.display = 'flex';
             
-            // 處理 Caption
             const caption = document.getElementById('lightbox-caption');
             if(currentLbNote) {
                 caption.innerText = currentLbNote;
@@ -881,19 +897,25 @@
             }
         }
 
+        // --- Modified to support Video ---
         function updateLightboxContent() {
             const wrapper = document.getElementById('lightbox-wrapper');
             const src = currentLbImages[currentLbIndex];
-            const isVideo = src.toLowerCase().endsWith('.mp4') || src.toLowerCase().endsWith('.webm');
+            
+            // 判斷是否為影片
+            const isVideo = src.match(/\.(mp4|webm|mov)$/i);
+
             wrapper.innerHTML = ''; 
 
             if (isVideo) {
                 const video = document.createElement('video');
                 video.className = 'lightbox-content';
-                video.controls = true;
-                video.autoplay = true;
+                video.controls = true; // 彈窗中顯示控制列
+                video.autoplay = true; // 彈窗中自動播放
                 video.loop = true;
+                video.playsInline = true; 
                 video.src = src;
+                video.muted = false; // 彈窗中開啟聲音
                 wrapper.appendChild(video);
             } else {
                 const img = document.createElement('img');
