@@ -1031,16 +1031,32 @@
         function switchPage(pageId, pushToHistory = true) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
             const target = document.getElementById('page-' + pageId);
+            
             if(target) {
                 target.classList.add('active-page');
                 window.scrollTo(0, 0);
+                
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
                 if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
                 else if(pageId === 'about') document.getElementById('btn-about').classList.add('active');
                 else document.getElementById('btn-shop').classList.add('active');
+
+                let newTitle = "DONGULI | 咚咕哩"; // 預設首頁標題
+
+                if (pageId === 'about') {
+                    newTitle = "About | DONGULI";
+                } else if (pageId === 'available') {
+                    newTitle = "Available Stock | DONGULI";
+                } else if (pageId.startsWith('cat-')) {
+                    const catIndex = parseInt(pageId.replace('cat-', ''));
+                    if (categories && categories[catIndex]) {
+                        newTitle = `${categories[catIndex]} | DONGULI`;
+                    }
+                }
+                document.title = newTitle;
                 if (pushToHistory) {
                     const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
-                    window.history.pushState({ page: pageId }, '', newUrl);
+                    window.history.pushState({ page: pageId }, newTitle, newUrl);
                 }
             }
         }
