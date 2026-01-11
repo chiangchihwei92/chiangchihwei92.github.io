@@ -6,21 +6,11 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DMSXQ41WHS"></script>
 
     <script>
-
       window.dataLayer = window.dataLayer || [];
-
       function gtag(){dataLayer.push(arguments);}
-
       gtag('js', new Date());
-
-    
-
       gtag('config', 'G-DMSXQ41WHS');
-
     </script>
-
-
-
 
     <meta name="description" content="DONGULI 咚咕哩 - 自然・陶・生活。">
     <meta name="robots" content="index, follow">
@@ -51,7 +41,7 @@
 
         body.menu-open { overflow: hidden; }
 
-        /* --- Global Loader Styles (重力加速度版) --- */
+        /* --- Global Loader Styles --- */
         #global-loader {
             position: fixed;
             top: 0; left: 0;
@@ -72,15 +62,12 @@
             pointer-events: none;
         }
 
-        /* 彈跳容器：核心物理修正 */
         .icon-bounce-wrapper {
-            /* 模擬重力加速曲線 */
             animation: bounceGravity 0.5s infinite alternate cubic-bezier(0.6, 0.05, 1, 0.5);
             position: relative;
             z-index: 2;
         }
 
-        /* 旋轉的 Icon */
         .loader-icon.spinning {
             width: 50px;
             height: 50px;
@@ -89,7 +76,6 @@
             display: block;
         }
 
-        /* 影子：配合重力 */
         .icon-shadow {
             width: 40px;
             height: 8px;
@@ -110,17 +96,14 @@
             text-transform: uppercase;
         }
 
-        /* --- Keyframes --- */
         @keyframes spinIcon { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
         @keyframes bounceGravity {
-            0% { transform: translateY(-35px); } /* 最高點 */
-            100% { transform: translateY(0); }     /* 撞擊地面 */
+            0% { transform: translateY(-35px); } 
+            100% { transform: translateY(0); }
         }
-
         @keyframes shadowGravity {
-            0% { transform: scale(0.4); opacity: 0.1; } /* 空中 */
-            100% { transform: scale(1.1); opacity: 0.6; } /* 地面 */
+            0% { transform: scale(0.4); opacity: 0.1; }
+            100% { transform: scale(1.1); opacity: 0.6; } 
         }
 
         .dot { display: inline-block; animation: bounceDot 1.4s infinite ease-in-out both; }
@@ -145,7 +128,7 @@
             animation: shimmer 1.5s infinite;
             width: 100%; height: 100%; display: block;
             position: absolute; top: 0; left: 0; 
-            z-index: 1; /* 確保在圖片下方 */
+            z-index: 1; 
         }
 
         /* --- Navbar --- */
@@ -219,7 +202,6 @@
         .dropdown-item:hover { color: #000; background-color: #f9f9f9; padding-left: 25px; transform: translateX(4px); }
         .shop-all-item { color: #333; font-weight: 700; border-bottom: 1px solid #f0f0f0; margin-bottom: 5px; }
 
-        /* Mobile Hamburger */
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1200; }
         .hamburger span {
             display: block; width: 24px; height: 2px; background-color: #333;
@@ -228,41 +210,31 @@
         .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
         .hamburger.active span:nth-child(2) { opacity: 0; }
         .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-                /* --- Shop Arrow Indicator (Desktop) --- */
+        
         .arrow-indicator {
             display: inline-block;
             width: 6px;
             height: 6px;
-            border-right: 1.5px solid #888;  /* 箭頭顏色 */
+            border-right: 1.5px solid #888;
             border-bottom: 1.5px solid #888;
-            transform: rotate(45deg);        /* 預設向下指 */
+            transform: rotate(45deg);
             margin-left: 8px;
             margin-bottom: 3px;
             transition: all 0.3s ease;
         }
 
-        /* Hover 時箭頭變色並旋轉 */
         .nav-btn:hover .arrow-indicator,
-        .nav-btn.active .arrow-indicator {
-            border-color: #000;
-        }
+        .nav-btn.active .arrow-indicator { border-color: #000; }
 
-        /* 當滑鼠移到 Dropdown 區域時，箭頭轉向朝上 */
         @media (min-width: 769px) {
             .dropdown:hover .arrow-indicator {
-                transform: rotate(225deg); /* 轉向朝上 */
-                margin-bottom: -1px;       /* 微調位置使其視覺平衡 */
+                transform: rotate(225deg);
+                margin-bottom: -1px;
             }
         }
 
-        /* --- Mobile Fix --- */
-        /* 手機版原本已經有 + 號設計，所以將這個箭頭隱藏，避免重複 */
         @media (max-width: 768px) {
-            .arrow-indicator {
-                display: none;
-            }
-        }
-        @media (max-width: 768px) {
+            .arrow-indicator { display: none; }
             nav { padding: 0 20px; }
             .logo { line-height: 70px; font-size: 1.2rem; }
             .hamburger { display: block; }
@@ -407,7 +379,7 @@
         .category-text h2 { font-size: 3rem; margin: 0; font-weight: 700; }
         .category-text p { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; }
 
-        /* --- Product Grid & Images (Crucial Fixes) --- */
+        /* --- Product Grid --- */
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 60px 40px; margin-bottom: 40px; 
@@ -416,43 +388,26 @@
         
         .img-box {
             width: 100%; 
-            aspect-ratio: 1/1; /* 強制正方形容器 */
+            aspect-ratio: 1/1; 
             background-color: transparent; 
             margin-bottom: 20px; 
             position: relative; overflow: hidden; cursor: pointer; 
         }
         
-        /* 基礎圖片樣式：預設透明 */
         .img-box img, .img-box video { 
             width: 100%; height: 100%; 
-            object-fit: cover; /* 關鍵：防止變形，填滿容器 */
-            opacity: 0;        /* 關鍵：初始隱藏，載入後才顯示 */
+            object-fit: cover; 
+            opacity: 0;        
             transition: opacity 0.6s ease, transform 0.8s ease; 
             position: absolute; top: 0; left: 0;
         }
 
-        /* 主圖：載入完成後顯示 */
-        .img-box .img-main.loaded {
-            opacity: 1;
-            z-index: 2;
-        }
-
-        /* Hover圖：載入完成後依然隱藏！ */
-        .img-box .img-hover.loaded {
-            opacity: 0;
-            z-index: 3;
-        }
-
-        /* 觸發 Hover */
-        .product-card.has-hover:hover .img-box .img-hover.loaded {
-            opacity: 1;
-        }
-
-        /* 放大效果 */
+        .img-box .img-main.loaded { opacity: 1; z-index: 2; }
+        .img-box .img-hover.loaded { opacity: 0; z-index: 3; }
+        .product-card.has-hover:hover .img-box .img-hover.loaded { opacity: 1; }
         .product-card:hover .img-box img, 
         .product-card:hover .img-box video { transform: scale(1.05); }
         
-        /* --- Notes Overlay --- */
         .note-overlay {
             position: absolute; bottom: 0; left: 0; width: 100%;
             padding: 30px 15px 15px 15px;
@@ -499,7 +454,6 @@
             position: relative; z-index: 2; 
         }
         .gallery-item img.loaded { opacity: 1; }
-        
         .gallery-item:hover img { transform: scale(1.06); }
         
         .social-link {
@@ -507,12 +461,11 @@
             border-bottom: 1px solid transparent; padding-bottom: 2px; transition: 0.2s;
         }
         .social-link:hover { border-bottom: 1px solid #333; }
-        
         .social-icon { width: 20px; height: 20px; margin-right: 10px; fill: currentColor; display: block; }
         
         footer { text-align: center; padding: 80px 20px; color: #bbb; font-size: 0.75rem; border-top: 1px solid #f0f0f0; }
 
-        /* Lightbox (Dark) */
+        /* Lightbox */
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(30, 30, 30, 0.95); 
@@ -527,8 +480,6 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
             animation: zoomIn 0.3s ease; object-fit: contain;
         }
-        
-        /* Lightbox Caption */
         .lightbox-caption {
             margin-top: 20px;
             text-align: center; color: rgba(255,255,255,0.9);
@@ -538,7 +489,6 @@
             max-width: 80%;
         }
         .lightbox-caption.has-text { opacity: 1; }
-
         .close-lightbox {
             position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; 
             cursor: pointer; transition: 0.3s; z-index: 2005; line-height: 1; opacity: 0.8;
@@ -553,7 +503,6 @@
         .lb-btn:hover { opacity: 1; transform: translateY(-50%) scale(1.1); }
         .lb-prev { left: 10px; }
         .lb-next { right: 10px; }
-
         @keyframes zoomIn { from { transform: scale(0.95); } to { transform: scale(1); } }
 
     </style>
@@ -673,8 +622,10 @@
     </div>
 
     <script>
+        // 設定區
         const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSox1X7TkN9sthpcPPEALmBn6zIpYGKSRowSXKodN3fkLf3X8NAzCKjltFjQk5xgK3-Kt5wuVCRUT25/pub?gid=1824240757&single=true&output=csv'; 
 
+        // 狀態變數
         let products = [];
         let configs = [];
         let categories = []; 
@@ -684,6 +635,7 @@
         let currentLbIndex = 0;
         let currentLbNote = "";
 
+        // 瀏覽器上一頁/下一頁處理
         window.onpopstate = function(event) {
             if (event.state && event.state.page) switchPage(event.state.page, false);
             else switchPage('home', false);
@@ -711,15 +663,15 @@
 
         async function initWebsite() {
             document.getElementById('footer-year').innerText = new Date().getFullYear();
-            const urlParams = new URLSearchParams(window.location.search);
-            let initialPage = urlParams.get('page') || 'home';
-
+            
+            // 安全機制：若載入太久強制顯示
             const safetyTimeout = setTimeout(() => {
                 console.warn("Loading timeout, forcing display.");
                 hideLoader();
             }, 5000);
 
             try {
+                // 1. 載入資料
                 const loadConfig = async () => {
                     try {
                         const response = await fetch('data.json');
@@ -748,6 +700,7 @@
 
                 await Promise.all([loadConfig(), loadCSV()]);
 
+                // 2. 渲染靜態元件 (Hero, About)
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
@@ -763,19 +716,34 @@
                     aboutRoot.appendChild(div);
                 });
 
+                // 3. 建立分類頁面
                 setupCategories(); 
                 renderAvailablePage();
                 
-                switchPage(initialPage, false);
+                // 4. 處理網址參數與初始頁面
+                // FIX: 這裡加入邏輯，如果網址是 ?page=中文類別名，要能對應回去 cat-index
+                const urlParams = new URLSearchParams(window.location.search);
+                let initialPageParam = urlParams.get('page') || 'home';
+                let initialPageId = initialPageParam;
 
+                // 嘗試反向查找類別名稱對應的 ID
+                const foundCatIndex = categories.indexOf(initialPageParam);
+                if (foundCatIndex !== -1) {
+                    initialPageId = 'cat-' + foundCatIndex;
+                }
+
+                // 切換頁面 (不重複 pushState)
+                switchPage(initialPageId, false);
+
+                // 5. 圖片預載優化
                 let targetImage = null;
-                if (initialPage === 'home') {
+                if (initialPageId === 'home') {
                     if (homeHeroConfig) {
                         const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
                         if (images.length > 0) targetImage = images[0];
                     }
-                } else if (initialPage.startsWith('cat-')) {
-                    const catIndex = parseInt(initialPage.replace('cat-', ''));
+                } else if (initialPageId.startsWith('cat-')) {
+                    const catIndex = parseInt(initialPageId.replace('cat-', ''));
                     if (categories[catIndex]) {
                         const catName = categories[catIndex];
                         const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === catName);
@@ -785,7 +753,6 @@
                         }
                     }
                 }
-
                 if (targetImage) {
                     await preloadImage(targetImage);
                 }
@@ -815,6 +782,7 @@
                 const line = lines[i].trim();
                 if (!line) continue;
 
+                // 簡單的 CSV 解析 (處理逗號在引號內的情況)
                 const values = [];
                 let currentVal = '';
                 let inQuote = false;
@@ -933,6 +901,7 @@
             shopInner.appendChild(shopAllLink);
 
             categories.forEach((cat, index) => {
+                // 為了程式穩定，ID 還是維持 cat-0, cat-1 的格式
                 const safeId = 'cat-' + index;
                 
                 const item = document.createElement('div');
@@ -952,6 +921,7 @@
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
                 
+                // 加入 toggle-btn
                 pageDiv.innerHTML = `
                     <div class="category-header-wrapper">
                         <div class="slideshow-container" id="banner-${safeId}">
@@ -983,6 +953,8 @@
                 pagesRoot.appendChild(pageDiv);
                 
                 if(bannerImages.length > 0) renderSlideshow(`banner-${safeId}`, bannerImages);
+                
+                // 初始渲染一次，但之後 switchPage 會再次強制更新
                 renderProductGrid('grid-' + safeId, cat);
             });
         }
@@ -1057,52 +1029,85 @@
 
         function switchPage(pageId, pushToHistory = true) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
-            const target = document.getElementById('page-' + pageId);
+            
+            // 處理 pageId，如果是中文名要嘗試轉回 ID (防呆)
+            let targetId = pageId;
+            // 如果傳入的不是 cat- 開頭，也不是標準頁面，嘗試找分類
+            if (!pageId.startsWith('cat-') && pageId !== 'home' && pageId !== 'about' && pageId !== 'available') {
+                 const idx = categories.indexOf(pageId);
+                 if (idx !== -1) targetId = 'cat-' + idx;
+            }
+
+            const target = document.getElementById('page-' + targetId);
             
             if(target) {
                 target.classList.add('active-page');
                 window.scrollTo(0, 0);
                 
-                // --- FIX 2: 處理 SHOP 按鈕狀態 ---
+                // 處理導航按鈕狀態
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                
-                if(pageId === 'home') {
-                    document.getElementById('btn-home').classList.add('active');
-                } else if(pageId === 'about') {
-                    document.getElementById('btn-about').classList.add('active');
-                } else {
-                    document.getElementById('btn-shop').classList.add('active'); 
-                }
+                if(targetId === 'home') document.getElementById('btn-home').classList.add('active');
+                else if(targetId === 'about') document.getElementById('btn-about').classList.add('active');
+                else document.getElementById('btn-shop').classList.add('active'); 
 
-                // --- FIX 1: 同步 隱藏售完 按鈕的狀態 ---
-                // 當切換頁面時，檢查新頁面是否有 toggle-btn，若有則同步樣式
-                const toggleBtn = target.querySelector('.toggle-btn');
-                if (toggleBtn) {
-                    if (isHideSoldOut) toggleBtn.classList.add('active');
-                    else toggleBtn.classList.remove('active');
+                // --- 解決問題 1：同步「隱藏售完」狀態並強制渲染 ---
+                // 每次進入類別頁面，都要確保 UI 與全域變數 isHideSoldOut 一致
+                if (targetId.startsWith('cat-')) {
+                    const catIndex = parseInt(targetId.replace('cat-', ''));
+                    const catName = categories[catIndex];
+                    
+                    // 1. 同步按鈕樣式
+                    const toggleBtn = target.querySelector('.toggle-btn');
+                    if (toggleBtn) {
+                        if (isHideSoldOut) toggleBtn.classList.add('active');
+                        else toggleBtn.classList.remove('active');
+                    }
+                    
+                    // 2. 關鍵修正：強制重新渲染該頁面的 Grid
+                    // 這解決了「切換類別後，按下隱藏無效」的問題，因為切換回來時我們確保畫面與變數一致
+                    renderProductGrid('grid-' + targetId, catName);
                 }
-                // ----------------------------------------
+                // ---------------------------------------------
 
+                // 設定網頁標題與網址
                 let newTitle = "DONGULI | 咚咕哩";
+                let urlParam = targetId; // 預設使用 ID
 
-                if (pageId === 'about') {
+                if (targetId === 'about') {
                     newTitle = "About | DONGULI";
-                } else if (pageId === 'available') {
+                } else if (targetId === 'available') {
                     newTitle = "Available Stock | DONGULI";
-                } else if (pageId.startsWith('cat-')) {
-                    const catIndex = parseInt(pageId.replace('cat-', ''));
+                } else if (targetId.startsWith('cat-')) {
+                    const catIndex = parseInt(targetId.replace('cat-', ''));
                     if (categories && categories[catIndex]) {
-                        newTitle = `${categories[catIndex]} | DONGULI`;
+                        const catName = categories[catIndex];
+                        newTitle = `${catName} | DONGULI`;
+                        // --- 解決問題 2：網址使用中文類別名稱 ---
+                        urlParam = catName; 
                     }
                 }
+                
                 document.title = newTitle;
                 if (pushToHistory) {
-                    const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
-                    window.history.pushState({ page: pageId }, newTitle, newUrl);
+                    const newUrl = targetId === 'home' ? window.location.pathname : `?page=${urlParam}`;
+                    // 我們將 pageId 存入 state 以便 popstate 使用，但 URL 顯示中文
+                    window.history.pushState({ page: urlParam }, newTitle, newUrl);
                 }
             }
         }
 
+        function toggleStock(btn, safeId, cat) {
+            isHideSoldOut = !isHideSoldOut;
+            
+            // 更新按鈕樣式
+            if(isHideSoldOut) btn.classList.add('active');
+            else btn.classList.remove('active');
+            
+            // 重新渲染當前網格
+            renderProductGrid('grid-' + safeId, cat);
+        }
+
+        // --- Lightbox & 其他 UI 功能 (保持不變) ---
         function openProductLightbox(imagesArray, noteText) {
             currentLbImages = imagesArray;
             currentLbIndex = 0;
@@ -1139,7 +1144,6 @@
         function updateLightboxContent() {
             const wrapper = document.getElementById('lightbox-wrapper');
             const src = currentLbImages[currentLbIndex];
-            
             const isVideo = src.match(/\.(mp4|webm|mov)$/i);
 
             wrapper.innerHTML = ''; 
@@ -1147,12 +1151,8 @@
             if (isVideo) {
                 const video = document.createElement('video');
                 video.className = 'lightbox-content';
-                video.controls = true; 
-                video.autoplay = true; 
-                video.loop = true;
-                video.playsInline = true; 
-                video.src = src;
-                video.muted = false; 
+                video.controls = true; video.autoplay = true; video.loop = true;
+                video.playsInline = true; video.src = src; video.muted = false; 
                 wrapper.appendChild(video);
             } else {
                 const img = document.createElement('img');
@@ -1226,17 +1226,6 @@
             } else {
                 handleNavClick('available');
             }
-        }
-
-        function toggleStock(btn, safeId, cat) {
-            isHideSoldOut = !isHideSoldOut;
-            // 修正：這裡只切換樣式，但因為 switchPage 現在會自動同步樣式，
-            // 只要我們確保全域變數是對的，且 grid 有重繪即可。
-            // 為了視覺即時性，我們還是先切換當前按鈕的 active
-            if(isHideSoldOut) btn.classList.add('active');
-            else btn.classList.remove('active');
-            
-            renderProductGrid('grid-' + safeId, cat);
         }
 
         window.addEventListener('DOMContentLoaded', initWebsite);
