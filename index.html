@@ -23,6 +23,7 @@
             --bg-color: #F9F7F2; 
             --text-color: #333333;
             --font-main: "Helvetica Neue", Helvetica, Arial, "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
+            --font-serif: "Georgia", "Times New Roman", "Songti TC", "SimSun", serif; /* 用於引用的字體 */
             --nav-height: 70px;
         }
 
@@ -452,9 +453,22 @@
         }
         .toggle-btn:hover, .toggle-btn.active { background: #333; color: white; border-color: #333; }
 
-        /* About Gallery */
-        .about-text { margin: 40px 0; text-align: left; display: inline-block; color: #444; font-size: 1.05rem; }
-        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+        /* About Page Styles */
+        .about-container { max-width: 800px; margin: 0 auto; text-align: center; }
+        
+        .about-poetic-text {
+            text-align: center;
+            color: #555;
+            letter-spacing: 0.08em;
+            margin: 40px auto 60px;
+        }
+        .poetic-stanza {
+            margin-bottom: 35px;
+            line-height: 2.2;
+        }
+        .poetic-stanza.last { margin-bottom: 0; }
+        
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 50px; }
         
         .gallery-item { 
             aspect-ratio: 1/1; 
@@ -472,11 +486,47 @@
         .gallery-item:hover img { transform: scale(1.06); }
         
         .social-link {
-            display: inline-flex; align-items: center; margin-top: 30px; text-decoration: none; color: #333; 
+            display: inline-flex; align-items: center; margin-top: 20px; text-decoration: none; color: #333; 
             border-bottom: 1px solid transparent; padding-bottom: 2px; transition: 0.2s;
         }
         .social-link:hover { border-bottom: 1px solid #333; }
         .social-icon { width: 20px; height: 20px; margin-right: 10px; fill: currentColor; display: block; }
+
+        /* Quote / Disclaimer Text Style */
+        .quote-container {
+            max-width: 600px;
+            margin: 60px auto 40px;
+            padding: 0 20px;
+            position: relative;
+        }
+        
+        .quote-box {
+            border-left: 3px solid #d0d0d0; /* 左側引用線 */
+            padding-left: 25px;
+            text-align: left;
+            color: #666;
+            font-family: var(--font-serif);
+            font-style: italic; /* 營造引語感 */
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, rgba(0,0,0,0.02), transparent);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        
+        .tech-disclaimer {
+            font-size: 0.75rem;
+            color: #bbb;
+            text-align: center;
+            font-family: var(--font-main);
+            font-style: normal;
+            line-height: 1.6;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            width: 80%;
+            margin: 0 auto;
+        }
         
         footer { text-align: center; padding: 80px 20px; color: #bbb; font-size: 0.75rem; border-top: 1px solid #f0f0f0; }
 
@@ -583,19 +633,37 @@
 
     <div id="page-about" class="page-section">
         <div class="content-container">
-            <div class="about-container" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div class="about-container">
                 <h2 style="font-size: 2rem; font-weight: 700; margin: 60px 0 30px;">About Us</h2>
-                <div class="about-text">
-                    <p>DONGULI 來自於對自然的觀察與熱愛。</p>
-                    <p>我們相信器皿不只是盛裝的工具，更是生活情感的延伸。</p>
-                    <p>在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡。</p>
-                    <a href="https://www.instagram.com/DONGULI_wei/" target="_blank" class="social-link">
-                        <svg class="social-icon" viewBox="0 0 448 512">
-                            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
-                        </svg>
-                        Follow us on Instagram
-                    </a>
+                <div class="about-poetic-text">
+                    <div class="poetic-stanza">
+                        <p>一顆橡實，靜靜落地，等待著屬於自己的季節</p>
+                    </div>
+                    
+                    <div class="poetic-stanza">
+                        <p style="font-weight: 600; color: #333; margin-bottom: 5px;">Donguli 也是如此</p>
+                        <p>每件作品都由雙手塑造，承載時間的痕跡與釉色的流動</p>
+                        <p>在陶土的粗糙與釉色的溫潤之間，尋找一種平靜的平衡</p>
+                    </div>
+
+                    <div class="poetic-stanza">
+                        <p>它們各有模樣，卻同樣真實、溫暖，如同生活裡的一顆果實，靜靜陪你走過四季。</p>
+                    </div>
+                    
+                    <div class="poetic-stanza last">
+                        <p style="font-weight: 600; color: #333; margin-bottom: 5px;">DONGULI 來自於對自然的觀察與熱愛</p>
+                        <p>希望當你捧著DONGULI時</p>
+                        <p>能感受你與自然之間溫柔的連結</p>
+                    </div>
                 </div>
+
+                <a href="https://www.instagram.com/DONGULI_wei/" target="_blank" class="social-link">
+                    <svg class="social-icon" viewBox="0 0 448 512">
+                        <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                    </svg>
+                    Follow us on Instagram
+                </a>
+
                 <div class="gallery-grid" id="about-gallery-root">
                     <div class="gallery-item"><div class="skeleton"></div></div>
                     <div class="gallery-item"><div class="skeleton"></div></div>
@@ -612,6 +680,17 @@
             </div>
             <div class="product-grid" id="grid-available">
                 <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
+            </div>
+            
+            <div class="quote-container">
+                <div class="quote-box">
+                    <p>一顆顆手捏的果實，承載時間與溫度，靜靜陪你走過四季。</p>
+                    <p>每一件都獨一無二，你生活中的專屬夥伴。</p>
+                </div>
+                <div class="tech-disclaimer">
+                    每件作品皆為手工製作，不對稱或不夠精準皆為手作的痕跡。<br>
+                    施釉層可能出現流釉、縮釉、小針孔皆為可能發生之情況。
+                </div>
             </div>
         </div>
         <div class="making-of-section">
@@ -742,7 +821,6 @@
                 let initialPageId = initialPageParam;
 
                 // 嘗試反向查找類別名稱對應的 ID (忽略空格比對)
-                // 這樣即使網址是 TeaSet (無空格)，也能對應到 "Tea Set"
                 const foundCatIndex = categories.findIndex(c => c.replace(/\s+/g, '') === initialPageParam);
                 if (foundCatIndex !== -1) {
                     initialPageId = 'cat-' + foundCatIndex;
@@ -955,6 +1033,17 @@
                         <div class="product-grid" id="grid-${safeId}">
                             <div class="skeleton" style="height:300px; grid-column:1/-1;"></div>
                         </div>
+                        
+                        <div class="quote-container">
+                            <div class="quote-box">
+                                <p>一顆顆手捏的果實，承載時間與溫度，靜靜陪你走過四季。</p>
+                                <p>每一件都獨一無二，你生活中的專屬夥伴。</p>
+                            </div>
+                            <div class="tech-disclaimer">
+                                每件作品皆為手工製作，不對稱或不夠精準皆為手作的痕跡。<br>
+                                施釉層可能出現流釉、縮釉、小針孔皆為可能發生之情況。
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="making-of-section">
@@ -1002,7 +1091,6 @@
             const mainHtml = getMediaHtml(mainSrc, 'img-main');
             const hoverHtml = getMediaHtml(hoverSrc, 'img-hover');
 
-            // --- 修改這裡：如果不是售完，就顯示連結 ---
             let statusHtml = '';
             if (isSold) {
                 statusHtml = `<div class="p-status">${item.status}</div>`;
@@ -1052,9 +1140,7 @@
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
             
             let targetId = pageId;
-            // 如果傳入的不是 cat- 開頭，也不是標準頁面，嘗試找分類 (忽略空格比對)
             if (!pageId.startsWith('cat-') && pageId !== 'home' && pageId !== 'about' && pageId !== 'available') {
-                 // 這裡也用移除空格的方式來比對，以防萬一
                  const idx = categories.findIndex(c => c.replace(/\s+/g, '') === pageId);
                  if (idx !== -1) targetId = 'cat-' + idx;
             }
@@ -1095,7 +1181,6 @@
                     if (categories && categories[catIndex]) {
                         const catName = categories[catIndex];
                         newTitle = `${catName} | DONGULI`;
-                        // --- 修改這裡：移除網址中的空格 ---
                         urlParam = catName.replace(/\s+/g, ''); 
                     }
                 }
