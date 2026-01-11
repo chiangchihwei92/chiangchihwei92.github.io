@@ -436,6 +436,42 @@
             transition: all 0.3s ease;
         }
         
+        /* --- Making Of Gallery (Masonry Style) --- */
+        .mo-gallery {
+            column-count: 1; /* 手機版單欄 */
+            column-gap: 20px;
+            width: 100%;
+            margin-top: 30px;
+        }
+        
+        @media (min-width: 500px) {
+            .mo-gallery { column-count: 2; }
+        }
+        
+        @media (min-width: 900px) {
+            .mo-gallery { column-count: 3; } /* 電腦版三欄 */
+        }
+
+        .mo-item {
+            break-inside: avoid; /* 防止圖片被切斷 */
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .mo-item:hover { transform: translateY(-3px); }
+
+        .mo-item img, .mo-item video {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+        
         /* Available style (now likely an <a> tag) */
         .p-status.available { 
             border-color: #333; 
