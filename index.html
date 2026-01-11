@@ -1009,7 +1009,7 @@
                 let bannerImages = [];
                 if (bannerConfig) bannerImages = Array.isArray(bannerConfig.image) ? bannerConfig.image : [bannerConfig.image];
                 
-                const catName = cat.split('(')[0];
+                const catName = cat.split('(')[0].trim();
                 const catSub = cat.includes('(') ? cat.split('(')[1].replace(')', '') : '';
 
                 const pageDiv = document.createElement('div');
@@ -1048,10 +1048,11 @@
                         </div>
                     </div>
                     
-                    <div class="making-of-section">
+                    <div class="making-of-section" id="mo-section-${safeId}" style="display:none;">
                         <div class="content-container">
                             <h3>Making of ${catName}</h3>
                             <p>Studio Stories & Process</p>
+                            <div class="mo-gallery" id="mo-gallery-${safeId}"></div>
                         </div>
                     </div>
                 `;
@@ -1060,7 +1061,96 @@
                 if(bannerImages.length > 0) renderSlideshow(`banner-${safeId}`, bannerImages);
                 
                 renderProductGrid('grid-' + safeId, cat);
+                renderMakingOfGallery(cat, safeId);
             });
+        }
+
+        async function renderMakingOfGallery(categoryName, safeId) {
+            const galleryRoot = document.getElementById(`mo-gallery-${safeId}`);
+            const sectionRoot = document.getElementById(`mo-section-${safeId}`);
+            
+            // --- 設定區 ---
+            const SEARCH_LIMIT = 50;       
+            const MAX_CONSECUTIVE_MISS = 3; 
+            const PATH_PREFIX = 'assets/';  
+            
+            // 支援的副檔名列表
+            const IMAGE_EXTS = ['jpg', 'jpeg', 'png'];
+            const VIDEO_EXTS = ['mp4', 'mov', 'webm'];
+            // ----------------
+
+            let foundCount = 0;
+            let consecutiveMissCount = 0; // 累積連續找不到的次數
+
+            // 輔助函數：檢查媒體是否存在
+            const checkMedia = (src, type) => {
+                return new Promise((resolve) => {
+                    if (type === 'video') {
+                        const video = document.createElement('video');
+                        video.src = src;
+                        // 只需要讀取到 metadata 就代表檔案存在，不用等下載完
+                        video.onloadedmetadata = () => resolve({ el: video, src: src, type: 'video' });
+                        video.onerror = () => resolve(null);
+                    } else {
+                        const img = new Image();
+                        img.src = src;
+                        img.onload = () => resolve({ el: img, src: src, type: 'image' });
+                        img.onerror = () => resolve(null);
+                    }
+                });
+            };
+
+            // 開始迴圈搜尋
+            for (let i = 1; i <= SEARCH_LIMIT; i++) {
+                if (consecutiveMissCount >= MAX_CONSECUTIVE_MISS) {
+                    break; 
+                }
+
+                const baseName = `${categoryName}-${i}`;
+                const tasks = [];
+                
+                IMAGE_EXTS.forEach(ext => {
+                    tasks.push(checkMedia(`${PATH_PREFIX}${baseName}.${ext}`, 'image'));
+                });
+                
+                VIDEO_EXTS.forEach(ext => {
+                    tasks.push(checkMedia(`${PATH_PREFIX}${baseName}.${ext}`, 'video'));
+                });
+
+                const results = await Promise.all(tasks);
+                
+                const foundItem = results.find(item => item !== null);
+
+                if (foundItem) {
+                    // --- 找到了！ ---
+                    consecutiveMissCount = 0; // 重置連續錯誤計數
+                    foundCount++;
+
+                    const div = document.createElement('div');
+                    div.className = 'mo-item';
+
+                    if (foundItem.type === 'video') {
+                        // 影片處理
+                        const v = foundItem.el;
+                        v.controls = true;
+                        v.playsInline = true;
+                        v.preload = "metadata"; 
+                        div.appendChild(v);
+                    } else {
+                        const img = foundItem.el;
+                        div.onclick = () => openProductLightbox([foundItem.src], `Making of ${categoryName}`);
+                        div.appendChild(img);
+                    }
+                    
+                    galleryRoot.appendChild(div);
+                } else {
+                    consecutiveMissCount++;
+                }
+            }
+
+            if (foundCount > 0) {
+                sectionRoot.style.display = 'block';
+            }
         }
 
         function createProductCard(item) {

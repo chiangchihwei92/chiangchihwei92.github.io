@@ -5,7 +5,7 @@
     { "type": "Banner", "key": "Tableware (食器系列)", "image": "assets/banner_ht.jpg" },
     { "type": "Banner", "key": "Round-Cap (圓帽系列)", "image": "assets/banner_rc.jpg" },
     { "type": "Banner", "key": "Special (限定系列)", "image": "assets/banner_sp.jpg" },
-    { "type": "Banner", "key": "Lifestyle (生活選物)", "image": "assets/banner_ls.jpg" },
+    { "type": "Banner", "key": "Lifestyle Picks (生活選物)", "image": "assets/banner_ls.jpg" },
     { "type": "Banner", "key": "Red Oak (紅櫟系列)", "image": "assets/banner_ro.jpg" },
     { "type": "Banner", "key": "Konishii Hayata (小西氏系列)", "image": "assets/banner_kh.jpg" },
     { "type": "About", "key": "Photo 1", "image": "assets/about_1.jpg" },
