@@ -228,7 +228,40 @@
         .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
         .hamburger.active span:nth-child(2) { opacity: 0; }
         .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+                /* --- Shop Arrow Indicator (Desktop) --- */
+        .arrow-indicator {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-right: 1.5px solid #888;  /* 箭頭顏色 */
+            border-bottom: 1.5px solid #888;
+            transform: rotate(45deg);        /* 預設向下指 */
+            margin-left: 8px;
+            margin-bottom: 3px;
+            transition: all 0.3s ease;
+        }
 
+        /* Hover 時箭頭變色並旋轉 */
+        .nav-btn:hover .arrow-indicator,
+        .nav-btn.active .arrow-indicator {
+            border-color: #000;
+        }
+
+        /* 當滑鼠移到 Dropdown 區域時，箭頭轉向朝上 */
+        @media (min-width: 769px) {
+            .dropdown:hover .arrow-indicator {
+                transform: rotate(225deg); /* 轉向朝上 */
+                margin-bottom: -1px;       /* 微調位置使其視覺平衡 */
+            }
+        }
+
+        /* --- Mobile Fix --- */
+        /* 手機版原本已經有 + 號設計，所以將這個箭頭隱藏，避免重複 */
+        @media (max-width: 768px) {
+            .arrow-indicator {
+                display: none;
+            }
+        }
         @media (max-width: 768px) {
             nav { padding: 0 20px; }
             .logo { line-height: 70px; font-size: 1.2rem; }
@@ -556,7 +589,9 @@
             <button class="nav-btn" onclick="handleNavClick('about'); closeMenu()" id="btn-about">ABOUT</button>
             
             <div class="dropdown">
-                <button class="nav-btn" id="btn-shop" onclick="toggleMobileShop(event)">SHOP</button>
+                <button class="nav-btn" id="btn-shop" onclick="toggleMobileShop(event)">
+                    SHOP <span class="arrow-indicator"></span>
+                </button>
                 <div class="dropdown-content" id="shop-dropdown-content">
                     <div class="dropdown-inner" id="shop-dropdown-inner">
                         </div>
