@@ -714,14 +714,12 @@
             const urlParams = new URLSearchParams(window.location.search);
             let initialPage = urlParams.get('page') || 'home';
 
-            // Safety timeout
             const safetyTimeout = setTimeout(() => {
                 console.warn("Loading timeout, forcing display.");
                 hideLoader();
             }, 5000);
 
             try {
-                // 1. Download Data
                 const loadConfig = async () => {
                     try {
                         const response = await fetch('data.json');
@@ -750,7 +748,6 @@
 
                 await Promise.all([loadConfig(), loadCSV()]);
 
-                // 2. Render Page Structure
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
@@ -769,12 +766,9 @@
                 setupCategories(); 
                 renderAvailablePage();
                 
-                // 3. Switch to current page
                 switchPage(initialPage, false);
 
-                // 4. Determine target image to wait for
                 let targetImage = null;
-
                 if (initialPage === 'home') {
                     if (homeHeroConfig) {
                         const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
@@ -792,7 +786,6 @@
                     }
                 }
 
-                // 5. Wait for the main image
                 if (targetImage) {
                     await preloadImage(targetImage);
                 }
@@ -806,7 +799,6 @@
             }
         }
 
-        // CSV Parser
         function parseCSV(text) {
             const lines = text.trim().split(/\r?\n/);
             if (lines.length < 2) return [];
@@ -1071,12 +1063,27 @@
                 target.classList.add('active-page');
                 window.scrollTo(0, 0);
                 
+                // --- FIX 2: 處理 SHOP 按鈕狀態 ---
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
-                else if(pageId === 'about') document.getElementById('btn-about').classList.add('active');
-                else document.getElementById('btn-shop').classList.add('active');
+                
+                if(pageId === 'home') {
+                    document.getElementById('btn-home').classList.add('active');
+                } else if(pageId === 'about') {
+                    document.getElementById('btn-about').classList.add('active');
+                } else {
+                    document.getElementById('btn-shop').classList.add('active'); 
+                }
 
-                let newTitle = "DONGULI | 咚咕哩"; // 預設首頁標題
+                // --- FIX 1: 同步 隱藏售完 按鈕的狀態 ---
+                // 當切換頁面時，檢查新頁面是否有 toggle-btn，若有則同步樣式
+                const toggleBtn = target.querySelector('.toggle-btn');
+                if (toggleBtn) {
+                    if (isHideSoldOut) toggleBtn.classList.add('active');
+                    else toggleBtn.classList.remove('active');
+                }
+                // ----------------------------------------
+
+                let newTitle = "DONGULI | 咚咕哩";
 
                 if (pageId === 'about') {
                     newTitle = "About | DONGULI";
@@ -1223,7 +1230,12 @@
 
         function toggleStock(btn, safeId, cat) {
             isHideSoldOut = !isHideSoldOut;
-            btn.classList.toggle('active');
+            // 修正：這裡只切換樣式，但因為 switchPage 現在會自動同步樣式，
+            // 只要我們確保全域變數是對的，且 grid 有重繪即可。
+            // 為了視覺即時性，我們還是先切換當前按鈕的 active
+            if(isHideSoldOut) btn.classList.add('active');
+            else btn.classList.remove('active');
+            
             renderProductGrid('grid-' + safeId, cat);
         }
 
