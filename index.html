@@ -16,6 +16,8 @@
     <meta name="robots" content="index, follow">
 
     <title>DONGULI | 咚咕哩</title>
+    <link rel="canonical" href="" id="canonical-link">
+    <script type="application/ld+json" id="json-ld-data"></script>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     
     <style>
@@ -1135,14 +1137,125 @@
             if(items.length === 0) grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#999; padding:50px;">目前沒有現貨 / Out of Stock</div>';
             else grid.innerHTML = items.map(item => createProductCard(item)).join('');
         }
+                
+        function updateJsonLd(pageId, categoryName = null) {
+            const scriptTag = document.getElementById('json-ld-data');
+            
+            const baseUrl = window.location.origin; 
+            
+            let data = {};
+
+            if (pageId === 'home') {
+                data = {
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    "name": "DONGULI | 咚咕哩",
+                    "url": baseUrl,
+                    "potentialAction": {
+                        "@type": "SearchAction",
+                        "target": baseUrl + "/?page={search_term_string}",
+                        "query-input": "required name=search_term_string"
+                    }
+                };
+            } else if (pageId === 'about') {
+                // 關於我們頁面資料
+                data = {
+                    "@context": "https://schema.org",
+                    "@type": "AboutPage",
+                    "mainEntity": {
+                        "@type": "Organization",
+                        "name": "DONGULI",
+                        "logo": baseUrl + "/assets/favicon.ico",
+                        "description": "一顆橡實，靜靜落地。DONGULI 的每件陶作都承載著手作的溫度。"
+                    }
+                };
+            } else if (pageId.startsWith('cat-') || pageId === 'available') {
+                // 商品列表頁面資料
+                // 先篩選出這個頁面會顯示的商品
+                const targetItems = products.filter(p => {
+                    if (pageId === 'available') return p.status !== 'SOLD OUT';
+                    if (categoryName) return p.category === categoryName && (!isHideSoldOut || p.status !== 'SOLD OUT');
+                    return false;
+                });
+
+                // 生成商品清單 (ItemList)
+                const itemListElement = targetItems.slice(0, 20).map((item, index) => ({
+                    "@type": "ListItem",
+                    "position": index + 1,
+                    "item": {
+                        "@type": "Product",
+                        "name": item.name,
+                        // 處理圖片路徑，確保是完整網址
+                        "image": item.image.map(img => img.startsWith('http') ? img : baseUrl + '/' + img),
+                        "description": item.notes || `Handmade ceramic: ${item.name}`,
+                        "sku": item.code,
+                        "offers": {
+                            "@type": "Offer",
+                            "priceCurrency": "TWD",
+                            "price": item.price,
+                            "availability": item.status === 'SOLD OUT' ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+                            // 這裡很重要：告訴 Google 商品所在的具體網址連結
+                            "url": baseUrl + `?page=${categoryName ? categoryName.replace(/\s+/g, '') : 'available'}`
+                        }
+                    }
+                }));
+
+                data = {
+                    "@context": "https://schema.org",
+                    "@type": "ItemList",
+                    "name": categoryName || "Available Stock",
+                    "description": `DONGULI ${categoryName || "現貨"} 商品列表`,
+                    "numberOfItems": targetItems.length,
+                    "itemListElement": itemListElement
+                };
+            }
+
+            scriptTag.textContent = JSON.stringify(data);
+        }
+
+        function updateMetaTags(title, description, path) {
+            // 更新標題
+            document.title = title;
+            
+            // 更新 Meta Description
+            let metaDesc = document.querySelector("meta[name='description']");
+            if (!metaDesc) {
+                metaDesc = document.createElement('meta');
+                metaDesc.name = 'description';
+                document.head.appendChild(metaDesc);
+            }
+            metaDesc.content = description;
+
+            const baseUrl = window.location.origin + window.location.pathname;
+            const finalUrl = path ? `${baseUrl}?page=${path}` : baseUrl;
+            
+            const canonicalLink = document.getElementById('canonical-link');
+            if (canonicalLink) canonicalLink.href = finalUrl;
+            
+            // 設定 Open Graph (讓 FB/IG 分享好看)
+            updateOpenGraph('og:title', title);
+            updateOpenGraph('og:description', description);
+            updateOpenGraph('og:url', finalUrl);
+            updateOpenGraph('og:image', window.location.origin + '/assets/home_hero.jpg'); // 預設圖片，可自行修改
+        }
+
+        function updateOpenGraph(property, content) {
+            let tag = document.querySelector(`meta[property='${property}']`);
+            if (!tag) {
+                tag = document.createElement('meta');
+                tag.setAttribute('property', property);
+                document.head.appendChild(tag);
+            }           
+            tag.setAttribute('content', content);
+        }             
 
         function switchPage(pageId, pushToHistory = true) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
             
             let targetId = pageId;
             if (!pageId.startsWith('cat-') && pageId !== 'home' && pageId !== 'about' && pageId !== 'available') {
-                 const idx = categories.findIndex(c => c.replace(/\s+/g, '') === pageId);
-                 if (idx !== -1) targetId = 'cat-' + idx;
+                    const idx = categories.findIndex(c => c.replace(/\s+/g, '') === pageId);
+                    if (idx !== -1) targetId = 'cat-' + idx;
             }
 
             const target = document.getElementById('page-' + targetId);
@@ -1156,36 +1269,44 @@
                 else if(targetId === 'about') document.getElementById('btn-about').classList.add('active');
                 else document.getElementById('btn-shop').classList.add('active'); 
 
-                if (targetId.startsWith('cat-')) {
-                    const catIndex = parseInt(targetId.replace('cat-', ''));
-                    const catName = categories[catIndex];
-                    
-                    const toggleBtn = target.querySelector('.toggle-btn');
-                    if (toggleBtn) {
-                        if (isHideSoldOut) toggleBtn.classList.add('active');
-                        else toggleBtn.classList.remove('active');
-                    }
-                    
-                    renderProductGrid('grid-' + targetId, catName);
-                }
-
-                let newTitle = "DONGULI | 咚咕哩";
-                let urlParam = targetId; 
+                let newTitle = "DONGULI | 咚咕哩 - 自然・陶・生活";
+                let newDesc = "DONGULI 來自於對自然的觀察與熱愛，每件作品都由雙手塑造，承載時間的痕跡與釉色的流動。";
+                let urlParam = targetId;
+                let catNameForJson = null;
 
                 if (targetId === 'about') {
-                    newTitle = "About | DONGULI";
+                    newTitle = "About Us 關於我們 | DONGULI";
+                    newDesc = "一顆橡實，靜靜落地。DONGULI 的每件陶作都承載著手作的溫度，在陶土的粗糙與釉色的溫潤之間，尋找平衡。";
+                    urlParam = 'about';
                 } else if (targetId === 'available') {
-                    newTitle = "Available Stock | DONGULI";
+                    newTitle = "Available Stock 現貨選購 | DONGULI";
+                    newDesc = "瀏覽 DONGULI 目前可購買的現貨作品。每件都獨一無二，尋找屬於你的生活陶器。";
+                    urlParam = 'available';
                 } else if (targetId.startsWith('cat-')) {
                     const catIndex = parseInt(targetId.replace('cat-', ''));
                     if (categories && categories[catIndex]) {
                         const catName = categories[catIndex];
-                        newTitle = `${catName} | DONGULI`;
+                        catNameForJson = catName; // 為了 JSON-LD 準備的分類名稱
+                        
+                        newTitle = `${catName} | DONGULI 陶瓷作品`;
+                        newDesc = `選購 DONGULI ${catName} 系列。手捏質感，獨特釉色，為生活增添自然的氣息。`;
+                        
+                        // 處理 UI 上的按鈕狀態
+                        const toggleBtn = target.querySelector('.toggle-btn');
+                        if (toggleBtn) {
+                            if (isHideSoldOut) toggleBtn.classList.add('active');
+                            else toggleBtn.classList.remove('active');
+                        }
+                        
+                        renderProductGrid('grid-' + targetId, catName);
                         urlParam = catName.replace(/\s+/g, ''); 
                     }
                 }
+
+                updateMetaTags(newTitle, newDesc, targetId === 'home' ? '' : urlParam);
                 
-                document.title = newTitle;
+                updateJsonLd(targetId, catNameForJson);
+
                 if (pushToHistory) {
                     const newUrl = targetId === 'home' ? window.location.pathname : `?page=${urlParam}`;
                     window.history.pushState({ page: urlParam }, newTitle, newUrl);
