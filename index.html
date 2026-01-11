@@ -424,11 +424,26 @@
         .p-code { font-size: 0.75rem; color: #aaa; margin-bottom: 5px; }
         .p-name { font-size: 1rem; color: #333; margin-bottom: 8px; font-weight: 600; }
         .p-price { color: #555; font-size: 1rem; }
+        
+        /* Updated Status Style */
         .p-status { 
             font-size: 0.7rem; padding: 4px 12px; border: 1px solid #ddd; color: #aaa; 
             display: inline-block; margin-top: 15px; border-radius: 50px; 
+            text-decoration: none; /* For link */
+            transition: all 0.3s ease;
         }
-        .p-status.available { border-color: #333; color: #333; }
+        
+        /* Available style (now likely an <a> tag) */
+        .p-status.available { 
+            border-color: #333; 
+            color: #333; 
+            background-color: transparent;
+            cursor: pointer;
+        }
+        .p-status.available:hover {
+            background-color: #333;
+            color: #fff;
+        }
 
         .controls-area { text-align: right; margin-bottom: 30px; position: relative; z-index: 5; }
         .toggle-btn {
@@ -624,6 +639,7 @@
     <script>
         // 設定區
         const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSox1X7TkN9sthpcPPEALmBn6zIpYGKSRowSXKodN3fkLf3X8NAzCKjltFjQk5xgK3-Kt5wuVCRUT25/pub?gid=1824240757&single=true&output=csv'; 
+        const ORDER_FORM_LINK = 'https://forms.gle/4dy8TAiyLGzYatKN6'; // 訂購表單連結
 
         // 狀態變數
         let products = [];
@@ -721,13 +737,13 @@
                 renderAvailablePage();
                 
                 // 4. 處理網址參數與初始頁面
-                // FIX: 這裡加入邏輯，如果網址是 ?page=中文類別名，要能對應回去 cat-index
                 const urlParams = new URLSearchParams(window.location.search);
                 let initialPageParam = urlParams.get('page') || 'home';
                 let initialPageId = initialPageParam;
 
-                // 嘗試反向查找類別名稱對應的 ID
-                const foundCatIndex = categories.indexOf(initialPageParam);
+                // 嘗試反向查找類別名稱對應的 ID (忽略空格比對)
+                // 這樣即使網址是 TeaSet (無空格)，也能對應到 "Tea Set"
+                const foundCatIndex = categories.findIndex(c => c.replace(/\s+/g, '') === initialPageParam);
                 if (foundCatIndex !== -1) {
                     initialPageId = 'cat-' + foundCatIndex;
                 }
@@ -901,7 +917,6 @@
             shopInner.appendChild(shopAllLink);
 
             categories.forEach((cat, index) => {
-                // 為了程式穩定，ID 還是維持 cat-0, cat-1 的格式
                 const safeId = 'cat-' + index;
                 
                 const item = document.createElement('div');
@@ -921,7 +936,6 @@
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
                 
-                // 加入 toggle-btn
                 pageDiv.innerHTML = `
                     <div class="category-header-wrapper">
                         <div class="slideshow-container" id="banner-${safeId}">
@@ -954,7 +968,6 @@
                 
                 if(bannerImages.length > 0) renderSlideshow(`banner-${safeId}`, bannerImages);
                 
-                // 初始渲染一次，但之後 switchPage 會再次強制更新
                 renderProductGrid('grid-' + safeId, cat);
             });
         }
@@ -989,6 +1002,14 @@
             const mainHtml = getMediaHtml(mainSrc, 'img-main');
             const hoverHtml = getMediaHtml(hoverSrc, 'img-hover');
 
+            // --- 修改這裡：如果不是售完，就顯示連結 ---
+            let statusHtml = '';
+            if (isSold) {
+                statusHtml = `<div class="p-status">${item.status}</div>`;
+            } else {
+                statusHtml = `<a href="${ORDER_FORM_LINK}" target="_blank" class="p-status available">Available‧點我訂購</a>`;
+            }
+
             return `
                 <article class="product-card ${hasHoverClass}">
                     <div class="img-box" onclick="openProductLightbox(${mediaJson}, '${safeNote}')">
@@ -1000,7 +1021,7 @@
                     <div class="p-code">${item.code}</div>
                     <div class="p-name">${item.name}</div>
                     <div class="p-price">NT$ ${item.price}</div>
-                    <div class="p-status ${!isSold ? 'available' : ''}">${item.status}</div>
+                    ${statusHtml}
                 </article>
             `;
         }
@@ -1030,11 +1051,11 @@
         function switchPage(pageId, pushToHistory = true) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
             
-            // 處理 pageId，如果是中文名要嘗試轉回 ID (防呆)
             let targetId = pageId;
-            // 如果傳入的不是 cat- 開頭，也不是標準頁面，嘗試找分類
+            // 如果傳入的不是 cat- 開頭，也不是標準頁面，嘗試找分類 (忽略空格比對)
             if (!pageId.startsWith('cat-') && pageId !== 'home' && pageId !== 'about' && pageId !== 'available') {
-                 const idx = categories.indexOf(pageId);
+                 // 這裡也用移除空格的方式來比對，以防萬一
+                 const idx = categories.findIndex(c => c.replace(/\s+/g, '') === pageId);
                  if (idx !== -1) targetId = 'cat-' + idx;
             }
 
@@ -1044,34 +1065,26 @@
                 target.classList.add('active-page');
                 window.scrollTo(0, 0);
                 
-                // 處理導航按鈕狀態
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
                 if(targetId === 'home') document.getElementById('btn-home').classList.add('active');
                 else if(targetId === 'about') document.getElementById('btn-about').classList.add('active');
                 else document.getElementById('btn-shop').classList.add('active'); 
 
-                // --- 解決問題 1：同步「隱藏售完」狀態並強制渲染 ---
-                // 每次進入類別頁面，都要確保 UI 與全域變數 isHideSoldOut 一致
                 if (targetId.startsWith('cat-')) {
                     const catIndex = parseInt(targetId.replace('cat-', ''));
                     const catName = categories[catIndex];
                     
-                    // 1. 同步按鈕樣式
                     const toggleBtn = target.querySelector('.toggle-btn');
                     if (toggleBtn) {
                         if (isHideSoldOut) toggleBtn.classList.add('active');
                         else toggleBtn.classList.remove('active');
                     }
                     
-                    // 2. 關鍵修正：強制重新渲染該頁面的 Grid
-                    // 這解決了「切換類別後，按下隱藏無效」的問題，因為切換回來時我們確保畫面與變數一致
                     renderProductGrid('grid-' + targetId, catName);
                 }
-                // ---------------------------------------------
 
-                // 設定網頁標題與網址
                 let newTitle = "DONGULI | 咚咕哩";
-                let urlParam = targetId; // 預設使用 ID
+                let urlParam = targetId; 
 
                 if (targetId === 'about') {
                     newTitle = "About | DONGULI";
@@ -1082,15 +1095,14 @@
                     if (categories && categories[catIndex]) {
                         const catName = categories[catIndex];
                         newTitle = `${catName} | DONGULI`;
-                        // --- 解決問題 2：網址使用中文類別名稱 ---
-                        urlParam = catName; 
+                        // --- 修改這裡：移除網址中的空格 ---
+                        urlParam = catName.replace(/\s+/g, ''); 
                     }
                 }
                 
                 document.title = newTitle;
                 if (pushToHistory) {
                     const newUrl = targetId === 'home' ? window.location.pathname : `?page=${urlParam}`;
-                    // 我們將 pageId 存入 state 以便 popstate 使用，但 URL 顯示中文
                     window.history.pushState({ page: urlParam }, newTitle, newUrl);
                 }
             }
@@ -1099,15 +1111,13 @@
         function toggleStock(btn, safeId, cat) {
             isHideSoldOut = !isHideSoldOut;
             
-            // 更新按鈕樣式
             if(isHideSoldOut) btn.classList.add('active');
             else btn.classList.remove('active');
             
-            // 重新渲染當前網格
             renderProductGrid('grid-' + safeId, cat);
         }
 
-        // --- Lightbox & 其他 UI 功能 (保持不變) ---
+        // --- Lightbox & 其他 UI 功能 ---
         function openProductLightbox(imagesArray, noteText) {
             currentLbImages = imagesArray;
             currentLbIndex = 0;
