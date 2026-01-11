@@ -719,25 +719,30 @@
                 <h2 style="color: #111; font-size: 2rem; font-weight: 700;">Available Stock</h2>
                 <p style="color: #999; letter-spacing: 0.1em; font-size: 0.9rem;">現貨選購</p>
             </div>
-            <div class="product-grid" id="grid-available">
-                <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
-            </div>
             
-            <div class="quote-container">
+            <div class="quote-container" style="margin-top: 20px;">
                 <div class="quote-box">
                     <p>一顆顆手捏的果實，承載時間與溫度，靜靜陪你走過四季。</p>
                     <p>每一件都獨一無二，你生活中的專屬夥伴。</p>
                 </div>
-                <div class="tech-disclaimer">
-                    每件作品皆為手工製作，不對稱或不夠精準皆為手作的痕跡。<br>
-                    施釉層可能出現流釉、縮釉、小針孔皆為可能發生之情況。
-                </div>
+            </div>
+
+            <div class="product-grid" id="grid-available">
+                <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
             </div>
         </div>
+
         <div class="making-of-section">
             <div class="content-container">
                 <h3>Making of DONGULI</h3>
                 <p>Studio Stories & Handcrafting Process</p>
+            </div>
+        </div>
+
+        <div class="content-container">
+            <div class="tech-disclaimer" style="margin-bottom: 40px;">
+                每件作品皆為手工製作，不對稱或不夠精準皆為手作的痕跡。<br>
+                施釉層可能出現流釉、縮釉、小針孔皆為可能發生之情況。
             </div>
         </div>
     </div>
@@ -836,20 +841,23 @@
 
                 await Promise.all([loadConfig(), loadCSV()]);
 
-                // 2. 渲染靜態元件 (Hero, About)
+                // 2. 渲染靜態元件 (Hero, About) - 更新從 data.json 讀取
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
                     renderSlideshow('home-hero-root', images);
                 }
 
+                // About Gallery
                 const aboutRoot = document.getElementById('about-gallery-root');
                 aboutRoot.innerHTML = ''; 
-                configs.filter(c => c.type === 'About').slice(0, 2).forEach(p => {
-                    const div = document.createElement('div');
-                    div.className = 'gallery-item';
-                    div.innerHTML = `<img src="${p.image}" loading="lazy" alt="About Studio" onload="this.classList.add('loaded')" onerror="this.style.display='none'">`;
-                    aboutRoot.appendChild(div);
+                configs.filter(c => c.type === 'About').forEach(p => {
+                    if (p.image) {
+                        const div = document.createElement('div');
+                        div.className = 'gallery-item';
+                        div.innerHTML = `<img src="${p.image}" loading="lazy" alt="About Studio" onload="this.classList.add('loaded')" onerror="this.style.display='none'">`;
+                        aboutRoot.appendChild(div);
+                    }
                 });
 
                 // 3. 建立分類頁面
@@ -917,7 +925,6 @@
                 const line = lines[i].trim();
                 if (!line) continue;
 
-                // 簡單的 CSV 解析 (處理逗號在引號內的情況)
                 const values = [];
                 let currentVal = '';
                 let inQuote = false;
@@ -1021,7 +1028,6 @@
             if(slideshowIntervals[id]) clearInterval(slideshowIntervals[id]);
         }
 
-        // 修改後的 setupCategories 函數
         function setupCategories() {
             categories = [...new Set(products.map(p => p.category))]; 
             const shopInner = document.getElementById('shop-dropdown-inner');
@@ -1030,7 +1036,6 @@
             shopInner.innerHTML = '';
             pagesRoot.innerHTML = '';
 
-            // Shop All Link
             const shopAllLink = document.createElement('div');
             shopAllLink.className = 'dropdown-item shop-all-item';
             shopAllLink.innerText = 'View Available / 查看現貨';
@@ -1040,22 +1045,19 @@
             categories.forEach((cat, index) => {
                 const safeId = 'cat-' + index;
                 
-                // Dropdown Item
                 const item = document.createElement('div');
                 item.className = 'dropdown-item';
                 item.innerText = cat;
                 item.onclick = () => { handleNavClick(safeId); closeMenu(); };
                 shopInner.appendChild(item);
 
-                // Banner
                 const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === cat);
                 let bannerImages = [];
                 if (bannerConfig) bannerImages = Array.isArray(bannerConfig.image) ? bannerConfig.image : [bannerConfig.image];
                 
-                const catName = cat.split('(')[0].trim(); // 英文部分
+                const catName = cat.split('(')[0].trim(); 
                 const catChinese = cat.includes('(') ? cat.split('(')[1].replace(')', '').trim() : catName;
 
-                // Page Structure
                 const pageDiv = document.createElement('div');
                 pageDiv.id = 'page-' + safeId;
                 pageDiv.className = 'page-section';
@@ -1073,31 +1075,34 @@
                     </div>
 
                     <div class="content-container">
+                        <div class="quote-container" style="margin: 40px auto 20px;">
+                            <div class="quote-box">
+                                <p>一顆顆手捏的果實，承載時間與溫度，靜靜陪你走過四季。</p>
+                                <p>每一件都獨一無二，你生活中的專屬夥伴。</p>
+                            </div>
+                        </div>
+
                         <div class="controls-area">
                              <button class="toggle-btn" onclick="toggleStock(this, '${safeId}', '${cat}')">隱藏售完 Hide Sold Out</button>
                         </div>
                         <div class="product-grid" id="grid-${safeId}">
                             <div class="skeleton" style="height:300px; grid-column:1/-1;"></div>
                         </div>
-                        
-                        <div class="quote-container">
-                            <div class="quote-box">
-                                <p>一顆顆手捏的果實，承載時間與溫度，靜靜陪你走過四季。</p>
-                                <p>每一件都獨一無二，你生活中的專屬夥伴。</p>
-                            </div>
-                            <div class="tech-disclaimer">
-                                每件作品皆為手工製作，不對稱或不夠精準皆為手作的痕跡。<br>
-                                施釉層可能出現流釉、縮釉、小針孔皆為可能發生之情況。
-                            </div>
-                        </div>
                     </div>
                     
                     <div class="making-of-section" id="mo-section-${safeId}" style="display:none;">
                         <div class="content-container">
-                            <h3>${catChinese} 的製作過程</h3>
+                            <h3>${catChinese}的製作過程</h3>
                             <p>咚咕哩成長史</p>
                             
                             <div class="mo-gallery" id="mo-gallery-${safeId}"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-container">
+                        <div class="tech-disclaimer" style="margin-bottom: 40px;">
+                            每件作品皆為手工製作，不對稱或不夠精準皆為手作的痕跡。<br>
+                            施釉層可能出現流釉、縮釉、小針孔皆為可能發生之情況。
                         </div>
                     </div>
                 `;
@@ -1109,91 +1114,60 @@
             });
         }
 
+        // --- 更新後的 Making Gallery 函數 (讀取 data.json) ---
         async function renderMakingOfGallery(categoryName, safeId) {
             const galleryRoot = document.getElementById(`mo-gallery-${safeId}`);
             const sectionRoot = document.getElementById(`mo-section-${safeId}`);
             
-            // --- 設定區 ---
-            const SEARCH_LIMIT = 50;       
-            const MAX_CONSECUTIVE_MISS = 3; 
-            const PATH_PREFIX = 'assets/';  
-            
-            // 支援的副檔名列表
-            const IMAGE_EXTS = ['jpg', 'jpeg', 'png'];
-            const VIDEO_EXTS = ['mp4', 'mov', 'webm'];
-            // ----------------
+            // 清空舊內容
+            galleryRoot.innerHTML = '';
 
-            let foundCount = 0;
-            let consecutiveMissCount = 0; // 累積連續找不到的次數
+            // 在 configs (data.json) 中尋找對應 key 的 MakingGallery 設定
+            const config = configs.find(c => c.type === 'MakingGallery' && c.key === categoryName);
 
-            // 輔助函數：檢查媒體是否存在
-            const checkMedia = (src, type) => {
-                return new Promise((resolve) => {
-                    if (type === 'video') {
-                        const video = document.createElement('video');
-                        video.src = src;
-                        // 只需要讀取到 metadata 就代表檔案存在，不用等下載完
-                        video.onloadedmetadata = () => resolve({ el: video, src: src, type: 'video' });
-                        video.onerror = () => resolve(null);
-                    } else {
-                        const img = new Image();
-                        img.src = src;
-                        img.onload = () => resolve({ el: img, src: src, type: 'image' });
-                        img.onerror = () => resolve(null);
-                    }
-                });
-            };
-
-            // 開始迴圈搜尋
-            for (let i = 1; i <= SEARCH_LIMIT; i++) {
-                if (consecutiveMissCount >= MAX_CONSECUTIVE_MISS) {
-                    break; 
+            if (config && config.image) {
+                // 處理 image 欄位 (可能是字串陣列或逗號分隔字串)
+                let images = [];
+                if (Array.isArray(config.image)) {
+                    images = config.image;
+                } else if (typeof config.image === 'string' && config.image.trim() !== '') {
+                    images = config.image.split(',').map(s => s.trim());
                 }
 
-                const baseName = `${categoryName}-${i}`;
-                const tasks = [];
-                
-                IMAGE_EXTS.forEach(ext => {
-                    tasks.push(checkMedia(`${PATH_PREFIX}${baseName}.${ext}`, 'image'));
-                });
-                
-                VIDEO_EXTS.forEach(ext => {
-                    tasks.push(checkMedia(`${PATH_PREFIX}${baseName}.${ext}`, 'video'));
-                });
+                if (images.length > 0) {
+                    images.forEach(src => {
+                        const div = document.createElement('div');
+                        div.className = 'mo-item';
+                        
+                        // 判斷是否為影片
+                        const isVideo = src.match(/\.(mp4|mov|webm)$/i);
 
-                const results = await Promise.all(tasks);
-                
-                const foundItem = results.find(item => item !== null);
+                        if (isVideo) {
+                            const video = document.createElement('video');
+                            video.src = src;
+                            video.controls = true;
+                            video.playsInline = true;
+                            video.preload = "metadata"; 
+                            div.appendChild(video);
+                        } else {
+                            const img = document.createElement('img');
+                            img.src = src;
+                            img.loading = "lazy";
+                            // 點擊放大
+                            div.onclick = () => openProductLightbox([src], `Making of ${categoryName}`);
+                            div.appendChild(img);
+                        }
+                        
+                        galleryRoot.appendChild(div);
+                    });
 
-                if (foundItem) {
-                    // --- 找到了！ ---
-                    consecutiveMissCount = 0; // 重置連續錯誤計數
-                    foundCount++;
-
-                    const div = document.createElement('div');
-                    div.className = 'mo-item';
-
-                    if (foundItem.type === 'video') {
-                        // 影片處理
-                        const v = foundItem.el;
-                        v.controls = true;
-                        v.playsInline = true;
-                        v.preload = "metadata"; 
-                        div.appendChild(v);
-                    } else {
-                        const img = foundItem.el;
-                        div.onclick = () => openProductLightbox([foundItem.src], `Making of ${categoryName}`);
-                        div.appendChild(img);
-                    }
-                    
-                    galleryRoot.appendChild(div);
+                    // 有內容才顯示區塊
+                    sectionRoot.style.display = 'block';
                 } else {
-                    consecutiveMissCount++;
+                    sectionRoot.style.display = 'none';
                 }
-            }
-
-            if (foundCount > 0) {
-                sectionRoot.style.display = 'block';
+            } else {
+                sectionRoot.style.display = 'none';
             }
         }
 
@@ -1292,7 +1266,6 @@
                     }
                 };
             } else if (pageId === 'about') {
-                // 關於我們頁面資料
                 data = {
                     "@context": "https://schema.org",
                     "@type": "AboutPage",
@@ -1304,22 +1277,18 @@
                     }
                 };
             } else if (pageId.startsWith('cat-') || pageId === 'available') {
-                // 商品列表頁面資料
-                // 先篩選出這個頁面會顯示的商品
                 const targetItems = products.filter(p => {
                     if (pageId === 'available') return p.status !== 'SOLD OUT';
                     if (categoryName) return p.category === categoryName && (!isHideSoldOut || p.status !== 'SOLD OUT');
                     return false;
                 });
 
-                // 生成商品清單 (ItemList)
                 const itemListElement = targetItems.slice(0, 20).map((item, index) => ({
                     "@type": "ListItem",
                     "position": index + 1,
                     "item": {
                         "@type": "Product",
                         "name": item.name,
-                        // 處理圖片路徑，確保是完整網址
                         "image": item.image.map(img => img.startsWith('http') ? img : baseUrl + '/' + img),
                         "description": item.notes || `Handmade ceramic: ${item.name}`,
                         "sku": item.code,
@@ -1328,7 +1297,6 @@
                             "priceCurrency": "TWD",
                             "price": item.price,
                             "availability": item.status === 'SOLD OUT' ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-                            // 這裡很重要：告訴 Google 商品所在的具體網址連結
                             "url": baseUrl + `?page=${categoryName ? categoryName.replace(/\s+/g, '') : 'available'}`
                         }
                     }
@@ -1348,10 +1316,7 @@
         }
 
         function updateMetaTags(title, description, path) {
-            // 更新標題
             document.title = title;
-            
-            // 更新 Meta Description
             let metaDesc = document.querySelector("meta[name='description']");
             if (!metaDesc) {
                 metaDesc = document.createElement('meta');
@@ -1362,15 +1327,13 @@
 
             const baseUrl = window.location.origin + window.location.pathname;
             const finalUrl = path ? `${baseUrl}?page=${path}` : baseUrl;
-            
             const canonicalLink = document.getElementById('canonical-link');
             if (canonicalLink) canonicalLink.href = finalUrl;
             
-            // 設定 Open Graph (讓 FB/IG 分享好看)
             updateOpenGraph('og:title', title);
             updateOpenGraph('og:description', description);
             updateOpenGraph('og:url', finalUrl);
-            updateOpenGraph('og:image', window.location.origin + '/assets/home_hero.jpg'); // 預設圖片，可自行修改
+            updateOpenGraph('og:image', window.location.origin + '/assets/home_hero.jpg'); 
         }
 
         function updateOpenGraph(property, content) {
@@ -1379,9 +1342,9 @@
                 tag = document.createElement('meta');
                 tag.setAttribute('property', property);
                 document.head.appendChild(tag);
-            }           
+            }            
             tag.setAttribute('content', content);
-        }             
+        }              
 
         function switchPage(pageId, pushToHistory = true) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
@@ -1420,12 +1383,11 @@
                     const catIndex = parseInt(targetId.replace('cat-', ''));
                     if (categories && categories[catIndex]) {
                         const catName = categories[catIndex];
-                        catNameForJson = catName; // 為了 JSON-LD 準備的分類名稱
+                        catNameForJson = catName; 
                         
                         newTitle = `${catName} | DONGULI 陶瓷作品`;
                         newDesc = `選購 DONGULI ${catName} 系列。手捏質感，獨特釉色，為生活增添自然的氣息。`;
                         
-                        // 處理 UI 上的按鈕狀態
                         const toggleBtn = target.querySelector('.toggle-btn');
                         if (toggleBtn) {
                             if (isHideSoldOut) toggleBtn.classList.add('active');
@@ -1450,19 +1412,15 @@
 
         function toggleStock(btn, safeId, cat) {
             isHideSoldOut = !isHideSoldOut;
-            
             if(isHideSoldOut) btn.classList.add('active');
             else btn.classList.remove('active');
-            
             renderProductGrid('grid-' + safeId, cat);
         }
 
-        // --- Lightbox & 其他 UI 功能 ---
         function openProductLightbox(imagesArray, noteText) {
             currentLbImages = imagesArray;
             currentLbIndex = 0;
             currentLbNote = noteText || "";
-            
             updateLightboxContent();
             
             const lightbox = document.getElementById('lightbox');

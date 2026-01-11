@@ -8,9 +8,14 @@
     { "type": "Banner", "key": "Lifestyle Picks (生活選物)", "image": "assets/banner_ls.jpg" },
     { "type": "Banner", "key": "Red Oak (紅櫟系列)", "image": "assets/banner_ro.jpg" },
     { "type": "Banner", "key": "Konishii Hayata (小西氏系列)", "image": "assets/banner_kh.jpg" },
+    { "type": "MakingGallery", "key": "Hand-Carved (手雕系列)", "image": "" },
+    { "type": "MakingGallery", "key": "Tableware (食器系列)", "image": "" },
+    { "type": "MakingGallery", "key": "Round-Cap (圓帽系列)", "image": "" },
+    { "type": "MakingGallery", "key": "Special (限定系列)", "image": "" },
+    { "type": "MakingGallery", "key": "Lifestyle Picks (生活選物)", "image": "" },
+    { "type": "MakingGallery", "key": "Red Oak (紅櫟系列)", "image": "" },
+    { "type": "MakingGallery", "key": "Konishii Hayata (小西氏系列)", "image": ["Konishii Hayata (小西氏系列)-1.jpg", "Konishii Hayata (小西氏系列)-2.jpg", "Konishii Hayata (小西氏系列)-3.jpg", "Konishii Hayata (小西氏系列)-4.jpg", "Konishii Hayata (小西氏系列)-5.jpg", "Konishii Hayata (小西氏系列)-6.jpg", "Konishii Hayata (小西氏系列)-7.jpg", "Konishii Hayata (小西氏系列)-8.jpg"] },
     { "type": "About", "key": "Photo 1", "image": "assets/about_1.jpg" },
-    { "type": "About", "key": "Photo 2", "image": "assets/about_2.jpg" },
-    { "type": "About", "key": "Photo 3", "image": "assets/about_3.jpg" },
-    { "type": "About", "key": "Photo 4", "image": "assets/about_4.jpg" }
+    { "type": "About", "key": "Photo 2", "image": "assets/about_2.jpg" }
   ]
 }
