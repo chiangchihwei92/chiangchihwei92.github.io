@@ -949,8 +949,10 @@
                 clearTimeout(safetyTimeout);
                 hideLoader();
                 
-                // Initialize comments after page is loaded
-                setTimeout(initializeGiscusComments, 500);
+                // Initialize comments after page is fully rendered
+                requestAnimationFrame(() => {
+                    setTimeout(initializeGiscusComments, 100);
+                });
             }
         }
 
@@ -1464,7 +1466,9 @@
                 
                 // Initialize comments when switching to pages with comment sections
                 if (targetId === 'available' || targetId.startsWith('cat-')) {
-                    setTimeout(initializeGiscusComments, 300);
+                    requestAnimationFrame(() => {
+                        setTimeout(initializeGiscusComments, 100);
+                    });
                 }
             }
         }
@@ -1597,16 +1601,15 @@
 
         // Initialize Giscus Comments
         function initializeGiscusComments() {
-            // Remove any existing Giscus scripts and iframes to prevent duplicates
-            document.querySelectorAll('script[src*="giscus"]').forEach(s => s.remove());
-            document.querySelectorAll('.giscus-frame').forEach(f => f.remove());
-
-            // Find all giscus containers on the current active page
+            // Find the giscus container on the current active page
             const activePage = document.querySelector('.page-section.active-page');
             if (!activePage) return;
             
             const giscusContainer = activePage.querySelector('.giscus');
             if (!giscusContainer) return;
+
+            // Check if already initialized to prevent duplicate loading
+            if (giscusContainer.querySelector('script[src*="giscus"]')) return;
 
             // Clear the container
             giscusContainer.innerHTML = '';
@@ -1614,17 +1617,18 @@
             // Create and configure Giscus script
             const script = document.createElement('script');
             script.src = 'https://giscus.app/client.js';
+            // Note: These IDs are public and required for Giscus to work
             script.setAttribute('data-repo', 'chiangchihwei92/chiangchihwei92.github.io');
-            script.setAttribute('data-repo-id', 'R_kgDOPL1KJg'); // Repository ID
-            script.setAttribute('data-category', 'General'); // Discussion category
-            script.setAttribute('data-category-id', 'DIC_kwDOPL1KJs4Clq6g'); // Category ID
-            script.setAttribute('data-mapping', 'pathname'); // Map comments to page URL
+            script.setAttribute('data-repo-id', 'R_kgDOPL1KJg');
+            script.setAttribute('data-category', 'General');
+            script.setAttribute('data-category-id', 'DIC_kwDOPL1KJs4Clq6g'); // Update this after setting up Giscus
+            script.setAttribute('data-mapping', 'pathname');
             script.setAttribute('data-strict', '0');
             script.setAttribute('data-reactions-enabled', '1');
             script.setAttribute('data-emit-metadata', '0');
             script.setAttribute('data-input-position', 'top');
             script.setAttribute('data-theme', 'light');
-            script.setAttribute('data-lang', 'zh-TW'); // Traditional Chinese
+            script.setAttribute('data-lang', 'zh-TW');
             script.setAttribute('data-loading', 'lazy');
             script.crossOrigin = 'anonymous';
             script.async = true;
