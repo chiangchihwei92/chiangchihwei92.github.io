@@ -8,7 +8,7 @@
     <!-- Resource Hints for Performance -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://docs.google.com">
-    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DMSXQ41WHS"></script>
 
@@ -929,7 +929,7 @@
             
             const getVal = (rowArr, headerName) => {
                 const idx = headerIndexCache[headerName];
-                return idx !== undefined && rowArr[idx] ? rowArr[idx] : '';
+                return idx !== undefined && idx < rowArr.length && rowArr[idx] ? rowArr[idx] : '';
             };
 
             const result = [];
@@ -990,7 +990,7 @@
                 img.src = src;
                 img.className = index === 0 ? 'slide active' : 'slide';
                 img.alt = 'Slide Image';
-                if (index === 0) img.fetchPriority = 'high';
+                if (index === 0) img.fetchpriority = 'high';
                 img.decoding = 'async';
                 container.appendChild(img);
             });
