@@ -611,6 +611,44 @@
         .lb-next { right: 10px; }
         @keyframes zoomIn { from { transform: scale(0.95); } to { transform: scale(1); } }
 
+        /* Comments Section */
+        .comments-section {
+            max-width: 900px;
+            margin: 60px auto 40px;
+            padding: 40px 20px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        
+        .comments-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .comments-header h3 {
+            font-size: 1.5rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+        
+        .comments-header p {
+            color: #888;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .giscus {
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
     </style>
 </head>
 <body>
@@ -738,6 +776,15 @@
             <div class="tech-disclaimer" style="margin-bottom: 40px;">
                 每件作品皆為手工製作，不對稱或不夠精準皆為手作的痕跡。<br>
                 施釉層可能出現流釉、縮釉、小針孔皆為可能發生之情況。
+            </div>
+            
+            <!-- Comments Section -->
+            <div class="comments-section" id="comments-available">
+                <div class="comments-header">
+                    <h3>客戶回饋 Customer Feedback</h3>
+                    <p>分享您的想法與體驗 / Share your thoughts and experiences</p>
+                </div>
+                <div class="giscus"></div>
             </div>
         </div>
     </div>
@@ -901,6 +948,9 @@
             } finally {
                 clearTimeout(safetyTimeout);
                 hideLoader();
+                
+                // Initialize comments after page is loaded
+                setTimeout(initializeGiscusComments, 500);
             }
         }
 
@@ -1098,6 +1148,15 @@
                         <div class="tech-disclaimer" style="margin-bottom: 40px;">
                             每件作品皆為手工製作，不對稱或不夠精準皆為手作的痕跡。<br>
                             施釉層可能出現流釉、縮釉、小針孔皆為可能發生之情況。
+                        </div>
+                        
+                        <!-- Comments Section -->
+                        <div class="comments-section" id="comments-${safeId}">
+                            <div class="comments-header">
+                                <h3>客戶回饋 Customer Feedback</h3>
+                                <p>分享您對${catChinese}的想法 / Share your thoughts about ${catName}</p>
+                            </div>
+                            <div class="giscus" data-category="${cat}"></div>
                         </div>
                     </div>
                 `;
@@ -1402,6 +1461,11 @@
                     const newUrl = targetId === 'home' ? window.location.pathname : `?page=${urlParam}`;
                     window.history.pushState({ page: urlParam }, newTitle, newUrl);
                 }
+                
+                // Initialize comments when switching to pages with comment sections
+                if (targetId === 'available' || targetId.startsWith('cat-')) {
+                    setTimeout(initializeGiscusComments, 300);
+                }
             }
         }
 
@@ -1529,6 +1593,44 @@
             } else {
                 handleNavClick('available');
             }
+        }
+
+        // Initialize Giscus Comments
+        function initializeGiscusComments() {
+            // Remove any existing Giscus scripts and iframes to prevent duplicates
+            document.querySelectorAll('script[src*="giscus"]').forEach(s => s.remove());
+            document.querySelectorAll('.giscus-frame').forEach(f => f.remove());
+
+            // Find all giscus containers on the current active page
+            const activePage = document.querySelector('.page-section.active-page');
+            if (!activePage) return;
+            
+            const giscusContainer = activePage.querySelector('.giscus');
+            if (!giscusContainer) return;
+
+            // Clear the container
+            giscusContainer.innerHTML = '';
+
+            // Create and configure Giscus script
+            const script = document.createElement('script');
+            script.src = 'https://giscus.app/client.js';
+            script.setAttribute('data-repo', 'chiangchihwei92/chiangchihwei92.github.io');
+            script.setAttribute('data-repo-id', 'R_kgDOPL1KJg'); // Repository ID
+            script.setAttribute('data-category', 'General'); // Discussion category
+            script.setAttribute('data-category-id', 'DIC_kwDOPL1KJs4Clq6g'); // Category ID
+            script.setAttribute('data-mapping', 'pathname'); // Map comments to page URL
+            script.setAttribute('data-strict', '0');
+            script.setAttribute('data-reactions-enabled', '1');
+            script.setAttribute('data-emit-metadata', '0');
+            script.setAttribute('data-input-position', 'top');
+            script.setAttribute('data-theme', 'light');
+            script.setAttribute('data-lang', 'zh-TW'); // Traditional Chinese
+            script.setAttribute('data-loading', 'lazy');
+            script.crossOrigin = 'anonymous';
+            script.async = true;
+
+            // Append script to the giscus container
+            giscusContainer.appendChild(script);
         }
 
         window.addEventListener('DOMContentLoaded', initWebsite);
