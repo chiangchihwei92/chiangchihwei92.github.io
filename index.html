@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#F9F7F2">
+    
+    <!-- Resource Hints for Performance -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://docs.google.com">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DMSXQ41WHS"></script>
 
     <script>
@@ -19,6 +26,7 @@
     <link rel="canonical" href="" id="canonical-link">
     <script type="application/ld+json" id="json-ld-data"></script>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="preload" as="image" href="assets/home_hero.jpg" fetchpriority="high">
     
     <style>
         :root {
@@ -128,10 +136,11 @@
             background: #e0e0e0;
             background-image: linear-gradient(90deg, #e0e0e0 25%, #eeeeee 50%, #e0e0e0 75%);
             background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
+            animation: shimmer 1.5s ease-in-out infinite;
             width: 100%; height: 100%; display: block;
             position: absolute; top: 0; left: 0; 
-            z-index: 1; 
+            z-index: 1;
+            will-change: background-position;
         }
 
         /* --- Navbar --- */
@@ -276,7 +285,10 @@
         /* --- Page Layout --- */
         .page-section { display: none; width: 100%; animation: fadeIn 0.6s ease; }
         .page-section.active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translate3d(0, 10px, 0); } 
+            to { opacity: 1; transform: translate3d(0, 0, 0); } 
+        }
 
         .content-container {
             max-width: 1200px; margin: 0 auto; padding: 0 20px;
@@ -305,6 +317,7 @@
             opacity: 0; object-fit: cover;
             transition: opacity 1.5s ease-in-out; 
             transform-origin: center center;
+            will-change: opacity, transform;
         }
         .slide.active { opacity: 1; z-index: 1; animation: kenBurns 6s linear forwards; }
 
@@ -403,6 +416,7 @@
             opacity: 0;        
             transition: opacity 0.6s ease, transform 0.8s ease; 
             position: absolute; top: 0; left: 0;
+            will-change: opacity, transform;
         }
 
         .img-box .img-main.loaded { opacity: 1; z-index: 2; }
@@ -521,7 +535,8 @@
         .gallery-item img { 
             width: 100%; height: 100%; object-fit: cover; 
             opacity: 0; transition: transform 0.6s ease, opacity 0.5s ease; 
-            position: relative; z-index: 2; 
+            position: relative; z-index: 2;
+            will-change: transform;
         }
         .gallery-item img.loaded { opacity: 1; }
         .gallery-item:hover img { transform: scale(1.06); }
@@ -625,15 +640,15 @@
         </div>
     </div>
 
-    <div class="menu-overlay" onclick="closeMenu()"></div>
+    <div class="menu-overlay" onclick="closeMenu()" aria-hidden="true"></div>
 
-    <nav>
+    <nav role="navigation" aria-label="Main navigation">
         <div class="logo" onclick="handleNavClick('home'); closeMenu()">
             <img src="assets/favicon.ico" alt="Icon" class="logo-icon" onerror="this.style.display='none'">
             DONGULI
         </div>
         
-        <button class="hamburger" id="hamburger-btn" onclick="toggleMenu()">
+        <button class="hamburger" id="hamburger-btn" onclick="toggleMenu()" aria-label="Toggle menu" aria-expanded="false">
             <span></span>
             <span></span>
             <span></span>
@@ -748,12 +763,12 @@
         <p>© <span id="footer-year"></span> DONGULI. All Rights Reserved.</p>
     </footer>
 
-    <div id="lightbox" class="lightbox-modal" onclick="closeLightbox(event)">
-        <span class="close-lightbox">&times;</span>
-        <button class="lb-btn lb-prev" id="lb-prev" onclick="changeLightboxItem(-1)">&lt;</button>
+    <div id="lightbox" class="lightbox-modal" onclick="closeLightbox(event)" role="dialog" aria-modal="true" aria-label="Image gallery">
+        <span class="close-lightbox" aria-label="Close lightbox">&times;</span>
+        <button class="lb-btn lb-prev" id="lb-prev" onclick="changeLightboxItem(-1)" aria-label="Previous image">&lt;</button>
         <div class="lightbox-wrapper" id="lightbox-wrapper"></div>
         <div id="lightbox-caption" class="lightbox-caption"></div>
-        <button class="lb-btn lb-next" id="lb-next" onclick="changeLightboxItem(1)">&gt;</button>
+        <button class="lb-btn lb-next" id="lb-next" onclick="changeLightboxItem(1)" aria-label="Next image">&gt;</button>
     </div>
 
     <script>
@@ -850,7 +865,7 @@
                     if (p.image) {
                         const div = document.createElement('div');
                         div.className = 'gallery-item';
-                        div.innerHTML = `<img src="${p.image}" loading="lazy" alt="About Studio" onload="this.classList.add('loaded')" onerror="this.style.display='none'">`;
+                        div.innerHTML = `<img src="${p.image}" loading="lazy" decoding="async" alt="About Studio" onload="this.classList.add('loaded')" onerror="this.style.display='none'">`;
                         aboutRoot.appendChild(div);
                     }
                 });
@@ -909,9 +924,12 @@
             if (lines.length < 2) return [];
             
             const headers = lines[0].split(',').map(h => h.trim());
+            const headerIndexCache = {};
+            headers.forEach((h, idx) => { headerIndexCache[h] = idx; });
+            
             const getVal = (rowArr, headerName) => {
-                const idx = headers.indexOf(headerName);
-                return idx !== -1 && rowArr[idx] ? rowArr[idx] : '';
+                const idx = headerIndexCache[headerName];
+                return idx !== undefined && idx < rowArr.length && rowArr[idx] ? rowArr[idx] : '';
             };
 
             const result = [];
@@ -972,6 +990,8 @@
                 img.src = src;
                 img.className = index === 0 ? 'slide active' : 'slide';
                 img.alt = 'Slide Image';
+                if (index === 0) img.fetchpriority = 'high';
+                img.decoding = 'async';
                 container.appendChild(img);
             });
 
@@ -1148,6 +1168,7 @@
                             const img = document.createElement('img');
                             img.src = src;
                             img.loading = "lazy";
+                            img.decoding = "async";
                             // 點擊放大
                             div.onclick = () => openProductLightbox([src], `Making of ${categoryName}`);
                             div.appendChild(img);
@@ -1189,7 +1210,7 @@
                 if (isVideo(src)) {
                     return `<video class="${className}" src="${src}" autoplay muted loop playsinline disablepictureinpicture onloadeddata="this.classList.add('loaded')"></video>`;
                 } else {
-                    return `<img class="${className}" src="${src}" loading="lazy" alt="${item.name}" onload="this.classList.add('loaded')">`;
+                    return `<img class="${className}" src="${src}" loading="lazy" decoding="async" alt="${item.name}" onload="this.classList.add('loaded')">`;
                 }
             };
 
@@ -1497,9 +1518,10 @@
             const menu = document.getElementById('nav-menu');
             const overlay = document.querySelector('.menu-overlay');
             const hamburger = document.getElementById('hamburger-btn');
-            menu.classList.toggle('open');
+            const isOpen = menu.classList.toggle('open');
             overlay.classList.toggle('active');
             hamburger.classList.toggle('active');
+            hamburger.setAttribute('aria-expanded', isOpen);
             document.body.classList.toggle('menu-open');
         }
 
@@ -1510,6 +1532,7 @@
             menu.classList.remove('open');
             overlay.classList.remove('active');
             hamburger.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
             document.body.classList.remove('menu-open');
             setTimeout(() => {
                 const inner = document.getElementById('shop-dropdown-inner');
