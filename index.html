@@ -852,7 +852,6 @@
 
                 await Promise.all([loadConfig(), loadCSV()]);
 
-                // 2. 渲染靜態元件 
                 // Home Hero
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
@@ -860,35 +859,28 @@
                     renderSlideshow('home-hero-root', images);
                 }
 
-                // About Banner (新增)
                 const aboutBannerConfig = configs.find(c => c.type === 'Banner' && c.key === 'about');
                 if (aboutBannerConfig) {
                     const images = Array.isArray(aboutBannerConfig.image) ? aboutBannerConfig.image : [aboutBannerConfig.image];
                     renderSlideshow('banner-about', images);
                 }
 
-                // About Making Gallery (取代舊的 Gallery)
                 renderMakingOfGallery('about', 'about');
 
-                // 3. 建立分類頁面
                 setupCategories(); 
                 renderAvailablePage();
                 
-                // 4. 處理網址參數與初始頁面
                 const urlParams = new URLSearchParams(window.location.search);
                 let initialPageParam = urlParams.get('page') || 'home';
                 let initialPageId = initialPageParam;
 
-                // 嘗試反向查找類別名稱對應的 ID (忽略空格比對)
                 const foundCatIndex = categories.findIndex(c => c.replace(/\s+/g, '') === initialPageParam);
                 if (foundCatIndex !== -1) {
                     initialPageId = 'cat-' + foundCatIndex;
                 }
 
-                // 切換頁面 (不重複 pushState)
                 switchPage(initialPageId, false);
 
-                // 5. 圖片預載優化
                 let targetImage = null;
                 if (initialPageId === 'home') {
                     if (homeHeroConfig) {
