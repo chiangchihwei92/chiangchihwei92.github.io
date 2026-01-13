@@ -1,40 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://chiangchihwei92.github.io/</loc><lastmod>2026-01-11</lastmod><priority>1.0</priority></url>
-  <url><loc>https://chiangchihwei92.github.io/?page=about</loc><lastmod>2026-01-11</lastmod><priority>0.8</priority></url>
-  <url><loc>https://chiangchihwei92.github.io/?page=available</loc><lastmod>2026-01-11</lastmod><priority>0.9</priority></url>
   <url>
-    <loc>https://chiangchihwei92.github.io/?page=Hand-Carved(手雕系列)</loc>
+    <loc>https://chiangchihwei92.github.io/</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://chiangchihwei92.github.io/?page=about</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chiangchihwei92.github.io/?page=available</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chiangchihwei92.github.io/?page=Hand-Carved%28%E6%89%8B%E9%9B%95%E7%B3%BB%E5%88%97%29</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://chiangchihwei92.github.io/?page=KonishiiHayata(小西氏系列)</loc>
+    <loc>https://chiangchihwei92.github.io/?page=KonishiiHayata%28%E5%B0%8F%E8%A5%BF%E6%B0%8F%E7%B3%BB%E5%88%97%29</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://chiangchihwei92.github.io/?page=LifestylePicks(生活選物)</loc>
+    <loc>https://chiangchihwei92.github.io/?page=LifestylePicks%28%E7%94%9F%E6%B4%BB%E9%81%B8%E7%89%A9%29</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://chiangchihwei92.github.io/?page=RedOak(紅櫟系列)</loc>
+    <loc>https://chiangchihwei92.github.io/?page=RedOak%28%E7%B4%85%E6%AB%9F%E7%B3%BB%E5%88%97%29</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://chiangchihwei92.github.io/?page=Round-Cap(圓帽系列)</loc>
+    <loc>https://chiangchihwei92.github.io/?page=Round-Cap%28%E5%9C%93%E5%B8%BD%E7%B3%BB%E5%88%97%29</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://chiangchihwei92.github.io/?page=Special(限定系列)</loc>
+    <loc>https://chiangchihwei92.github.io/?page=Special%28%E9%99%90%E5%AE%9A%E7%B3%BB%E5%88%97%29</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://chiangchihwei92.github.io/?page=Tableware(食器系列)</loc>
+    <loc>https://chiangchihwei92.github.io/?page=Tableware%28%E9%A3%9F%E5%99%A8%E7%B3%BB%E5%88%97%29</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
