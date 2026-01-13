@@ -8,7 +8,7 @@
     { "type": "Banner", "key": "Lifestyle Picks (生活選物)", "image": "assets/banner_ls.jpg" },
     { "type": "Banner", "key": "Red Oak (紅櫟系列)", "image": "assets/banner_ro.jpg" },
     { "type": "Banner", "key": "Konishii Hayata (小西氏系列)", "image": "assets/banner_kh.jpg" },
-    { "type": "Banner", "key": "about", "image": ["assets/about_1.jpg", "about_2.jpg"]},
+    { "type": "Banner", "key": "about", "image": ["assets/about_1.jpg", "assets/about_2.jpg", "assets/about_3.jpg", "assets/about_4.jpg"]},
     { "type": "MakingGallery", "key": "Hand-Carved (手雕系列)", "image": "" },
     { "type": "MakingGallery", "key": "Tableware (食器系列)", "image": "" },
     { "type": "MakingGallery", "key": "Round-Cap (圓帽系列)", "image": "" },
