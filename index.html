@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#F9F7F2">
     
-    <!-- Resource Hints for Performance -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://docs.google.com">
     <link rel="preconnect" href="https://www.googletagmanager.com">
@@ -688,6 +687,17 @@
     </div>
 
     <div id="page-about" class="page-section">
+        <div class="category-header-wrapper">
+            <div class="slideshow-container" id="banner-about">
+                <div class="skeleton"></div>
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="category-text">
+                <h2>About Us</h2>
+                <p>關於我們</p>
+            </div>
+        </div>
+
         <div class="content-container">
             <div class="about-container">
                 <h2 style="font-size: 2rem; font-weight: 700; margin: 60px 0 30px;">About Us</h2>
@@ -714,11 +724,12 @@
                     </svg>
                     Follow us on Instagram
                 </a>
-
-                <div class="gallery-grid" id="about-gallery-root">
-                    <div class="gallery-item"><div class="skeleton"></div></div>
-                    <div class="gallery-item"><div class="skeleton"></div></div>
+                
+                <div class="making-of-section" id="mo-section-about" style="display:none; margin-top: 60px;">
+                     <h3 style="margin-bottom: 20px;">Studio Daily</h3>
+                     <div class="mo-gallery" id="mo-gallery-about"></div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -739,13 +750,6 @@
 
             <div class="product-grid" id="grid-available">
                 <div class="product-card"><div class="img-box"><div class="skeleton"></div></div></div>
-            </div>
-        </div>
-
-        <div class="making-of-section">
-            <div class="content-container">
-                <h3>Making of DONGULI</h3>
-                <p>Studio Stories & Handcrafting Process</p>
             </div>
         </div>
 
@@ -851,24 +855,23 @@
 
                 await Promise.all([loadConfig(), loadCSV()]);
 
-                // 2. 渲染靜態元件 (Hero, About) - 更新從 data.json 讀取
+                // 2. 渲染靜態元件 
+                // Home Hero
                 const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
                 if (homeHeroConfig) {
                     const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
                     renderSlideshow('home-hero-root', images);
                 }
 
-                // About Gallery
-                const aboutRoot = document.getElementById('about-gallery-root');
-                aboutRoot.innerHTML = ''; 
-                configs.filter(c => c.type === 'About').forEach(p => {
-                    if (p.image) {
-                        const div = document.createElement('div');
-                        div.className = 'gallery-item';
-                        div.innerHTML = `<img src="${p.image}" loading="lazy" decoding="async" alt="About Studio" onload="this.classList.add('loaded')" onerror="this.style.display='none'">`;
-                        aboutRoot.appendChild(div);
-                    }
-                });
+                // About Banner (新增)
+                const aboutBannerConfig = configs.find(c => c.type === 'Banner' && c.key === 'about');
+                if (aboutBannerConfig) {
+                    const images = Array.isArray(aboutBannerConfig.image) ? aboutBannerConfig.image : [aboutBannerConfig.image];
+                    renderSlideshow('banner-about', images);
+                }
+
+                // About Making Gallery (取代舊的 Gallery)
+                renderMakingOfGallery('about', 'about');
 
                 // 3. 建立分類頁面
                 setupCategories(); 
@@ -895,6 +898,11 @@
                         const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
                         if (images.length > 0) targetImage = images[0];
                     }
+                } else if (initialPageId === 'about') {
+                     if (aboutBannerConfig) {
+                        const images = Array.isArray(aboutBannerConfig.image) ? aboutBannerConfig.image : [aboutBannerConfig.image];
+                        if (images.length > 0) targetImage = images[0];
+                     }
                 } else if (initialPageId.startsWith('cat-')) {
                     const catIndex = parseInt(initialPageId.replace('cat-', ''));
                     if (categories[catIndex]) {
@@ -1129,16 +1137,20 @@
             });
         }
 
-        // --- 更新後的 Making Gallery 函數 (讀取 data.json) ---
+        // --- Making Gallery 函數 (讀取 data.json) ---
         async function renderMakingOfGallery(categoryName, safeId) {
             const galleryRoot = document.getElementById(`mo-gallery-${safeId}`);
             const sectionRoot = document.getElementById(`mo-section-${safeId}`);
             
+            if (!galleryRoot || !sectionRoot) return;
+
             // 清空舊內容
             galleryRoot.innerHTML = '';
 
             // 在 configs (data.json) 中尋找對應 key 的 MakingGallery 設定
-            const config = configs.find(c => c.type === 'MakingGallery' && c.key === categoryName);
+            // 如果是 about 頁面，key 應該是 'about'
+            const configKey = categoryName === 'about' ? 'about' : categoryName;
+            const config = configs.find(c => c.type === 'MakingGallery' && c.key === configKey);
 
             if (config && config.image) {
                 // 處理 image 欄位 (可能是字串陣列或逗號分隔字串)
@@ -1160,9 +1172,15 @@
                         if (isVideo) {
                             const video = document.createElement('video');
                             video.src = src;
-                            video.controls = true;
+                            video.autoplay = true; // 自動播放
+                            video.muted = true;    // 靜音 (必要)
+                            video.loop = true;     // 循環
                             video.playsInline = true;
+                            video.controls = false; // 隱藏控制器
                             video.preload = "metadata"; 
+                            
+                            // 點擊打開 Lightbox (可看有聲版)
+                            div.onclick = () => openProductLightbox([src], `Making of ${categoryName}`);
                             div.appendChild(video);
                         } else {
                             const img = document.createElement('img');
