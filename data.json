@@ -16,6 +16,6 @@
     { "type": "MakingGallery", "key": "Lifestyle Picks (生活選物)", "image": "" },
     { "type": "MakingGallery", "key": "Red Oak (紅櫟系列)", "image": "" },
     { "type": "MakingGallery", "key": "Konishii Hayata (小西氏系列)", "image": "" },
-    { "type": "MakingGallery", "key": "about", "image": ["assets/MG1.jpg", "assets/MG2.jpg", "assets/MGV1.mov", "assets/MG15.jpg", "assets/MG14.jpg", "assets/MG3.jpg", "assets/MG4.jpg", "assets/MG5.jpg", "MGV2.mov", "assets/MG6.jpg", "assets/MG7.jpg", "assets/MG8.jpg", "assets/MG9.jpg", "assets/MG10.jpg", "assets/MG11.jpg", "assets/MG12.jpg", "assets/MG13.jpg"] }
+    { "type": "MakingGallery", "key": "about", "image": ["assets/MG1.jpg", "assets/MG2.jpg", "assets/MGV1.mov", "assets/MG15.jpg", "assets/MG14.jpg", "assets/MG3.jpg", "assets/MG4.jpg", "assets/MG5.jpg", "assets/MGV2.mov", "assets/MG6.jpg", "assets/MG7.jpg", "assets/MG8.jpg", "assets/MG9.jpg", "assets/MG10.jpg", "assets/MG11.jpg", "assets/MG12.jpg", "assets/MG13.jpg"] }
   ]
 }
