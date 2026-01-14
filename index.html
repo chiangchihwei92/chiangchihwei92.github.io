@@ -8,6 +8,7 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://docs.google.com">
     <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://docs.google.com" crossorigin>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DMSXQ41WHS"></script>
 
@@ -860,12 +861,19 @@
                 const loadCSV = async () => {
                     if (GOOGLE_SHEET_CSV_URL) {
                         try {
-                            const csvResponse = await fetch(GOOGLE_SHEET_CSV_URL);
+                            const csvResponse = await fetch(GOOGLE_SHEET_CSV_URL, {
+                                mode: 'cors',
+                                credentials: 'omit'
+                            });
                             if (!csvResponse.ok) throw new Error(`CSV Fetch Failed: ${csvResponse.status}`);
                             const csvText = await csvResponse.text();
                             products = parseCSV(csvText);
+                            console.log(`Successfully loaded ${products.length} products from CSV`);
                         } catch (err) {
                             console.error("Error loading product CSV:", err);
+                            console.warn("Product data may be unavailable. Please ensure the Google Sheets URL is accessible.");
+                            // Keep products as empty array to allow site to function
+                            products = [];
                         }
                     }
                 };
@@ -1061,7 +1069,7 @@
         }
 
         function setupCategories() {
-            categories = [...new Set(products.map(p => p.category))]; 
+            categories = [...new Set(products.map(p => p.category).filter(c => c))]; 
             const shopInner = document.getElementById('shop-dropdown-inner');
             const pagesRoot = document.getElementById('dynamic-pages-root');
 
