@@ -1358,7 +1358,7 @@
             scriptTag.textContent = JSON.stringify(data);
         }
 
-        function updateMetaTags(title, description, path) {
+        function updateMetaTags(title, description, path, ogImage = null) {
             document.title = title;
             let metaDesc = document.querySelector("meta[name='description']");
             if (!metaDesc) {
@@ -1373,10 +1373,19 @@
             const canonicalLink = document.getElementById('canonical-link');
             if (canonicalLink) canonicalLink.href = finalUrl;
             
+            // Use provided ogImage or fallback to home_hero.jpg
+            const imageUrl = ogImage || '/assets/home_hero.jpg';
+            const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : window.location.origin + (imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl);
+            
             updateOpenGraph('og:title', title);
             updateOpenGraph('og:description', description);
             updateOpenGraph('og:url', finalUrl);
-            updateOpenGraph('og:image', window.location.origin + '/assets/home_hero.jpg'); 
+            updateOpenGraph('og:image', fullImageUrl);
+            
+            // Also update Twitter Card tags
+            updateTwitterCard('twitter:title', title);
+            updateTwitterCard('twitter:description', description);
+            updateTwitterCard('twitter:image', fullImageUrl);
         }
 
         function updateOpenGraph(property, content) {
@@ -1386,6 +1395,16 @@
                 tag.setAttribute('property', property);
                 document.head.appendChild(tag);
             }            
+            tag.setAttribute('content', content);
+        }
+        
+        function updateTwitterCard(name, content) {
+            let tag = document.querySelector(`meta[name='${name}']`);
+            if (!tag) {
+                tag = document.createElement('meta');
+                tag.setAttribute('name', name);
+                document.head.appendChild(tag);
+            }
             tag.setAttribute('content', content);
         }              
 
@@ -1413,15 +1432,34 @@
                 let newDesc = "DONGULI 來自於對自然的觀察與熱愛，每件作品都由雙手塑造，承載時間的痕跡與釉色的流動。";
                 let urlParam = targetId;
                 let catNameForJson = null;
+                let ogImage = null;
 
-                if (targetId === 'about') {
+                // Determine the appropriate banner image for OG tags
+                if (targetId === 'home') {
+                    // Use HomeHero image
+                    const homeHeroConfig = configs.find(c => c.type === 'HomeHero');
+                    if (homeHeroConfig) {
+                        const images = Array.isArray(homeHeroConfig.image) ? homeHeroConfig.image : [homeHeroConfig.image];
+                        ogImage = images[0];
+                    }
+                } else if (targetId === 'about') {
                     newTitle = "About us 關於我們 | DONGULI";
                     newDesc = "一顆橡實，靜靜落地。DONGULI 的每件陶作都承載著手作的溫度，在陶土的粗糙與釉色的溫潤之間，尋找平衡。";
                     urlParam = 'about';
+                    
+                    // Use about Banner image
+                    const aboutBannerConfig = configs.find(c => c.type === 'Banner' && c.key === 'about');
+                    if (aboutBannerConfig) {
+                        const images = Array.isArray(aboutBannerConfig.image) ? aboutBannerConfig.image : [aboutBannerConfig.image];
+                        ogImage = images[0];
+                    }
                 } else if (targetId === 'available') {
                     newTitle = "Available Stock 現貨選購 | DONGULI";
                     newDesc = "瀏覽 DONGULI 目前可購買的現貨作品。每件都獨一無二，尋找屬於你的生活陶器。";
                     urlParam = 'available';
+                    
+                    // Use home_hero.jpg as fallback for available page
+                    ogImage = '/assets/home_hero.jpg';
                 } else if (targetId.startsWith('cat-')) {
                     const catIndex = parseInt(targetId.replace('cat-', ''));
                     if (categories && categories[catIndex]) {
@@ -1430,6 +1468,13 @@
                         
                         newTitle = `${catName} | DONGULI 陶瓷作品`;
                         newDesc = `選購 DONGULI ${catName} 系列。手捏質感，獨特釉色，為生活增添自然的氣息。`;
+                        
+                        // Use category-specific Banner image
+                        const bannerConfig = configs.find(c => c.type === 'Banner' && c.key === catName);
+                        if (bannerConfig) {
+                            const images = Array.isArray(bannerConfig.image) ? bannerConfig.image : [bannerConfig.image];
+                            ogImage = images[0];
+                        }
                         
                         const toggleBtn = target.querySelector('.toggle-btn');
                         if (toggleBtn) {
@@ -1442,7 +1487,7 @@
                     }
                 }
 
-                updateMetaTags(newTitle, newDesc, targetId === 'home' ? '' : urlParam);
+                updateMetaTags(newTitle, newDesc, targetId === 'home' ? '' : urlParam, ogImage);
                 
                 updateJsonLd(targetId, catNameForJson);
 
